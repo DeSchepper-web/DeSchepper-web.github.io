@@ -2,26 +2,140 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Christian's Gallery</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeSchepper 3D</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: rgba(0, 0, 0, 0.85);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 999;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .menu-toggle {
+      font-size: 1.5rem;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      background-color: rgba(0, 0, 0, 0.95);
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin: 0.5rem 0;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .nav-links.show {
+      display: flex;
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1605296867304-46d5465a13f1?auto=format&fit=crop&w=1600&q=80') center center / cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      padding-top: 4rem;
+    }
+
+    .hero-overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 2rem;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      background-color: white;
+      color: black;
+      padding: 0.75rem 1.5rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Photo Gallery</h1>
-    <p>Just a collection of placeholder images for now</p>
-  </header>
 
-  <main>
-    <section class="gallery">
-      <img src="https://via.placeholder.com/300x200?text=Photo+1" alt="Photo 1" />
-      <img src="https://via.placeholder.com/300x200?text=Photo+2" alt="Photo 2" />
-      <img src="https://via.placeholder.com/300x200?text=Photo+3" alt="Photo 3" />
-      <img src="https://via.placeholder.com/300x200?text=Photo+4" alt="Photo 4" />
-      <img src="https://via.placeholder.com/300x200?text=Photo+5" alt="Photo 5" />
-      <img src="https://via.placeholder.com/300x200?text=Photo+6" alt="Photo 6" />
-    </section>
-  </main>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="brand">DeSchepper 3D</div>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="#home">Home</a>
+      <a href="#shop">Shop</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-overlay">
+      <h1>Precision 3D Printing</h1>
+      <p>Custom parts. Professional quality. Lightning-fast delivery.</p>
+      <a href="#shop" class="cta-button">Shop Now</a>
+    </div>
+  </section>
+
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('navLinks');
+      nav.classList.toggle('show');
+    }
+  </script>
+
 </body>
 </html>
-
