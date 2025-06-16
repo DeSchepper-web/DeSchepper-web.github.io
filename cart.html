@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart – DeSchepper 3D</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-left">
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="brand">DeSchepper 3D</div>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </div>
+  </nav>
+
+  <!-- Cart Contents -->
+  <section style="margin-top: 100px; padding: 2rem;">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <p><strong>Total:</strong> $<span id="cart-total">0.00</span></p>
+    <button onclick="clearCart()">Clear Cart</button>
+  </section>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
