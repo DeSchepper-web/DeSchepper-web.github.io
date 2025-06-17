@@ -94,7 +94,34 @@ body {
   text-transform: uppercase;
   font-weight: bold;
 }
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Spread left and right */
+  padding: 1rem 2rem;
+  background-color: rgba(0, 0, 0, 0.85);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 999;
+}
 
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-right {
+  margin-left: auto;
+}
+
+.cart-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+}
 /* Hero Section */
 .hero {
   height: 100vh;

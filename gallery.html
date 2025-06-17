@@ -15,6 +15,9 @@
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
       <div class="brand">DeSchepper 3D</div>
     </div>
+     <div class="navbar-right">
+    <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+  </div>
     <div class="nav-links" id="navLinks">
       <a href="index.html">Home</a>
       <a href="shop.html">Shop</a>
@@ -46,12 +49,14 @@
   </div>
 
   <!-- JS: Hamburger Menu -->
-  <script>
-    function toggleMenu() {
-      const nav = document.getElementById('navLinks');
-      nav.classList.toggle('show');
-    }
-  </script>
+<script>
+  function toggleMenu() {
+    const nav = document.getElementById('navLinks');
+    nav.classList.toggle('show');
+  }
+</script>
 
+<!-- External JavaScript File -->
+<script src="script.js"></script>
 </body>
 </html>
