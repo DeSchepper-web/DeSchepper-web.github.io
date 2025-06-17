@@ -8,6 +8,7 @@ function addToCart(productName, price) {
   cart.push({ name: productName, price: price });
   localStorage.setItem('cart', JSON.stringify(cart));
   updateCartCount();
+  alert(`${productName} added to cart!`);
 }
 
 function updateCartCount() {
