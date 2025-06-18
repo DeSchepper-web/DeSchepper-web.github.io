@@ -4,11 +4,23 @@ function toggleMenu() {
 }
 
 function addToCart(productName, price) {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  // Example: add item to localStorage cart
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
   cart.push({ name: productName, price: price });
   localStorage.setItem('cart', JSON.stringify(cart));
+
   updateCartCount();
+
+  // Show toast
+  const toast = document.getElementById('cart-toast');
+  toast.style.opacity = '1';
+
+  // Hide after 2 seconds
+  setTimeout(() => {
+    toast.style.opacity = '0';
+  }, 2000);
 }
+
 
 function updateCartCount() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];

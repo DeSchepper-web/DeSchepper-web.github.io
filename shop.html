@@ -60,13 +60,33 @@
     <a href="index.html">← Back to Home</a>
   </div>
 
-  <!-- JS: Hamburger Menu -->
-  <script>
-    function toggleMenu() {
-      const nav = document.getElementById('navLinks');
-      nav.classList.toggle('show');
-    }
-  </script>
+<!-- JS: Hamburger Menu -->
+<script>
+  function toggleMenu() {
+    const nav = document.getElementById('navLinks');
+    nav.classList.toggle('show');
+  }
+</script>
+
+<!-- Cart Toast Message -->
+<div id="cart-toast" style="
+position: fixed;
+top: 100px;
+left: 50%;
+transform: translateX(-50%);
+  background: #007BFF;
+  color: #fff;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 1000;
+  pointer-events: none;
+">
+  Item added to cart!
+</div>
+
 <!-- External JavaScript File -->
 <script src="script.js"></script>
 </body>
