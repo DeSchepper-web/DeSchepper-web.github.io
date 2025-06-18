@@ -170,6 +170,7 @@ body {
   text-decoration: none;
   font-weight: bold;
   border-radius: 4px;
+  cursor: pointer;
 }
 /* Shop Page Product Card Styles */
 .product-card {
@@ -270,4 +271,51 @@ body {
   text-transform: uppercase;
   border-radius: 4px;
   cursor: pointer;
+}
+.back-link {
+  text-align: center;
+  margin: 2rem;
+}
+
+.back-link a {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #00d1b2;
+  color: white;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.back-link a:hover {
+  background-color: #00b89c;
+}
+.cart-banner {
+  text-align: center;
+  padding: 6rem 1rem 2rem;
+  background-color: #000;
+  color: #fff;
+  font-size: 1.25rem;
+}
+
+.cart-section {
+  padding: 3rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cart-items {
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.cart-items div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding: 0.75rem 0;
+  font-size: 1.1rem;
 }

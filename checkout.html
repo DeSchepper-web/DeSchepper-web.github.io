@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout – DeSchepper 3D</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-left">
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="brand">DeSchepper 3D</div>
+    </div>
+    <div class="navbar-right">
+      <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Checkout Message -->
+  <section style="padding: 8rem 2rem; text-align: center;">
+    <h1>Checkout Coming Soon!</h1>
+    <p style="font-size: 1.25rem; max-width: 600px; margin: 1rem auto;">
+      We're putting the finishing touches on our online checkout system. For now, please <a href="contact.html">contact us</a> for orders.
+    </p>
+    <div style="margin-top: 2rem;">
+      <a href="shop.html" class="cta-button">Back to Shop</a>
+    </div>
+  </section>
+
+  <!-- JS: Hamburger Menu -->
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('navLinks');
+      nav.classList.toggle('show');
+    }
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

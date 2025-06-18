@@ -14,24 +14,85 @@
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
       <div class="brand">DeSchepper 3D</div>
     </div>
+    <div class="navbar-right">
+      <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </div>
     <div class="nav-links" id="navLinks">
       <a href="index.html">Home</a>
       <a href="shop.html">Shop</a>
       <a href="gallery.html">Gallery</a>
       <a href="contact.html">Contact</a>
-      <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
     </div>
   </nav>
 
-  <!-- Cart Contents -->
-  <section style="margin-top: 100px; padding: 2rem;">
+  <!-- Banner -->
+  <header class="cart-banner">
+    <p>Review your selected items and proceed to checkout.</p>
+  </header>
+
+  <!-- Cart Section -->
+  <section class="cart-section">
     <h2>Your Cart</h2>
-    <div id="cart-items"></div>
-    <p><strong>Total:</strong> $<span id="cart-total">0.00</span></p>
-    <button onclick="clearCart()">Clear Cart</button>
+    <div id="cart-items" class="cart-items"></div>
+    <p style="font-size: 1.25rem; margin-top: 1rem;">
+      <strong>Total:</strong> $<span id="cart-total">0.00</span>
+    </p>
+
+    <!-- Checkout and Clear Cart Buttons -->
+    <div style="margin-top: 2rem;">
+      <button onclick="proceedToCheckout()" class="cta-button">Proceed to Checkout</button>
+    </div>
+
+    <div style="margin-top: 1rem;">
+      <button onclick="clearCart()" class="cta-button">Clear Cart</button>
+    </div>
   </section>
 
-  <!-- JavaScript -->
-  <script src="script.js"></script>
+  <!-- Back Link -->
+  <div class="back-link">
+    <a href="shop.html">← Back to Shop</a>
+  </div>
+
+  <!-- JS: Hamburger Menu + Cart Functions -->
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('navLinks');
+      nav.classList.toggle('show');
+    }
+
+    function proceedToCheckout() {
+      window.location.href = "checkout.html";
+    }
+
+    function displayCart() {
+      const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemsDiv = document.getElementById('cart-items');
+      const cartTotalSpan = document.getElementById('cart-total');
+
+      cartItemsDiv.innerHTML = '';
+
+      let total = 0;
+
+      cartItems.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.innerHTML = `${item.name} - $${item.price.toFixed(2)}`;
+        cartItemsDiv.appendChild(itemDiv);
+        total += item.price;
+      });
+
+      cartTotalSpan.textContent = total.toFixed(2);
+    }
+
+    function clearCart() {
+      localStorage.removeItem('cart');
+      displayCart();
+    }
+
+    // Load cart when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      displayCart();
+    });
+  </script>
+
 </body>
 </html>
