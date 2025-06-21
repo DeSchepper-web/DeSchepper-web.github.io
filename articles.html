@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Articles & Guides | DeSchepper 3D | 3D Printing Tips & Materials</title>
+  <meta name="description" content="Expert articles and guides on 3D printing, custom part design, prototyping, materials, and engineering tips from DeSchepper 3D." />
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Schema Markup for Blog -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "DeSchepper 3D Articles",
+    "url": "https://yourwebsite.com/articles.html",
+    "description": "Expert articles and guides on 3D printing, custom part design, prototyping, materials, and engineering tips from DeSchepper 3D.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "DeSchepper 3D",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://yourwebsite.com/logo.png"
+      }
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-left">
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="brand">DeSchepper 3D</div>
+    </div>
+    <div class="navbar-right">
+      <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="articles.html">Articles</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Articles Section -->
+  <section class="articles">
+    <div class="articles-content">
+      <h1>Articles & Guides</h1>
+      <p>Learn more about 3D printing, design tips, prototyping, materials, and best practices from our team of engineers.</p>
+      
+      <div class="article-list">
+
+        <!-- Article Box -->
+        <a href="article-1.html" class="article-box">
+          <h2>Top 5 Materials for Durable 3D Printed Parts</h2>
+          <p>A breakdown of the best materials to use when strength and durability matter — from Nylon to Polycarbonate blends.</p>
+        </a>
+
+        <a href="article-2.html" class="article-box">
+          <h2>How to Optimize Your CAD Design for 3D Printing</h2>
+          <p>Tips for making your CAD designs more print-friendly — reduce warping, improve finish, and save on print time.</p>
+        </a>
+
+        <!-- Add more articles as needed -->
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>© 2025 DeSchepper 3D — All Rights Reserved</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('navLinks');
+      nav.classList.toggle('show');
+    }
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
