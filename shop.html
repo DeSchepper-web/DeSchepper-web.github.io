@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shop – DeSchepper 3D</title>
+  <meta name="description" content="Browse precision 3D prints from DeSchepper 3D. Premium carbon fiber nylon parts — strong, lightweight, and built to perform." />
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -60,10 +61,11 @@
   <div class="back-link">
     <a href="index.html">← Back to Home</a>
   </div>
-<!-- Footer -->
-<footer class="site-footer">
-  <p>© 2025 DeSchepper 3D — All Rights Reserved</p>
-</footer>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>© 2025 DeSchepper 3D — All Rights Reserved</p>
+  </footer>
 
   <!-- JS: Hamburger Menu -->
   <script>
@@ -76,10 +78,22 @@
   <!-- Cart Toast Message -->
   <div id="cart-toast" style="
     position: fixed;
-    top: 100px;
+    top: 125px;
     left: 50%;
     transform: translateX(-50%);
     background: #007BFF;
     color: #fff;
     padding: 1rem 1.5rem;
     border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 9999;
+  ">
+    Item added to cart!
+  </div>
+
+  <!-- Cart Script -->
+  <script src="script.js"></script>
+
+</body>
+</html>
