@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact – DeSchepper 3D</title>
+  <title>Custom Services – DeSchepper 3D</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -22,19 +22,19 @@
       <a href="index.html">Home</a>
       <a href="shop.html">Shop</a>
       <a href="gallery.html">Gallery</a>
-      <a href="contact.html">Contact</a>
+      <a href="custom.html">Custom Services</a>
     </div>
   </nav>
 
   <!-- Banner/Header -->
   <header class="contact-banner">
-    <p>Have a question? Want a quote? We're here to help.</p>
+    <p>Looking for a custom 3D print or service? Send us your project details below!</p>
   </header>
 
-  <!-- Contact Section -->
+  <!-- Custom Services Section -->
   <section class="contact">
-    <h2>Contact Us</h2>
-    <form action="https://formspree.io/f/xgvyzklv" method="POST" class="contact-form">
+    <h2>Request Custom Services</h2>
+    <form action="https://formspree.io/f/xgvyzklv" method="POST" enctype="multipart/form-data" class="contact-form">
       
       <!-- Hidden redirect after submission -->
       <input type="hidden" name="_next" value="https://deschepper-web.github.io/thank-you.html" />
@@ -42,8 +42,13 @@
       <!-- Visible form fields -->
       <input type="text" name="name" placeholder="Your Name" required />
       <input type="email" name="_replyto" placeholder="Your Email" required />
-      <textarea name="message" placeholder="Your Message" required></textarea>
-      <button type="submit">Send Message</button>
+      <textarea name="message" placeholder="Describe your project or service request" required></textarea>
+      
+      <!-- File Upload -->
+      <label for="file">Upload File(s):</label>
+      <input type="file" name="attachment" id="file" multiple />
+      
+      <button type="submit">Send Request</button>
     </form>
   </section>
 
@@ -51,6 +56,11 @@
   <div class="back-link">
     <a href="index.html">← Back to Home</a>
   </div>
+  
+<!-- Footer -->
+<footer class="site-footer">
+  <p>© 2025 DeSchepper 3D — All Rights Reserved</p>
+</footer>
 
   <!-- JS: Hamburger Menu -->
   <script>

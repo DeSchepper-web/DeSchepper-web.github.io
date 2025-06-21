@@ -15,9 +15,9 @@
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
       <div class="brand">DeSchepper 3D</div>
     </div>
-     <div class="navbar-right">
-    <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
-  </div>
+    <div class="navbar-right">
+      <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </div>
     <div class="nav-links" id="navLinks">
       <a href="index.html">Home</a>
       <a href="shop.html">Shop</a>
@@ -27,8 +27,8 @@
   </nav>
 
   <!-- Banner Header -->
-  <header style="text-align: center; padding: 6rem 1rem 2rem; background-color: #000; color: #fff;">
-    <p style="font-size: 1.25rem;">
+  <header class="gallery-banner">
+    <p>
       A showcase of custom 3D printed parts and prototypes by DeSchepper 3D.
     </p>
   </header>
@@ -43,20 +43,26 @@
     </div>
   </section>
 
-   <!-- Back Link -->
+  <!-- Back Link -->
   <div class="back-link">
-    <a href="index.html">← Back to Home</a>
+    <a href="index.html">← Back to home</a>
   </div>
+  
+<!-- Footer -->
+<footer class="site-footer">
+  <p>© 2025 DeSchepper 3D — All Rights Reserved</p>
+</footer>
 
   <!-- JS: Hamburger Menu -->
-<script>
-  function toggleMenu() {
-    const nav = document.getElementById('navLinks');
-    nav.classList.toggle('show');
-  }
-</script>
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('navLinks');
+      nav.classList.toggle('show');
+    }
+  </script>
 
-<!-- External JavaScript File -->
-<script src="script.js"></script>
+  <!-- External JavaScript File -->
+  <script src="script.js"></script>
+  
 </body>
 </html>
