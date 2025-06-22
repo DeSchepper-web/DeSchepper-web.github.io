@@ -312,7 +312,10 @@ body {
   padding: 0.75rem 0;
   font-size: 1.1rem;
 }
-.cart-link {
+
+/* PROPER CART LINK STATES */
+.cart-link:link,
+.cart-link:visited {
   color: white;
   text-decoration: none;
   font-weight: bold;
@@ -320,14 +323,15 @@ body {
 }
 
 .cart-link:hover {
-  color: #007BFF;
+  color: #007BFF; /* blue on hover */
   text-decoration: none;
 }
 
-.cart-link:visited {
-  color: #0056b3;
+.cart-link:active {
+  color: #0056b3; /* darker blue when clicked */
   text-decoration: none;
 }
+
 /* ==========================
   PAGE BANNERS
 ========================== */
