@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Custom Services – DeSchepper 3D</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
@@ -16,14 +16,14 @@
       <div class="brand">DeSchepper 3D</div>
     </div>
     <div class="navbar-right">
-      <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+      <a href="/cart/">🛒 Cart (<span id="cart-count">0</span>)</a>
     </div>
     <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a>
-      <a href="shop.html">Shop</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="articles.html">Articles</a>
-      <a href="contact.html">Contact</a>
+      <a href="/">Home</a>
+      <a href="/shop/">Shop</a>
+      <a href="/gallery/">Gallery</a>
+      <a href="/articles/">Articles</a>
+      <a href="/contact/">Contact</a>
     </div>
   </nav>
 
@@ -38,7 +38,7 @@
     <form action="https://formspree.io/f/xgvyzklv" method="POST" enctype="multipart/form-data" class="contact-form">
       
       <!-- Hidden redirect after submission -->
-      <input type="hidden" name="_next" value="https://deschepper-web.github.io/thank-you.html" />
+      <input type="hidden" name="_next" value="https://www.descworks.com/thank-you/" />
       
       <!-- Visible form fields -->
       <input type="text" name="name" placeholder="Your Name" required />
@@ -55,13 +55,13 @@
 
   <!-- Back Link -->
   <div class="back-link">
-    <a href="index.html">← Back to Home</a>
+    <a href="/">← Back to Home</a>
   </div>
   
-<!-- Footer -->
-<footer class="site-footer">
-  <p>© 2025 DeSchepper 3D — All Rights Reserved</p>
-</footer>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>© 2025 DeSchepper 3D — All Rights Reserved</p>
+  </footer>
 
   <!-- JS: Hamburger Menu -->
   <script>
@@ -70,6 +70,8 @@
       nav.classList.toggle('show');
     }
   </script>
-  <script src="script.js"></script>
+  
+  <script src="/script.js"></script>
 </body>
 </html>
+

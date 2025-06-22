@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Cart – DeSchepper 3D</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
 
@@ -15,14 +15,14 @@
       <div class="brand">DeSchepper 3D</div>
     </div>
     <div class="navbar-right">
-      <a href="cart.html" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+      <a href="/cart/">🛒 Cart (<span id="cart-count">0</span>)</a>
     </div>
     <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a>
-      <a href="shop.html">Shop</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="articles.html">Articles</a>
-      <a href="contact.html">Contact</a>
+      <a href="/">Home</a>
+      <a href="/shop/">Shop</a>
+      <a href="/gallery/">Gallery</a>
+      <a href="/articles/">Articles</a>
+      <a href="/contact/">Contact</a>
     </div>
   </nav>
 
@@ -51,13 +51,13 @@
 
   <!-- Back Link -->
   <div class="back-link">
-    <a href="shop.html">← Back to Shop</a>
+    <a href="/shop/">← Back to Shop</a>
   </div>
 
-<!-- Footer -->
-<footer class="site-footer">
-  <p>© 2025 DeSchepper 3D — All Rights Reserved</p>
-</footer>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>© 2025 DeSchepper 3D — All Rights Reserved</p>
+  </footer>
 
   <!-- JS: Hamburger Menu + Cart Functions -->
   <script>
@@ -67,7 +67,7 @@
     }
 
     function proceedToCheckout() {
-      window.location.href = "checkout.html";
+      window.location.href = "/checkout/";
     }
 
     function displayCart() {
