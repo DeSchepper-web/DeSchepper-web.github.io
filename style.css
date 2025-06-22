@@ -312,7 +312,22 @@ body {
   padding: 0.75rem 0;
   font-size: 1.1rem;
 }
+.cart-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+}
 
+.cart-link:hover {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.cart-link:visited {
+  color: #0056b3;
+  text-decoration: none;
+}
 /* ==========================
   PAGE BANNERS
 ========================== */
