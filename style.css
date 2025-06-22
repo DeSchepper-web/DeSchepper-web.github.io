@@ -76,18 +76,24 @@ body {
   font-weight: bold;
 }
 
-.cart-link {
+/* PROPER CART LINK STATES (NAVBAR) */
+.cart-link:link,
+.cart-link:visited {
   color: white;
   text-decoration: none;
   font-weight: bold;
   font-size: 1rem;
 }
 
-.cart-link:visited {
-  color: white;
+.cart-link:hover {
+  color: #007BFF; /* blue on hover */
   text-decoration: none;
 }
 
+.cart-link:active {
+  color: #0056b3; /* darker blue when clicked */
+  text-decoration: none;
+}
 /* ==========================
   HERO SECTION
 ========================== */
