@@ -7,7 +7,14 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+}
+
 body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
   font-family: Arial, sans-serif;
   background-color: #f8f9fa;
   color: #333;
@@ -201,7 +208,7 @@ body {
 }
 
 .product-tile h3 {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   font-size: 1.1rem;
 }
 
@@ -420,7 +427,7 @@ body {
   text-align: center;
   padding: 1rem 0;
   font-size: 0.9rem;
-  margin-top: 2rem;
+  margin-top: auto;
 }
 
 /* ==========================
