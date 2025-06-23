@@ -436,3 +436,10 @@ body {
   font-size: 1rem;
   color: #555;
 }
+.articles-banner {
+  text-align: center;
+  padding: 6rem 1rem 2rem;
+  background-color: #444; /* matches other banners */
+  color: #fff;
+  font-size: 1.25rem;
+}
