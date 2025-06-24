@@ -238,10 +238,12 @@ body {
 }
 
 .product-card img {
-  width: 100%;
-  height: auto;
+  width: auto; /* maintain aspect ratio */
+  max-width: 100%; /* don’t overflow the card horizontally */
+  max-height: 200px; /* or 250px, choose what looks best */
   border-radius: 8px;
   margin-bottom: 0.5rem;
+  object-fit: contain; /* optional: fits the image inside the box */
 }
 
 .product-card h3 {
