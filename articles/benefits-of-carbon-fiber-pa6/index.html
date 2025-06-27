@@ -16,18 +16,38 @@
       background-color: #111; /* Solid black */
     }
 
-    .fact-box {
-      max-width: 600px;
-      margin: 50px auto;
-      padding: 30px;
-      border-radius: 10px;
-      background-color: #222; /* Slightly lighter black for contrast */
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    .intro {
+      max-width: 700px;
+      margin: 30px auto 20px;
+      padding: 30px 20px; /* Adjusted padding */
+      background-color: #333; /* Consistent grey box background */
+      color: #ccc;
+      text-align: center;
+      font-size: 1.1rem;
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6); /* Shadow for 3D effect */
     }
+
+    .fact-box {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 30px 25px;
+      border-radius: 10px;
+      background-color: #333; /* Consistent grey box background */
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .fact-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+    }
+
     h1 {
       text-align: center;
-      font-size: 2em;
+      font-size: 2.2em;
       margin-bottom: 1em;
+      color: #007BFF; /* Your brand blue */
     }
 
     ul {
@@ -35,15 +55,46 @@
     }
 
     li {
-      margin-bottom: 0.7em;
+      margin-bottom: 0.8em;
+      font-size: 1.05rem;
+    }
+
+    .back-link {
+      text-align: center;
+      margin: 30px 0 50px;
+    }
+
+    .back-link a {
+      display: inline-block;
+      padding: 0.7rem 1.5rem;
+      background-color: #007BFF;
+      color: #fff;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+
+    .back-link a:hover {
+      background-color: #0056b3;
+    }
+
+    .source {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #ccc;
+      margin-top: 15px;
     }
   </style>
 </head>
 
 <body>
-<p style="max-width: 600px; margin: 20px auto; padding: 0 30px; color: #ccc; text-align: center;">
-  Carbon fiber PA6 offers significant advantages over metals in applications where low weight, moderate temperatures and pressures, resistance to oxidation, and cost-effectiveness are key. It is an ideal choice for designs that require durability and precision without the added mass or corrosion concerns of steel or aluminum.
-</p>
+
+  <p class="intro">
+    Carbon fiber PA6 offers significant advantages over metals in applications where low weight, moderate temperatures and pressures, resistance to oxidation, and cost-effectiveness are key. It is an ideal choice for designs that require durability and precision without the added mass or corrosion concerns of steel or aluminum.
+  </p>
+
   <div class="fact-box">
     <h1>Carbon Fiber PA6 — Quick Facts</h1>
     <ul>
@@ -54,9 +105,17 @@
       <li><strong>Weight vs aluminum:</strong> 1.5–2x lighter</li>
       <li><strong>Dimensional stability:</strong> Low warping, precise tolerances</li>
       <li><strong>Surface finish:</strong> Matte carbon fiber look</li>
-<li><strong>Pressure resistance (structural use):</strong> Suitable for medium-pressure use (depends on part design and thickness).</li>
+      <li><strong>Pressure resistance (structural use):</strong> Suitable for medium-pressure use (depends on part design and thickness).</li>
       <li><strong>Ideal for:</strong> functional parts, high-strength hardware, firearms, drones, robotics</li>
     </ul>
+    <div class="source">
+      *Source: Bambu Labs*
+    </div>
   </div>
+
+  <div class="back-link">
+    <a href="https://us.store.bambulab.com/products/pa6-cf?srsltid=AfmBOopzcjYUnwH8cjW9Bz0a1pTII2e08A7MwpfbUVqu4yRhKeuKaVVJ" target="_blank">See Related Products</a>
+  </div>
+
 </body>
 </html>
