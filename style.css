@@ -21,6 +21,16 @@ body {
 }
 
 /* ==========================
+  THEME VARIABLES
+========================== */
+:root {
+  --brand-grey: #007BFF;
+  --brand-grey-dark: #0056b3;
+  --brand-blue: #2c2828;
+  --brand-blue-dark: #171515;
+}
+
+/* ==========================
   NAVBAR
 ========================== */
 .navbar {
@@ -28,7 +38,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background-color: #444;
+  background-color: var(--brand-blue);
   position: fixed;
   width: 100%;
   top: 0;
@@ -66,7 +76,7 @@ body {
   position: absolute;
   top: 60px;
   left: 20px;
-  background-color: #444;
+  background-color: var(--brand-blue);
   padding: 1rem;
   border-radius: 8px;
 }
@@ -93,14 +103,15 @@ body {
 }
 
 .cart-link:hover {
-  color: #007BFF; /* blue on hover */
+  color: var(--brand-grey);
   text-decoration: none;
 }
 
 .cart-link:active {
-  color: #0056b3; /* darker blue when clicked */
+  color: var(--brand-grey-dark);
   text-decoration: none;
 }
+
 /* ==========================
   HERO SECTION
 ========================== */
@@ -147,7 +158,7 @@ body {
 
 /* CTA BUTTON */
 .cta-button {
-  background-color: #007BFF;
+  background-color: var(--brand-grey);
   color: #fff;
   padding: 0.75rem 1.5rem;
   text-transform: uppercase;
@@ -159,8 +170,9 @@ body {
 }
 
 .cta-button:hover {
-  background-color: #0056b3;
+  background-color: var(--brand-grey-dark);
 }
+
 /* ==========================
   HERO SPLIT SECTION (IMAGE + PRODUCTS)
 ========================== */
@@ -216,11 +228,12 @@ body {
   .hero-split {
     flex-direction: column;
   }
-
-  .hero-left, .hero-right {
+  .hero-left,
+  .hero-right {
     flex: 1 1 100%;
   }
 }
+
 /* ==========================
   SHOP PAGE
 ========================== */
@@ -238,12 +251,12 @@ body {
 }
 
 .product-card img {
-  width: auto; /* maintain aspect ratio */
-  max-width: 100%; /* don’t overflow the card horizontally */
-  max-height: 200px; /* or 250px, choose what looks best */
+  width: auto;
+  max-width: 100%;
+  max-height: 200px;
   border-radius: 8px;
   margin-bottom: 0.5rem;
-  object-fit: contain; /* optional: fits the image inside the box */
+  object-fit: contain;
 }
 
 .product-card h3 {
@@ -260,7 +273,7 @@ body {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 5px;
-  background-color: #007BFF;
+  background-color: var(--brand-grey);
   color: #fff;
   cursor: pointer;
   font-size: 1rem;
@@ -268,7 +281,7 @@ body {
 }
 
 .product-card button:hover {
-  background-color: #0056b3;
+  background-color: var(--brand-grey-dark);
 }
 
 /* ==========================
@@ -326,7 +339,7 @@ body {
 
 .contact-form button {
   padding: 0.75rem;
-  background-color: #007BFF;
+  background-color: var(--brand-grey);
   color: #fff;
   border: none;
   font-weight: bold;
@@ -337,7 +350,7 @@ body {
 }
 
 .contact-form button:hover {
-  background-color: #0056b3;
+  background-color: var(--brand-grey-dark);
 }
 
 /* ==========================
@@ -351,7 +364,7 @@ body {
 .back-link a {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  background-color: #007BFF;
+  background-color: var(--brand-grey);
   color: #fff;
   text-transform: uppercase;
   text-decoration: none;
@@ -361,7 +374,7 @@ body {
 }
 
 .back-link a:hover {
-  background-color: #0056b3;
+  background-color: var(--brand-grey-dark);
 }
 
 /* ==========================
@@ -387,7 +400,7 @@ body {
   font-size: 1.1rem;
 }
 
-/* PROPER CART LINK STATES */
+/* PROPER CART LINK STATES (CART PAGE) */
 .cart-link:link,
 .cart-link:visited {
   color: white;
@@ -397,12 +410,11 @@ body {
 }
 
 .cart-link:hover {
-  color: #007BFF; /* blue on hover */
-  text-decoration: none;
+  color: var(--brand-grey);
 }
 
 .cart-link:active {
-  color: #0056b3; /* darker blue when clicked */
+  color: var(--brand-grey-dark);
   text-decoration: none;
 }
 
@@ -415,7 +427,7 @@ body {
 .cart-banner {
   text-align: center;
   padding: 6rem 1rem 2rem;
-  background-color: #444;
+  background-color: var(--brand-blue);
   color: #fff;
   font-size: 1.25rem;
 }
@@ -424,7 +436,7 @@ body {
   FOOTER
 ========================== */
 .site-footer {
-  background-color: #444;
+  background-color: var(--brand-blue);
   color: #fff;
   text-align: center;
   padding: 1rem 0;
@@ -504,10 +516,11 @@ body {
   font-size: 1rem;
   color: #555;
 }
+
 .articles-banner {
   text-align: center;
   padding: 6rem 1rem 2rem;
-  background-color: #444; /* matches other banners */
+  background-color: var(--brand-blue);
   color: #fff;
   font-size: 1.25rem;
 }
