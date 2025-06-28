@@ -529,7 +529,23 @@ body {
   font-size: 0.9rem;
   margin-top: auto;
 }
+.site-footer .social-icons {
+  margin-bottom: 0.6rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
 
+.site-footer .social-icon {
+  width: 24px;
+  height: 24px;
+  color: #fff;
+  transition: color 0.3s;
+}
+
+.site-footer .social-icon:hover {
+  color: var(--brand-grey); /* Your brand blue */
+}
 /* ==========================
   ABOUT US SECTION
 ========================== */
