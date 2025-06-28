@@ -117,7 +117,7 @@ body {
 ========================== */
 .hero {
   height: 100vh;
-  background: url('/images/3d-printer.jpeg') center center / cover no-repeat;
+  background: url('/images/cnc-mill2.jpg') center center / cover no-repeat;
   position: relative;
   display: flex;
   align-items: center;
@@ -132,7 +132,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(27, 26, 26, 0.6);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 0;
 }
 
