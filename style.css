@@ -69,30 +69,115 @@ body {
   border: none;
   cursor: pointer;
 }
-
-.nav-links {
-  display: none;
-  flex-direction: column;
-  position: absolute;
-  top: 60px;
-  left: 20px;
-  background-color: var(--brand-blue);
-  padding: 1rem;
-  border-radius: 8px;
-}
-
-.nav-links.show {
+/* HAMBURGER BUTTON */
+.menu-toggle {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
 }
 
-.nav-links a {
-  color: white;
-  text-decoration: none;
-  margin: 0.5rem 0;
+.menu-toggle .bar {
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Animate into X */
+.menu-toggle.active .bar:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.menu-toggle.active .bar:nth-child(2) {
+  opacity: 0;
+}
+.menu-toggle.active .bar:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Off-canvas menu */
+.offcanvas-menu {
+  position: fixed;
+  top: 0;
+  left: -250px; /* hidden by default */
+  width: 250px;
+  height: 100%;
+  background-color: white;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.2);
+  padding: 1rem;
+  transition: left 0.3s ease;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+.offcanvas-menu.active {
+  left: 0;
+}
+
+/* Off-canvas header */
+.offcanvas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.offcanvas-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
   text-transform: uppercase;
-  font-weight: bold;
 }
 
+.close-button {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Menu items */
+.offcanvas-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.offcanvas-menu li {
+  margin: 1rem 0;
+}
+.offcanvas-menu a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.offcanvas-menu a:hover {
+  color: var(--brand-blue);
+}
 /* PROPER CART LINK STATES (NAVBAR) */
 .cart-link:link,
 .cart-link:visited {
@@ -389,7 +474,7 @@ body {
 
 .cart-items {
   margin-top: 1.5rem;
-  text-align: left;
+  text-align: center;
 }
 
 .cart-items div {
@@ -398,6 +483,7 @@ body {
   border-bottom: 1px solid #ccc;
   padding: 0.75rem 0;
   font-size: 1.1rem;
+  text-align: left;
 }
 
 /* PROPER CART LINK STATES (CART PAGE) */

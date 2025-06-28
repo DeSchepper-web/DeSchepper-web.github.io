@@ -1,26 +1,28 @@
 function toggleMenu() {
-  const nav = document.getElementById('navLinks');
-  nav.classList.toggle('show');
+  const menu = document.getElementById('offcanvasMenu');
+  const overlay = document.getElementById('overlay');
+  const button = document.querySelector('.menu-toggle');
+
+  menu.classList.toggle('active');
+  overlay.classList.toggle('active');
+  button.classList.toggle('active');
 }
 
 function addToCart(productName, price) {
-  // Example: add item to localStorage cart
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   cart.push({ name: productName, price: price });
   localStorage.setItem('cart', JSON.stringify(cart));
 
   updateCartCount();
 
-  // Show toast
   const toast = document.getElementById('cart-toast');
-  toast.style.opacity = '1';
-
-  // Hide after 2 seconds
-  setTimeout(() => {
-    toast.style.opacity = '0';
-  }, 2000);
+  if (toast) {
+    toast.style.opacity = '1';
+    setTimeout(() => {
+      toast.style.opacity = '0';
+    }, 2000);
+  }
 }
-
 
 function updateCartCount() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -32,6 +34,7 @@ function updateCartCount() {
 
 // Run this once on every page load
 updateCartCount();
+
 function renderCart() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   const cartItemsDiv = document.getElementById('cart-items');

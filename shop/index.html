@@ -12,23 +12,37 @@
 
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar">
-    <div class="navbar-left">
-      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-      <div class="brand">Form Precision</div>
-    </div>
-    <div class="navbar-right">
-      <a href="/cart/" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
-    </div>
-    <div class="nav-links" id="navLinks">
-      <a href="/">Home</a>
-      <a href="/shop/">Shop</a>
-      <a href="/gallery/">Gallery</a>
-      <a href="/articles/">Articles</a>
-      <a href="/contact/">Contact</a>
-    </div>
-  </nav>
+  <div class="navbar-left">
+    <button class="menu-toggle" onclick="toggleMenu()">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+    <div class="brand">FORM PRECISION</div>
+  </div>
+  <div class="navbar-right">
+    <a href="/cart/" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+  </div>
+</nav>
+
+<!-- Off-canvas menu -->
+<div class="offcanvas-menu" id="offcanvasMenu">
+  <div class="offcanvas-header">
+    <h2>MENU</h2>
+    <button class="close-button" onclick="toggleMenu()">×</button>
+  </div>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/shop/">Shop</a></li>
+    <li><a href="/gallery/">Gallery</a></li>
+    <li><a href="/articles/">Articles</a></li>
+    <li><a href="/contact/">Contact</a></li>
+  </ul>
+</div>
+
+<!-- Overlay background -->
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
   <!-- Shop Banner -->
   <header class="shop-banner">

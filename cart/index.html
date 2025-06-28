@@ -5,31 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Cart – Form Precision</title>
   <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>
-
-<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 
 <body>
 
   <!-- Navbar -->
   <nav class="navbar">
     <div class="navbar-left">
-      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-      <div class="brand">Form Precision</div>
+      <button class="menu-toggle" onclick="toggleMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <div class="brand">FORM PRECISION</div>
     </div>
     <div class="navbar-right">
       <a href="/cart/" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
     </div>
-    <div class="nav-links" id="navLinks">
-      <a href="/">Home</a>
-      <a href="/shop/">Shop</a>
-      <a href="/gallery/">Gallery</a>
-      <a href="/articles/">Articles</a>
-      <a href="/contact/">Contact</a>
-    </div>
   </nav>
 
-  <!-- Banner -->
+  <!-- Off-canvas Menu -->
+  <div class="offcanvas-menu" id="offcanvasMenu">
+    <div class="offcanvas-header">
+      <h2>MENU</h2>
+      <button class="close-button" onclick="toggleMenu()">×</button>
+    </div>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/shop/">Shop</a></li>
+      <li><a href="/gallery/">Gallery</a></li>
+      <li><a href="/articles/">Articles</a></li>
+      <li><a href="/contact/">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <!-- Page Banner -->
   <header class="cart-banner">
     <p>Review your selected items and proceed to checkout.</p>
   </header>
@@ -42,11 +56,9 @@
       <strong>Total:</strong> $<span id="cart-total">0.00</span>
     </p>
 
-    <!-- Checkout and Clear Cart Buttons -->
     <div style="margin-top: 2rem;">
       <button onclick="proceedToCheckout()" class="cta-button">Proceed to Checkout</button>
     </div>
-
     <div style="margin-top: 1rem;">
       <button onclick="clearCart()" class="cta-button">Clear Cart</button>
     </div>
@@ -62,13 +74,10 @@
     <p>© 2025 Form Precision — All Rights Reserved</p>
   </footer>
 
-  <!-- JS: Hamburger Menu + Cart Functions -->
+  <!-- External JavaScript -->
+  <script src="/script.js"></script>
   <script>
-    function toggleMenu() {
-      const nav = document.getElementById('navLinks');
-      nav.classList.toggle('show');
-    }
-
+    // Additional cart-page-specific logic
     function proceedToCheckout() {
       window.location.href = "/checkout/";
     }
@@ -82,9 +91,15 @@
 
       let total = 0;
 
+      if (cartItems.length === 0) {
+        cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
+        cartTotalSpan.textContent = "0.00";
+        return;
+      }
+
       cartItems.forEach(item => {
         const itemDiv = document.createElement('div');
-        itemDiv.innerHTML = `${item.name} - $${item.price.toFixed(2)}`;
+        itemDiv.textContent = `${item.name} - $${item.price.toFixed(2)}`;
         cartItemsDiv.appendChild(itemDiv);
         total += item.price;
       });
@@ -92,14 +107,9 @@
       cartTotalSpan.textContent = total.toFixed(2);
     }
 
-    function clearCart() {
-      localStorage.removeItem('cart');
-      displayCart();
-    }
-
-    // Load cart when page loads
     document.addEventListener('DOMContentLoaded', function() {
       displayCart();
+      updateCartCount();
     });
   </script>
 
