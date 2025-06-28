@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.descworks.com/sitemap.xml
+Sitemap: https://www.formprecision.com/sitemap.xml
