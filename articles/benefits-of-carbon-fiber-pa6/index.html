@@ -3,121 +3,129 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Quick facts about carbon fiber PA6: strength, temperature rating, weight vs steel and aluminum, pressure limits." />
-  <meta name="author" content="Form Precision" />
   <title>Carbon Fiber PA6 — Quick Facts | Form Precision</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      background-color: #111; /* Solid black */
-    }
+  <meta name="description" content="Quick facts about carbon fiber PA6: strength, temperature rating, weight vs steel and aluminum, pressure limits." />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 
-    .intro {
-      max-width: 700px;
-      margin: 30px auto 20px;
-      padding: 30px 20px; /* Adjusted padding */
-      background-color: #333; /* Consistent grey box background */
-      color: #ccc;
-      text-align: center;
-      font-size: 1.1rem;
-      border-radius: 10px; /* Rounded corners */
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6); /* Shadow for 3D effect */
-    }
-
-    .fact-box {
-      max-width: 700px;
-      margin: 30px auto;
-      padding: 30px 25px;
-      border-radius: 10px;
-      background-color: #333; /* Consistent grey box background */
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .fact-box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 2.2em;
-      margin-bottom: 1em;
-      color: #007BFF; /* Your brand blue */
-    }
-
-    ul {
-      padding-left: 1.2em;
-    }
-
-    li {
-      margin-bottom: 0.8em;
-      font-size: 1.05rem;
-    }
-
-    .back-link {
-      text-align: center;
-      margin: 30px 0 50px;
-    }
-
-    .back-link a {
-      display: inline-block;
-      padding: 0.7rem 1.5rem;
-      background-color: #007BFF;
-      color: #fff;
-      text-transform: uppercase;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 6px;
-      transition: background 0.3s ease;
-    }
-
-    .back-link a:hover {
-      background-color: #0056b3;
-    }
-
-    .source {
-      text-align: center;
-      font-size: 0.85rem;
-      color: #ccc;
-      margin-top: 15px;
-    }
-  </style>
+  <!-- Schema Markup for Article -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Carbon Fiber PA6 — Quick Facts",
+    "description": "Quick facts about carbon fiber PA6: strength, temperature rating, weight vs steel and aluminum, pressure limits.",
+    "author": {
+      "@type": "Organization",
+      "name": "Form Precision"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Form Precision",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.formprecision.com/logo.png"
+      }
+    },
+    "mainEntityOfPage": "https://www.formprecision.com/articles/carbon-fiber-pa6/",
+    "datePublished": "2025-06-23"
+  }
+  </script>
 </head>
-
-<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 
 <body>
 
-  <p class="intro">
+<nav class="navbar">
+  <div class="navbar-left">
+    <button class="menu-toggle" onclick="toggleMenu()">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+    <div class="brand">FORM PRECISION</div>
+  </div>
+  <div class="navbar-right">
+    <a href="/cart/" class="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+  </div>
+</nav>
+
+<!-- Off-canvas menu -->
+<div class="offcanvas-menu" id="offcanvasMenu">
+  <div class="offcanvas-header">
+    <h2>MENU</h2>
+    <button class="close-button" onclick="toggleMenu()">×</button>
+  </div>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/shop/">Shop</a></li>
+    <li><a href="/gallery/">Gallery</a></li>
+    <li><a href="/articles/">Articles</a></li>
+    <li><a href="/contact/">Contact</a></li>
+  </ul>
+</div>
+
+<!-- Overlay background -->
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<!-- Article Content -->
+<section class="articles-content">
+  <h1>Carbon Fiber PA6 — Quick Facts</h1>
+  <p><em>Published: June 23, 2025</em></p>
+
+  <p>
     Carbon fiber PA6 offers significant advantages over metals in applications where low weight, moderate temperatures and pressures, resistance to oxidation, and low cost are key. It is an ideal choice for designs that require durability and precision without the added mass or corrosion concerns of steel or aluminum.
   </p>
 
-  <div class="fact-box">
-    <h1>Carbon Fiber PA6 — Quick Facts</h1>
-    <ul>
-      <li><strong>Max service temperature:</strong> 186&nbsp;°C</li>
-      <li><strong>Tensile strength:</strong> 151 MPa</li>
-      <li><strong>Young’s modulus (stiffness):</strong> 6 GPa</li>
-      <li><strong>Weight vs steel:</strong> at least 7x lighter (depends on infill)</li>
-      <li><strong>Weight vs aluminum:</strong> at least 2.7x lighter (depends on infill)</li>
-      <li><strong>Dimensional stability:</strong> Low warping, precise tolerances</li>
-      <li><strong>Surface finish:</strong> Matte carbon fiber look</li>
-      <li><strong>Pressure resistance (structural use):</strong> Suitable for medium-pressure use (depends on part design and thickness)</li>
-      <li><strong>Ideal for:</strong> functional parts, high-strength hardware, firearms, drones, automobiles</li>
-    </ul>
-    <div class="source">
-      *Source: Bambu Labs, Engineering ToolBox*
-    </div>
-  </div>
+  <h2>Key Properties</h2>
+  <ul>
+    <li><strong>Max service temperature:</strong> 186&nbsp;°C</li>
+    <li><strong>Tensile strength:</strong> 102 MPa</li>
+    <li><strong>Young’s modulus (stiffness):</strong> 5,500 MPa</li>
+    <li><strong>Weight vs steel:</strong> at least 7x lighter (depends on infill)</li>
+    <li><strong>Weight vs aluminum:</strong> at least 2.7x lighter (depends on infill)</li>
+    <li><strong>Dimensional stability:</strong> Low warping, precise tolerances</li>
+    <li><strong>Surface finish:</strong> Matte carbon fiber look</li>
+    <li><strong>Pressure resistance (structural use):</strong> Suitable for medium-pressure use (depends on part design and thickness)</li>
+    <li><strong>Ideal for:</strong> functional parts, high-strength hardware, firearms, drones, automobiles</li>
+  </ul>
+
+  <p class="source">
+    *Source: Bambu Labs, Engineering ToolBox*
+  </p>
 
   <div class="back-link">
     <a href="/shop/" target="_blank">See Related Products</a>
   </div>
+</section>
 
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="social-icons">
+    <a href="https://www.instagram.com/form_precision/" target="_blank" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon">
+        <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.88-.88a.88.88 0 1 1-1.76 0 .88.88 0 0 1 1.76 0z"/>
+      </svg>
+    </a>
+    <a href="https://www.tiktok.com/@formprecision" target="_blank" aria-label="TikTok">
+      <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon">
+        <path d="M12.753 2h3.136c.183 1.486 1.315 2.72 2.807 2.942v3.136a6.004 6.004 0 0 1-3.519-1.115v7.533a5.753 5.753 0 1 1-5.753-5.753c.221 0 .438.015.653.043v3.184a2.575 2.575 0 1 0 1.676 2.44V2z"/>
+      </svg>
+    </a>
+    <a href="https://www.youtube.com/@FormPrecision" target="_blank" aria-label="YouTube">
+      <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon">
+        <path d="M21.8 8s-.2-1.4-.8-2c-.7-.8-1.4-.8-1.7-.9C16.4 5 12 5 12 5h0s-4.4 0-7.3.1c-.4 0-1 .1-1.7.9-.6.6-.8 2-.8 2S2 9.6 2 11.3v1.4c0 1.7.2 3.3.2 3.3s.2 1.4.8 2c.7.8 1.7.8 2.1.9 1.5.1 6.9.1 6.9.1s4.4 0 7.3-.1c.4 0 1-.1 1.7-.9.6-.6.8-2 .8-2s.2-1.7.2-3.3v-1.4c0-1.7-.2-3.3-.2-3.3zM9.8 14.6V9.4l5.2 2.6-5.2 2.6z"/>
+      </svg>
+    </a>
+  </div>
+  <p>© 2025 Form Precision — All Rights Reserved</p>
+</footer>
+
+<script>
+  function toggleMenu() {
+    const nav = document.getElementById('navLinks');
+    nav.classList.toggle('show');
+  }
+</script>
+<script src="/script.js"></script>
 </body>
 </html>
