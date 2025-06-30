@@ -580,49 +580,73 @@ body {
   ARTICLES PAGE
 ========================== */
 .articles-content {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 6rem 1rem 2rem;
-}
-
-.article-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem 0;
-}
-
-.article-box {
-  display: block;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 1.5rem;
-  text-decoration: none;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   color: #333;
-  background-color: #f9f9f9;
-  transition: background-color 0.2s, box-shadow 0.2s;
+  line-height: 1.7;
 }
 
-.article-box:hover {
-  background-color: #f1f1f1;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.article-box h2 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-}
-
-.article-box p {
-  margin: 0;
-  font-size: 1rem;
-  color: #555;
-}
-
-.articles-banner {
+.articles-content h1 {
   text-align: center;
-  padding: 6rem 1rem 2rem;
-  background-color: var(--brand-blue);
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  color: #007BFF;
+}
+
+.articles-content em {
+  display: block;
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.articles-content h2 {
+  margin-top: 2rem;
+  font-size: 1.5rem;
+  color: #007BFF;
+  border-bottom: 2px solid #007BFF;
+  padding-bottom: 0.5rem;
+}
+
+.articles-content ul {
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+}
+
+.articles-content li {
+  margin-bottom: 0.8rem;
+  font-size: 1.05rem;
+}
+
+.articles-content .source {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #888;
+  font-style: italic;
+}
+
+.back-link {
+  text-align: center;
+  margin: 3rem 0 2rem;
+}
+
+.back-link a {
+  display: inline-block;
+  padding: 0.8rem 1.8rem;
+  background-color: #007BFF;
   color: #fff;
-  font-size: 1.25rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.back-link a:hover {
+  background-color: #0056b3;
 }
