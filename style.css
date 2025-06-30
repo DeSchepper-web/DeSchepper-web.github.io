@@ -577,9 +577,44 @@ body {
 }
 
 /* ==========================
-  ARTICLES PAGE
+  ARTICLES INDEX PAGE
 ========================== */
 .articles-content {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+
+.articles-content h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #007BFF;
+}
+
+.articles-content a {
+  display: block;
+  font-size: 1.2rem;
+  color: #007BFF;
+  text-decoration: none;
+  border-bottom: 1px solid #eee;
+  padding: 0.8rem 0;
+  transition: color 0.3s ease;
+}
+
+.articles-content a:hover {
+  color: #0056b3;
+  border-bottom-color: #007BFF;
+}
+/* ==========================
+  ARTICLE PAGE
+========================== */
+.article-page-content {
   max-width: 800px;
   margin: 2rem auto;
   padding: 2rem;
@@ -588,23 +623,24 @@ body {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   color: #333;
   line-height: 1.7;
+  font-family: Arial, sans-serif;
 }
 
-.articles-content h1 {
+.article-page-content h1 {
   text-align: center;
   font-size: 2.2rem;
   margin-bottom: 1rem;
   color: #007BFF;
 }
 
-.articles-content em {
+.article-page-content em {
   display: block;
   text-align: center;
   color: #666;
   margin-bottom: 2rem;
 }
 
-.articles-content h2 {
+.article-page-content h2 {
   margin-top: 2rem;
   font-size: 1.5rem;
   color: #007BFF;
@@ -612,17 +648,30 @@ body {
   padding-bottom: 0.5rem;
 }
 
-.articles-content ul {
+.article-page-content ul {
   padding-left: 1.5rem;
   margin-top: 1rem;
+  margin-bottom: 2rem;
+  list-style-type: disc;
 }
 
-.articles-content li {
-  margin-bottom: 0.8rem;
-  font-size: 1.05rem;
+.article-page-content li {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
-.articles-content .source {
+.article-page-content li strong {
+  font-weight: 600;
+  color: #333;
+}
+
+.article-page-content li em {
+  color: #666;
+  font-style: italic;
+}
+
+.article-page-content .source {
   margin-top: 2rem;
   text-align: center;
   font-size: 0.9rem;
@@ -650,3 +699,5 @@ body {
 .back-link a:hover {
   background-color: #0056b3;
 }
+
+
