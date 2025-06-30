@@ -368,7 +368,27 @@ body {
 .product-card button:hover {
   background-color: var(--brand-grey-dark);
 }
+.go-to-cart {
+  text-align: center;
+  margin: 3rem 0 2rem;
+}
 
+.go-to-cart .cta-button {
+  display: inline-block;
+  padding: 0.8rem 1.8rem;
+  background-color: #007BFF;
+  color: #fff;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.go-to-cart .cta-button:hover {
+  background-color: #0056b3;
+}
 /* ==========================
   GALLERY PAGE
 ========================== */
@@ -594,13 +614,13 @@ body {
   text-align: center;
   font-size: 2rem;
   margin-bottom: 2rem;
-  color: #007BFF;
+  color: #222;
 }
 
 .articles-content a {
   display: block;
   font-size: 1.2rem;
-  color: #007BFF;
+  color: #222;
   text-decoration: none;
   border-bottom: 1px solid #eee;
   padding: 0.8rem 0;
@@ -608,8 +628,8 @@ body {
 }
 
 .articles-content a:hover {
-  color: #0056b3;
-  border-bottom-color: #007BFF;
+  color: #000;
+  border-bottom-color: #ddd;
 }
 /* ==========================
   ARTICLE PAGE
