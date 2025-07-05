@@ -631,6 +631,11 @@ body {
   color: #000;
   border-bottom-color: #ddd;
 }
+@media (max-width: 768px) {
+  .articles-content {
+    padding-top: 3rem;
+  }
+}
 /* ==========================
   ARTICLE PAGE
 ========================== */
