@@ -43,6 +43,7 @@ body {
   width: 100%;
   top: 0;
   z-index: 999;
+  height: 60px;
 }
 
 .navbar-left {
@@ -81,6 +82,7 @@ body {
   border: none;
   cursor: pointer;
   z-index: 1001;
+  transition: all 0.3s ease;
 }
 
 .menu-toggle .bar {
@@ -91,29 +93,31 @@ body {
   transition: all 0.3s ease;
 }
 
-.menu-toggle.active .bar:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+.menu-toggle.active {
+  flex-direction: row;
+  width: 24px;
+  height: 18px;
 }
-.menu-toggle.active .bar:nth-child(2) {
-  opacity: 0;
-}
-.menu-toggle.active .bar:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
+
+.menu-toggle.active .bar {
+  width: 3px;
+  height: 100%;
 }
 
 /* Overlay */
 .overlay {
   position: fixed;
-  top: 0;
+  top: 60px;                          /* starts under navbar */
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 60px);          /* only below navbar */
   background: rgba(0,0,0,0.6);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease;
   z-index: 1000;
 }
+
 .overlay.active {
   opacity: 1;
   visibility: visible;
@@ -122,11 +126,11 @@ body {
 /* Off-canvas menu */
 .offcanvas-menu {
   position: fixed;
-  top: 0;
+  top: 60px;
   left: -250px;
   width: 250px;
-  height: 100%;
-  background-color: white;
+  height: calc(100% - 60px);
+  background-color: var(--theme-b);
   box-shadow: 2px 0 6px rgba(0,0,0,0.2);
   padding: 1rem;
   transition: left 0.3s ease;
@@ -158,6 +162,12 @@ body {
   background: none;
   border: none;
   cursor: pointer;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: var(--theme-a);
 }
 
 /* Menu items */
@@ -166,18 +176,29 @@ body {
   padding: 0;
   margin: 0;
 }
+
 .offcanvas-menu li {
   margin: 1rem 0;
 }
+
 .offcanvas-menu a {
   text-decoration: none;
-  color: #333;
+  color: white;
   font-weight: bold;
   text-transform: uppercase;
+  display: block;
+  padding: 0.5rem 0;
+  transition: color 0.3s ease;
 }
+
 .offcanvas-menu a:hover {
-  color: var(--theme-b);
+  color: var(--theme-a);
 }
+
+.offcanvas-header h2 {
+  color: white;
+}
+
 
 /* PROPER CART LINK STATES (NAVBAR) */
 .cart-link {
