@@ -556,7 +556,11 @@ body {
   color: var(--theme-a-dark);
   text-decoration: none;
 }
+:root { --nav-h: 60px; } /* you already use 60px in navbar */
 
+.cart-section {
+  padding-top: calc(3rem + var(--nav-h)); /* was just 3rem */
+}
 /* ==========================
   PAGE BANNERS
 ========================== */
