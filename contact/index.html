@@ -7,29 +7,28 @@
   <link rel="stylesheet" href="/style.css" />
 
   <!-- SVG (preferred by modern browsers) -->
-<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
 
-<!-- .ICO fallback -->
-<link rel="icon" href="/images/favicon.ico" sizes="any">
+  <!-- .ICO fallback -->
+  <link rel="icon" href="/images/favicon.ico" sizes="any">
 
-<!-- PNG fallbacks -->
-<link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-512x512.png">
+  <!-- PNG fallbacks -->
+  <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-512x512.png">
 
-<!-- Apple Touch Icon -->
-<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 
-<!-- Web App Manifest (if you’re using it) -->
-<link rel="manifest" href="/images/site.webmanifest">
-
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/images/site.webmanifest">
 </head>
 
 <body>
 
 <nav class="navbar">
   <div class="navbar-left">
-    <button class="menu-toggle" onclick="toggleMenu()">
+    <button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="offcanvasMenu" aria-expanded="false" onclick="toggleMenu()">
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
@@ -37,25 +36,27 @@
     <div class="brand">FORM PRECISION</div>
   </div>
   
-<div class="navbar-right">
-  <a href="/cart/" class="cart-link">
-    <svg class="cart-icon" viewBox="0 0 100 79" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M94.076 0C91.998 0 90.15 1.113 89.1 2.776H80.739C80.626 2.77 80.512 2.77 80.4 2.776C79.196 2.908 78.178 3.727 77.794 4.875L74.409 14.793H2.065H0L0.542 16.757L10.834 53.994L11.139 55.145H12.324H60.597L59.142 59.376H14.726C14.704 59.375 14.681 59.377 14.659 59.376C14.582 59.376 14.499 59.376 14.422 59.376C9.11 59.376 4.74 63.744 4.74 69.058C4.74 74.372 9.109 78.74 14.422 78.74C19.735 78.74 24.104 74.372 24.104 69.058C24.104 67.842 23.877 66.681 23.461 65.605H56.873C56.456 66.681 56.196 67.842 56.196 69.058C56.196 74.371 60.598 78.74 65.911 78.74C71.224 78.74 75.593 74.372 75.593 69.058C75.593 63.744 71.225 59.376 65.911 59.376C65.854 59.376 65.8 59.376 65.742 59.376L82.938 8.971H89.1C90.147 10.65 91.984 11.781 94.077 11.781C97.291 11.781 100.001 9.105 100.001 5.891C100 2.676 97.29 0 94.076 0ZM14.421 72.512C12.464 72.512 10.968 71.016 10.968 69.059C10.968 67.148 12.395 65.642 14.285 65.573C14.386 65.59 14.488 65.6 14.59 65.607C14.647 65.607 14.703 65.596 14.759 65.607C16.547 65.773 17.907 67.218 17.907 69.059C17.908 71.017 16.378 72.512 14.421 72.512ZM44.719 17.908H58.7L56.736 29.147H44.279L44.719 17.908ZM56.635 29.791L54.672 40.928H43.805L44.245 29.791H56.635ZM44.11 17.908L43.67 29.147H31.788L31.179 17.908H44.11ZM31.855 40.927H21.361L19.634 29.79H31.212L31.855 40.927ZM30.569 17.908L31.178 29.147H19.533L17.806 17.908H30.569ZM4.096 17.908H17.197L18.923 29.147H7.21L4.096 17.908ZM7.38 29.791H18.991L20.718 40.928H10.46L7.38 29.791ZM13.507 52.031L10.63 41.571H20.819L22.41 52.031H13.507ZM23.054 52.031L21.463 41.571H31.89L32.465 52.031H23.054ZM42.755 52.031H33.073L32.497 41.571H43.161L42.755 52.031ZM32.464 40.927L31.821 29.79H43.635L43.195 40.927H32.464ZM43.365 52.031L43.771 41.571H54.536L52.708 52.031H43.365ZM53.317 52.031L55.179 41.571H65.233L61.644 52.031H53.317ZM65.91 65.572C67.867 65.572 69.363 67.102 69.363 69.059C69.363 71.016 67.867 72.512 65.91 72.512C63.953 72.512 62.424 71.016 62.424 69.059C62.424 67.102 63.953 65.572 65.91 65.572ZM65.437 40.927H55.281L57.244 29.79H69.262L65.437 40.927ZM69.465 29.147H57.346L59.344 17.908H73.324L69.465 29.147Z" fill="currentColor"/>
-    </svg>
-    <span class="cart-label">Cart (<span id="cart-count">0</span>)</span>
-  </a>
-</div>
+  <div class="navbar-right">
+    <a href="/cart/" class="cart-link">
+      <svg class="cart-icon" viewBox="0 0 100 79" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M94.076 0C91.998 0 90.15 1.113 89.1 2.776H80.739C80.626 2.77 80.512 2.77 80.4 2.776C79.196 2.908 78.178 3.727 77.794 4.875L74.409 14.793H2.065H0L0.542 16.757L10.834 53.994L11.139 55.145H12.324H60.597L59.142 59.376H14.726C14.704 59.375 14.681 59.377 14.659 59.376C14.582 59.376 14.499 59.376 14.422 59.376C9.11 59.376 4.74 63.744 4.74 69.058C4.74 74.372 9.109 78.74 14.422 78.74C19.735 78.74 24.104 74.372 24.104 69.058C24.104 67.842 23.877 66.681 23.461 65.605H56.873C56.456 66.681 56.196 67.842 56.196 69.058C56.196 74.371 60.598 78.74 65.911 78.74C71.224 78.74 75.593 74.372 75.593 69.058C75.593 63.744 71.225 59.376 65.911 59.376C65.854 59.376 65.8 59.376 65.742 59.376L82.938 8.971H89.1C90.147 10.65 91.984 11.781 94.077 11.781C97.291 11.781 100.001 9.105 100.001 5.891C100 2.676 97.29 0 94.076 0Z" fill="currentColor"/>
+      </svg>
+      <span class="cart-label">Cart (<span id="cart-count">0</span>)</span>
+    </a>
+  </div>
 </nav>
 
 <!-- Off-canvas menu -->
-<div class="offcanvas-menu" id="offcanvasMenu">
+<div class="offcanvas-menu" id="offcanvasMenu" aria-hidden="true">
   <div class="offcanvas-header">
     <h2>MENU</h2>
-    <button class="close-button" onclick="toggleMenu()">×</button>
+    <button class="close-button" aria-label="Close menu" onclick="toggleMenu()">×</button>
   </div>
   <ul>
     <li><a href="/">Home</a></li>
-    <li><a href="/shop/">Shop</a></li>
+    <li><a href="/defense/">Defense</a></li>
+    <li><a href="/automotive/">Automotive</a></li>
+    <li><a href="/industrial/">Industrial</a></li>
     <li><a href="/gallery/">Gallery</a></li>
     <li><a href="/articles/">Articles</a></li>
     <li><a href="/contact/">Contact</a></li>
@@ -63,70 +64,77 @@
 </div>
 
 <!-- Overlay background -->
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-  </nav>
+<div class="overlay" id="overlay" onclick="toggleMenu()" aria-hidden="true"></div>
 
-  <!-- Banner/Header -->
-  <header class="contact-banner">
-    <p>Looking for a custom design or request? Send us your project details below!</p>
-  </header>
+<!-- Banner/Header -->
+<header class="contact-banner">
+  <p>Looking for a custom design or request? Send us your project details below!</p>
+</header>
 
-  <!-- Custom Services Section -->
-  <section class="contact">
-    <h2>Request Custom Services</h2>
-    <form action="https://formspree.io/f/xgvyzklv" method="POST" enctype="multipart/form-data" class="contact-form">
-      
-      <!-- Hidden redirect after submission -->
-      <input type="hidden" name="_next" value="https://www.formprecision.com/thank-you/" />
-      
-      <!-- Visible form fields -->
-      <input type="text" name="name" placeholder="Your Name" required />
-      <input type="email" name="_replyto" placeholder="Your Email" required />
-      <textarea name="message" placeholder="Describe your project or service request" required></textarea>
-      
-      <!-- File Upload -->
-      <label for="file">Upload File(s):</label>
-      <input type="file" name="attachment" id="file" multiple />
-      
-      <button type="submit">Send Request</button>
-    </form>
-  </section>
+<!-- Custom Services Section -->
+<section class="contact">
+  <h2>Request Custom Services</h2>
+  <form action="https://formspree.io/f/xgvyzklv" method="POST" enctype="multipart/form-data" class="contact-form">
+    
+    <!-- Hidden redirect after submission -->
+    <input type="hidden" name="_next" value="https://www.formprecision.com/thank-you/" />
+    
+    <!-- Visible form fields -->
+    <input type="text" name="name" placeholder="Your Name" required />
+    <input type="email" name="_replyto" placeholder="Your Email" required />
+    <textarea name="message" placeholder="Describe your project or service request" required></textarea>
+    
+    <!-- File Upload -->
+    <label for="file">Upload File(s):</label>
+    <input type="file" name="attachment" id="file" multiple />
+    
+    <button type="submit">Send Request</button>
+  </form>
+</section>
 
-  <!-- Back Link -->
-  <div class="back-link">
-    <a href="/shop/">See Developed Products</a>
-  </div>
-  
-  <!-- Footer -->
+<!-- Back Link -->
+<div class="back-link">
+  <a href="/shop/">See Developed Products</a>
+</div>
+
+<!-- Footer -->
 <footer class="site-footer">
   <div class="social-icons">
-    <a href="https://www.instagram.com/formprecision/" target="_blank" aria-label="Instagram">
+    <a href="https://www.instagram.com/formprecision/" target="_blank" rel="noopener" aria-label="Instagram">
       <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon">
         <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.88-.88a.88.88 0 1 1-1.76 0 .88.88 0 0 1 1.76 0z"/>
       </svg>
     </a>
-    <a href="https://www.tiktok.com/@formprecision" target="_blank" aria-label="tiktok">
+    <a href="https://www.tiktok.com/@formprecision" target="_blank" rel="noopener" aria-label="tiktok">
       <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon">
-    <path d="M12.753 2h3.136c.183 1.486 1.315 2.72 2.807 2.942v3.136a6.004 6.004 0 0 1-3.519-1.115v7.533a5.753 5.753 0 1 1-5.753-5.753c.221 0 .438.015.653.043v3.184a2.575 2.575 0 1 0 1.676 2.44V2z"/>
+        <path d="M12.753 2h3.136c.183 1.486 1.315 2.72 2.807 2.942v3.136a6.004 6.004 0 0 1-3.519-1.115v7.533a5.753 5.753 0 1 1-5.753-5.753c.221 0 .438.015.653.043v3.184a2.575 2.575 0 1 0 1.676 2.44V2z"/>
       </svg>
     </a>
-    <a href="https://www.youtube.com/@FormPrecision" target="_blank" aria-label="YouTube">
+    <a href="https://www.youtube.com/@FormPrecision" target="_blank" rel="noopener" aria-label="YouTube">
       <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon">
         <path d="M21.8 8s-.2-1.4-.8-2c-.7-.8-1.4-.8-1.7-.9C16.4 5 12 5 12 5h0s-4.4 0-7.3.1c-.4 0-1 .1-1.7.9-.6.6-.8 2-.8 2S2 9.6 2 11.3v1.4c0 1.7.2 3.3.2 3.3s.2 1.4.8 2c.7.8 1.7.8 2.1.9 1.5.1 6.9.1 6.9.1s4.4 0 7.3-.1c.4 0 1-.1 1.7-.9.6-.6.8-2 .8-2s.2-1.7.2-3.3v-1.4c0-1.7-.2-3.3-.2-3.3zM9.8 14.6V9.4l5.2 2.6-5.2 2.6z"/>
       </svg>
     </a>
   </div>
-    <p>© 2025 Form Precision — All Rights Reserved</p>
+  <p>© 2025 Form Precision — All Rights Reserved</p>
 </footer>
 
-  <!-- JS: Hamburger Menu -->
-  <script>
-    function toggleMenu() {
-      const nav = document.getElementById('navLinks');
-      nav.classList.toggle('show');
-    }
-  </script>
-  
-  <script src="/script.js"></script>
+<!-- JS: Hamburger Menu -->
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('offcanvasMenu');
+  const overlay = document.getElementById('overlay');
+  const btn = document.querySelector('.menu-toggle');
+
+  const isOpen = menu.classList.toggle('active');   // matches your CSS
+  overlay.classList.toggle('active', isOpen);
+
+  menu.setAttribute('aria-hidden', String(!isOpen));
+  overlay.setAttribute('aria-hidden', String(!isOpen));
+  if (btn) btn.setAttribute('aria-expanded', String(isOpen));
+}
+</script>
+
+<script src="/script.js"></script>
 </body>
 </html>
