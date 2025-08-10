@@ -28,6 +28,7 @@ body {
   --theme-a-dark: #C46D13;
   --theme-b: #2c2828;
   --theme-b-dark: #171515;
+  --nav-h: 60px; 
 }
 
 /* ==========================
@@ -240,7 +241,9 @@ body {
   HERO SECTION
 ========================== */
 .hero {
-  height: 100vh;
+  min-height: calc(100vh - var(--nav-h)); /* fallback for older browsers */
+  min-height: calc(100dvh - var(--nav-h)); /* modern browsers */
+  margin-top: var(--nav-h);
   background: url('/images/cnc-mill2.jpg') center center / cover no-repeat;
   position: relative;
   display: flex;
@@ -562,7 +565,6 @@ body {
   color: var(--theme-a-dark);
   text-decoration: none;
 }
-:root { --nav-h: 60px; } /* you already use 60px in navbar */
 
 .cart-section {
   padding-top: calc(3rem + var(--nav-h)); /* was just 3rem */
@@ -640,7 +642,6 @@ body {
   max-width: 750px;
   margin: 0 auto;
 }
-
 /* ==========================
   ARTICLES INDEX PAGE
 ========================== */
@@ -662,16 +663,42 @@ body {
   color: #222;
 }
 
+/* Article box container (hover applies to the whole box) */
+.articles-list article {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.articles-list article:hover {
+  background-color: rgba(247, 147, 26, 0.05); /* light orange tint */
+}
+
+/* Headings: orange by default */
+.articles-list h2 {
+  color: var(--theme-a);
+  transition: color 0.2s ease-in-out;
+}
+
+/* Hover state: if either the article, the link, or the h2 is hovered */
+.articles-list article:hover h2,
+.articles-list a:hover h2,
+.articles-list h2:hover {
+  color: var(--theme-a-dark);
+}
+
+/* Generic links inside the list (teaser link, etc.) */
 .articles-content a {
   display: block;
   font-size: 1.2rem;
-  color: #222;
+  color: #222;                  /* non-heading text stays dark */
   text-decoration: none;
   border-bottom: 1px solid #eee;
   padding: 0.8rem 0;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, border-bottom-color 0.3s ease;
 }
 
+/* Don’t change the h2 color here; it’s handled above */
 .articles-content a:hover {
   color: #000;
   border-bottom-color: #ddd;
@@ -769,4 +796,18 @@ body {
 
 .back-link a:hover {
   background-color: var(--theme-a-dark);
+}
+/* Force article titles to use brand colors even when wrapped in links */
+.articles-content h2,
+.articles-content h2 a,
+.articles-content a h2 {
+  color: var(--theme-a);
+  transition: color 0.2s ease-in-out;
+}
+
+.articles-content article:hover h2,
+.articles-content article:hover h2 a,
+.articles-content a:hover h2,
+.articles-content h2 a:hover {
+  color: var(--theme-a-dark);
 }
