@@ -62,6 +62,12 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   text-transform: uppercase;
+  text-decoration: none; /* removes underline */
+}
+
+.brand:hover {
+  text-decoration: none; /* keep underline off on hover */
+  color: var(--theme-a);  /* optional hover color */
 }
 
 .menu-toggle {
