@@ -1,52 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <url>
-    <loc>https://www.formprecision.com/</loc>
-  </url>
+  <url><loc>https://formprecision.com/</loc></url>
 
-  <url>
-    <loc>https://www.formprecision.com/defense/</loc>
-  </url>
+  <url><loc>https://formprecision.com/defense/</loc></url>
+  <url><loc>https://formprecision.com/industrial/</loc></url>
+  <url><loc>https://formprecision.com/automotive/</loc></url>
 
-  <url>
-    <loc>https://www.formprecision.com/industrial/</loc>
-  </url>
+  <url><loc>https://formprecision.com/cart/</loc></url>
+  <url><loc>https://formprecision.com/checkout/</loc></url>
 
-  <url>
-    <loc>https://www.formprecision.com/automotive/</loc>
-  </url>
+  <url><loc>https://formprecision.com/gallery/</loc></url>
 
-  <url>
-    <loc>https://www.formprecision.com/cart/</loc>
-  </url>
+  <url><loc>https://formprecision.com/articles/</loc></url>
+  <url><loc>https://formprecision.com/articles/Carbon-Fiber-Nylon/</loc></url>
+  <url><loc>https://formprecision.com/articles/PPS-Filament/</loc></url>
 
-  <url>
-    <loc>https://www.formprecision.com/checkout/</loc>
-  </url>
-
-  <url>
-    <loc>https://www.formprecision.com/gallery/</loc>
-  </url>
-
-  <url>
-    <loc>https://www.formprecision.com/articles/</loc>
-  </url>
-
-  <url>
-    <loc>https://www.formprecision.com/articles/Carbon-Fiber-Nylon/</loc>
-  </url>
-
-  <url>
-    <loc>https://www.formprecision.com/articles/PPS-Filament/</loc>
-  </url>
-
-  <url>
-    <loc>https://www.formprecision.com/contact/</loc>
-  </url>
-
-  <url>
-    <loc>https://www.formprecision.com/thank-you/</loc>
-  </url>
+  <url><loc>https://formprecision.com/contact/</loc></url>
+  <url><loc>https://formprecision.com/thank-you/</loc></url>
 
 </urlset>
