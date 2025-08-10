@@ -539,14 +539,42 @@ body {
   text-align: center;
 }
 
-.cart-items div {
+/* Each cart row */
+.cart-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: .75rem;
   border-bottom: 1px solid #ccc;
   padding: 0.75rem 0;
   font-size: 1.1rem;
   text-align: left;
 }
+
+/* Name/price block */
+.cart-item .item-name {
+  flex: 1;
+}
+
+/* Trash button */
+.remove-item {
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 6px;
+  line-height: 0;           /* tight box around icon */
+  cursor: pointer;
+  color: #333;
+  transition: color .2s, border-color .2s, transform .1s;
+}
+
+.remove-item:hover {
+  color: var(--theme-a);
+  border-color: var(--theme-a);
+  transform: translateY(-1px);
+}
+
+.remove-item:active { transform: translateY(0); }
 
 /* PROPER CART LINK STATES (CART PAGE) */
 .cart-link:link,
@@ -712,33 +740,45 @@ body {
 /* ==========================
   ARTICLE PAGE
 ========================== */
+/* ARTICLE CARD */
+body.article-page {
+  background: var(--theme-b, #2c2828); /* dark edges */
+}
+
 .article-page-content {
-  max-width: 800px;
-  margin: 2rem auto;
+  background: #fff;
+  max-width: 980px;
+  margin: 60px auto 0;     /* sits just under fixed navbar */
   padding: 2rem;
-  background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
   color: #333;
   line-height: 1.7;
   font-family: Arial, sans-serif;
+}
+
+/* HEADINGS — all use theme orange */
+.article-page-content h1,
+.article-page-content h2,
+.article-page-content h3 {
+  color: var(--theme-a);
 }
 
 .article-page-content h1 {
   text-align: center;
   font-size: 2.2rem;
   margin-bottom: 1rem;
-  color: var(--theme-a);
 }
 
-.article-page-content h2 {
+.article-page-content h2,
+.article-page-content h3 {
   margin-top: 2rem;
   font-size: 1.5rem;
-  color: var(--theme-a);
   border-bottom: 2px solid var(--theme-a);
   padding-bottom: 0.5rem;
 }
 
+/* META */
 .article-page-content em {
   display: block;
   text-align: center;
@@ -746,6 +786,7 @@ body {
   margin-bottom: 2rem;
 }
 
+/* LISTS */
 .article-page-content ul {
   padding-left: 1.5rem;
   margin-top: 1rem;
@@ -759,16 +800,10 @@ body {
   line-height: 1.6;
 }
 
-.article-page-content li strong {
-  font-weight: 600;
-  color: #333;
-}
+.article-page-content li strong { font-weight: 600; color: #333; }
+.article-page-content li em { color: #666; font-style: italic; }
 
-.article-page-content li em {
-  color: #666;
-  font-style: italic;
-}
-
+/* SOURCES */
 .article-page-content .source {
   margin-top: 2rem;
   text-align: center;
@@ -777,11 +812,8 @@ body {
   font-style: italic;
 }
 
-.back-link {
-  text-align: center;
-  margin: 3rem 0 2rem;
-}
-
+/* CTA BUTTON */
+.back-link { text-align: center; margin: 3rem 0 2rem; }
 .back-link a {
   display: inline-block;
   padding: 0.8rem 1.8rem;
@@ -793,9 +825,14 @@ body {
   border-radius: 6px;
   transition: background 0.3s ease;
 }
+.back-link a:hover { background-color: var(--theme-a-dark); }
 
-.back-link a:hover {
-  background-color: var(--theme-a-dark);
+/* MOBILE */
+@media (max-width: 768px) {
+  .article-page-content {
+    margin: 60px 1rem 0;   /* still tight to the top on mobile */
+    padding: 1.25rem;
+  }
 }
 /* Force article titles to use brand colors even when wrapped in links */
 .articles-content h2,

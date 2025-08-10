@@ -87,35 +87,55 @@
   }
   </script>
 
-  <style>
-    .article-columns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      align-items: flex-start;
-      margin-top: 1.5rem;
-    }
-    .column { flex: 1; min-width: 280px; }
-    .column h2, .column h3 {
-      color: #ff6600;
-      font-size: 1.4rem;
-      margin-bottom: 0.5rem;
-      border-bottom: 2px solid #ff6600;
-      padding-bottom: 0.25rem;
-    }
-    .quick-facts ul { list-style: none; padding-left: 0; }
-    .quick-facts ul li::before { content: "• "; color: #ff6600; font-weight: bold; }
-    .quick-facts ul li { margin: 0.5rem 0; }
-    .bottom-graph { margin-top: 2rem; display: flex; justify-content: flex-end; }
-    .bottom-graph img {
-      width: 100%; max-width: 350px; border: 1px solid #ccc; border-radius: 6px;
-    }
-    .source { font-size: 0.85rem; margin-top: 1rem; }
-    .back-link { margin-top: 0.5rem; }
-  </style>
+<style>
+  .article-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-top: 1.5rem;
+  }
+
+  .column { flex: 1; min-width: 280px; }
+
+  /* All headings in article use theme-a color */
+  body.article-page .article-page-content h1,
+  body.article-page .article-page-content h2,
+  body.article-page .article-page-content h3 {
+    color: var(--theme-a);
+  }
+
+  .column h2,
+  .column h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid var(--theme-a);
+    padding-bottom: 0.25rem;
+  }
+
+  .quick-facts ul { list-style: none; padding-left: 0; }
+  .quick-facts ul li::before {
+    content: "• ";
+    color: var(--theme-a);
+    font-weight: bold;
+  }
+  .quick-facts ul li { margin: 0.5rem 0; }
+
+  .bottom-graph { margin-top: 2rem; display: flex; justify-content: flex-end; }
+  .bottom-graph img {
+    width: 100%;
+    max-width: 350px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  .source { font-size: 0.85rem; margin-top: 1rem; }
+  .back-link { margin-top: 0.5rem; }
+</style>
 </head>
 
-<body>
+<body class="article-page">
+
 <nav class="navbar">
   <div class="navbar-left">
     <button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="offcanvasMenu" aria-expanded="false" onclick="toggleMenu()">
@@ -155,7 +175,7 @@
 <div class="overlay" id="overlay" aria-hidden="true" onclick="toggleMenu()"></div>
 
 <section class="article-page-content">
-  <h1 style="color: #ff6600;">Carbon Fiber PA6 — Quick Facts</h1>
+<h1>Carbon Fiber PA6 — Quick Facts</h1>
   <p><em>Published: July 25, 2025</em></p>
 
   <div class="article-columns">
@@ -251,4 +271,3 @@ function toggleMenu() {
 <script src="/script.js" defer></script>
 </body>
 </html>
-

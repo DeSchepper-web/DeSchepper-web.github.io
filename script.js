@@ -7,7 +7,7 @@ function setMenuState(open) {
 
   if (!menu || !overlay) return;
 
-  // Primary (current) classes
+  // Primary classes
   menu.classList.toggle('show', open);
   overlay.classList.toggle('show', open);
   if (button) button.classList.toggle('show', open);
@@ -43,15 +43,54 @@ document.addEventListener('click', (e) => {
   }
 });
 
-/* ---------- Cart / Toast Logic ---------- */
+/* ---------- Cart / Toast Helpers ---------- */
+
+const TRASH_SVG = `
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+     aria-hidden="true">
+  <polyline points="3 6 5 6 21 6"></polyline>
+  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+  <path d="M10 11v6"></path>
+  <path d="M14 11v6"></path>
+  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+</svg>`.trim();
+
+function getCart() {
+  return JSON.parse(localStorage.getItem('cart') || '[]');
+}
+function setCart(cart) {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+/* ---------- Cart API ---------- */
 
 function addToCart(productName, price) {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cart = getCart();
   cart.push({ name: productName, price: Number(price) || 0 });
-  localStorage.setItem('cart', JSON.stringify(cart));
-
+  setCart(cart);
   updateCartCount();
   showCartToast();
+}
+
+function removeFromCart(index) {
+  const cart = getCart();
+  cart.splice(index, 1);
+  setCart(cart);
+  updateCartCount();
+  renderCart();
+}
+
+function clearCart() {
+  localStorage.removeItem('cart');
+  updateCartCount();
+  renderCart();
+}
+
+function updateCartCount() {
+  const cart = getCart();
+  const countSpan = document.getElementById('cart-count');
+  if (countSpan) countSpan.textContent = cart.length;
 }
 
 function showCartToast() {
@@ -64,17 +103,12 @@ function showCartToast() {
   }, 2000);
 }
 
-function updateCartCount() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const countSpan = document.getElementById('cart-count');
-  if (countSpan) countSpan.textContent = cart.length;
-}
+/* ---------- Render Cart ---------- */
 
 function renderCart() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cart = getCart();
   const cartItemsDiv = document.getElementById('cart-items');
   const totalSpan = document.getElementById('cart-total');
-
   if (!cartItemsDiv || !totalSpan) return;
 
   if (cart.length === 0) {
@@ -85,20 +119,22 @@ function renderCart() {
 
   cartItemsDiv.innerHTML = "";
   let total = 0;
-  cart.forEach((item) => {
+
+  cart.forEach((item, index) => {
     total += Number(item.price) || 0;
+
     const row = document.createElement('div');
-    row.style.marginBottom = '10px';
-    row.textContent = `${item.name} – $${(Number(item.price) || 0).toFixed(2)}`;
+    row.className = 'cart-item';
+    row.innerHTML = `
+      <span class="item-name">${item.name} — $${(Number(item.price) || 0).toFixed(2)}</span>
+      <button class="remove-item" aria-label="Remove ${item.name}" data-index="${index}">
+        ${TRASH_SVG}
+      </button>
+    `;
     cartItemsDiv.appendChild(row);
   });
-  totalSpan.textContent = total.toFixed(2);
-}
 
-function clearCart() {
-  localStorage.removeItem('cart');
-  updateCartCount();
-  renderCart();
+  totalSpan.textContent = total.toFixed(2);
 }
 
 /* ---------- Page init ---------- */
@@ -115,4 +151,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (overlay && !overlay.hasAttribute('onclick')) {
     overlay.addEventListener('click', () => setMenuState(false));
   }
+
+  // Delegate remove clicks inside cart
+  const cartItemsDiv = document.getElementById('cart-items');
+  if (cartItemsDiv) {
+    cartItemsDiv.addEventListener('click', (e) => {
+      const btn = e.target.closest('.remove-item');
+      if (!btn) return;
+      const idx = Number(btn.dataset.index);
+      if (!Number.isNaN(idx)) removeFromCart(idx);
+    });
+  }
+
+  // Optional: wire up "Clear Cart" button if present
+  const clearBtn = document.getElementById('clear-cart');
+  if (clearBtn) clearBtn.addEventListener('click', clearCart);
 });
