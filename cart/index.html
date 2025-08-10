@@ -6,22 +6,15 @@
   <title>Your Cart – Form Precision</title>
   <meta name="description" content="Review your selected Form Precision products and proceed to checkout. Premium carbon fiber nylon parts — engineered in the USA by ABET-accredited professionals." />
   <link rel="stylesheet" href="/style.css" />
+  <link rel="canonical" href="https://www.formprecision.com/cart/" />
 
-  <!-- SVG (preferred by modern browsers) -->
+  <!-- Favicons -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-
-  <!-- .ICO fallback -->
   <link rel="icon" href="/images/favicon.ico" sizes="any">
-
-  <!-- PNG fallbacks -->
   <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-512x512.png">
-
-  <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-
-  <!-- Web App Manifest -->
   <link rel="manifest" href="/images/site.webmanifest">
 
   <!-- Open Graph / Twitter -->
@@ -32,24 +25,30 @@
   <meta property="og:image" content="https://www.formprecision.com/images/logo.png">
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- Schema Markup: Organization -->
+  <!-- Schema: Organization (sitewide) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": "https://www.formprecision.com/#org",
     "name": "Form Precision",
-    "url": "https://www.formprecision.com",
-    "logo": "https://www.formprecision.com/images/favicon.svg",
+    "url": "https://www.formprecision.com/",
+    "logo": "https://www.formprecision.com/images/favicon-512x512.png",
     "description": "Additive Manufacturing, 3D Printing, and custom parts by ABET-accredited engineers.",
-    "contactPoint": {
+    "contactPoint": [{
       "@type": "ContactPoint",
       "telephone": "+1-470-449-1983",
       "contactType": "Customer Support"
-    }
+    }],
+    "sameAs": [
+      "https://www.instagram.com/formprecision/",
+      "https://www.tiktok.com/@formprecision",
+      "https://www.youtube.com/@FormPrecision"
+    ]
   }
   </script>
 
-  <!-- Schema Markup: WebSite -->
+  <!-- Schema: WebSite (sitewide) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -59,7 +58,7 @@
   }
   </script>
 
-  <!-- Schema Markup: Breadcrumb -->
+  <!-- Schema: Breadcrumb (page-specific) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -82,7 +81,7 @@
       <span class="bar"></span>
       <span class="bar"></span>
     </button>
-    <div class="brand">FORM PRECISION</div>
+    <a href="/" class="brand">FORM PRECISION</a>
   </div>
   
   <div class="navbar-right">
@@ -99,7 +98,7 @@
 <div class="offcanvas-menu" id="offcanvasMenu" aria-hidden="true">
   <div class="offcanvas-header">
     <h2>MENU</h2>
-    <button class="close-button" onclick="toggleMenu()">×</button>
+    <button class="close-button" aria-label="Close menu" onclick="toggleMenu()">×</button>
   </div>
   <ul>
     <li><a href="/">Home</a></li>
@@ -123,10 +122,10 @@
     <strong>Total:</strong> $<span id="cart-total">0.00</span>
   </p>
   <div style="margin-top: 2rem;">
-    <button onclick="proceedToCheckout()" class="cta-button">Proceed to Checkout</button>
+    <button onclick="proceedToCheckout()" class="cta-button" type="button">Proceed to Checkout</button>
   </div>
   <div style="margin-top: 1rem;">
-    <button onclick="clearCart()" class="cta-button">Clear Cart</button>
+    <button onclick="clearCart()" class="cta-button" type="button">Clear Cart</button>
   </div>
 </section>
 
@@ -164,19 +163,14 @@ function toggleMenu() {
   const overlay = document.getElementById('overlay');
   const btn = document.querySelector('.menu-toggle');
 
-  // Use .active to match your CSS
-  const isOpen = menu.classList.toggle('active');
-  overlay.classList.toggle('active', isOpen);
+  const isOpen = menu.classList.toggle('show');
+  overlay.classList.toggle('show', isOpen);
 
   menu.setAttribute('aria-hidden', String(!isOpen));
   overlay.setAttribute('aria-hidden', String(!isOpen));
   if (btn) btn.setAttribute('aria-expanded', String(isOpen));
-
-  // optional: lock scroll when open
-  document.body.classList.toggle('no-scroll', isOpen);
 }
 </script>
-
 
 <!-- Cart Logic -->
 <script>
@@ -190,7 +184,6 @@ function displayCart() {
   const cartTotalSpan = document.getElementById('cart-total');
 
   cartItemsDiv.innerHTML = '';
-
   let total = 0;
 
   if (cartItems.length === 0) {
@@ -201,9 +194,9 @@ function displayCart() {
 
   cartItems.forEach(item => {
     const itemDiv = document.createElement('div');
-    itemDiv.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+    itemDiv.textContent = `${item.name} - $${Number(item.price).toFixed(2)}`;
     cartItemsDiv.appendChild(itemDiv);
-    total += item.price;
+    total += Number(item.price) || 0;
   });
 
   cartTotalSpan.textContent = total.toFixed(2);
@@ -211,7 +204,8 @@ function displayCart() {
 
 function updateCartCount() {
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-  document.getElementById('cart-count').textContent = cartItems.length;
+  const el = document.getElementById('cart-count');
+  if (el) el.textContent = cartItems.length;
 }
 
 function clearCart() {
@@ -226,5 +220,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script src="/script.js" defer></script>
 </body>
 </html>

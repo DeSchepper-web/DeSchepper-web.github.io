@@ -4,24 +4,71 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Custom Services – Form Precision</title>
+  <meta name="description" content="Request custom design, additive manufacturing, or materials consulting. Send your project details and files to the Form Precision team." />
   <link rel="stylesheet" href="/style.css" />
+  <link rel="canonical" href="https://www.formprecision.com/contact/" />
 
-  <!-- SVG (preferred by modern browsers) -->
+  <!-- Favicons -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-
-  <!-- .ICO fallback -->
   <link rel="icon" href="/images/favicon.ico" sizes="any">
-
-  <!-- PNG fallbacks -->
-  <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="96x96"  href="/images/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-512x512.png">
-
-  <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-
-  <!-- Web App Manifest -->
   <link rel="manifest" href="/images/site.webmanifest">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Custom Services – Form Precision">
+  <meta property="og:description" content="Request custom design, additive manufacturing, or materials consulting. Send your project details and files to the Form Precision team.">
+  <meta property="og:url" content="https://www.formprecision.com/contact/">
+  <meta property="og:image" content="https://www.formprecision.com/images/logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Schema Markup: Organization (sitewide) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://www.formprecision.com/#org",
+    "name": "Form Precision",
+    "url": "https://www.formprecision.com/",
+    "logo": "https://www.formprecision.com/images/favicon-512x512.png",
+    "description": "Additive Manufacturing, 3D Printing, and custom parts by ABET-accredited engineers.",
+    "contactPoint": [{
+      "@type": "ContactPoint",
+      "telephone": "+1-470-449-1983",
+      "contactType": "Customer Support"
+    }],
+    "sameAs": [
+      "https://www.instagram.com/formprecision/",
+      "https://www.tiktok.com/@formprecision",
+      "https://www.youtube.com/@FormPrecision"
+    ]
+  }
+  </script>
+
+  <!-- Schema Markup: WebSite (sitewide) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Form Precision",
+    "url": "https://www.formprecision.com/"
+  }
+  </script>
+
+  <!-- Schema Markup: Breadcrumb (page-specific) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.formprecision.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://www.formprecision.com/contact/" }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -33,7 +80,7 @@
       <span class="bar"></span>
       <span class="bar"></span>
     </button>
-    <div class="brand">FORM PRECISION</div>
+    <a href="/" class="brand">FORM PRECISION</a>
   </div>
   
   <div class="navbar-right">
@@ -75,19 +122,18 @@
 <section class="contact">
   <h2>Request Custom Services</h2>
   <form action="https://formspree.io/f/xgvyzklv" method="POST" enctype="multipart/form-data" class="contact-form">
-    
     <!-- Hidden redirect after submission -->
     <input type="hidden" name="_next" value="https://www.formprecision.com/thank-you/" />
-    
+
     <!-- Visible form fields -->
     <input type="text" name="name" placeholder="Your Name" required />
     <input type="email" name="_replyto" placeholder="Your Email" required />
     <textarea name="message" placeholder="Describe your project or service request" required></textarea>
-    
+
     <!-- File Upload -->
     <label for="file">Upload File(s):</label>
     <input type="file" name="attachment" id="file" multiple />
-    
+
     <button type="submit">Send Request</button>
   </form>
 </section>
@@ -126,8 +172,8 @@ function toggleMenu() {
   const overlay = document.getElementById('overlay');
   const btn = document.querySelector('.menu-toggle');
 
-  const isOpen = menu.classList.toggle('active');   // matches your CSS
-  overlay.classList.toggle('active', isOpen);
+  const isOpen = menu.classList.toggle('show');
+  overlay.classList.toggle('show', isOpen);
 
   menu.setAttribute('aria-hidden', String(!isOpen));
   overlay.setAttribute('aria-hidden', String(!isOpen));
@@ -135,6 +181,6 @@ function toggleMenu() {
 }
 </script>
 
-<script src="/script.js"></script>
+<script src="/script.js" defer></script>
 </body>
 </html>

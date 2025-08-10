@@ -24,22 +24,22 @@
   <meta property="og:url" content="https://www.formprecision.com/thank-you/">
   <meta property="og:image" content="https://www.formprecision.com/images/logo.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#171515" />
 
   <!-- Schema Markup: Organization -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": "https://www.formprecision.com/#org",
     "name": "Form Precision",
-    "url": "https://www.formprecision.com",
+    "url": "https://www.formprecision.com/",
     "logo": "https://www.formprecision.com/images/favicon-512x512.png",
     "description": "Additive Manufacturing, 3D Printing, and custom parts by ABET-accredited engineers.",
-    "contactPoint": {
+    "contactPoint": [{
       "@type": "ContactPoint",
       "telephone": "+1-470-449-1983",
       "contactType": "Customer Support"
-    },
+    }],
     "sameAs": [
       "https://www.instagram.com/formprecision/",
       "https://www.tiktok.com/@formprecision",
@@ -80,7 +80,7 @@
       <span class="bar"></span>
       <span class="bar"></span>
     </button>
-    <div class="brand">FORM PRECISION</div>
+    <a href="/" class="brand">FORM PRECISION</a>
   </div>
   
   <div class="navbar-right">
@@ -153,8 +153,8 @@ function toggleMenu() {
   const overlay = document.getElementById('overlay');
   const btn = document.querySelector('.menu-toggle');
 
-  const isOpen = menu.classList.toggle('active');   // matches your CSS
-  overlay.classList.toggle('active', isOpen);
+  const isOpen = menu.classList.toggle('show');
+  overlay.classList.toggle('show', isOpen);
 
   menu.setAttribute('aria-hidden', String(!isOpen));
   overlay.setAttribute('aria-hidden', String(!isOpen));
@@ -162,6 +162,6 @@ function toggleMenu() {
 }
 </script>
 
-<script src="/script.js"></script>
+<script src="/script.js" defer></script>
 </body>
 </html>

@@ -6,18 +6,15 @@
   <title>Articles & Guides | Form Precision | 3D Printing Tips & Materials</title>
   <meta name="description" content="Expert articles and guides on 3D printing, custom part design, prototyping, materials, and engineering tips from Form Precision." />
   <link rel="stylesheet" href="/style.css" />
+  <link rel="canonical" href="https://www.formprecision.com/articles/" />
 
-  <!-- SVG (preferred by modern browsers) -->
+  <!-- Favicons -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-  <!-- .ICO fallback -->
   <link rel="icon" href="/images/favicon.ico" sizes="any">
-  <!-- PNG fallbacks -->
   <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-512x512.png">
-  <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <!-- Web App Manifest -->
   <link rel="manifest" href="/images/site.webmanifest">
 
   <!-- Open Graph / Twitter Cards -->
@@ -26,13 +23,42 @@
   <meta property="og:description" content="Expert articles and guides on 3D printing, custom part design, prototyping, materials, and engineering tips from Form Precision." />
   <meta property="og:url" content="https://www.formprecision.com/articles/" />
   <meta property="og:image" content="https://www.formprecision.com/images/logo.png" />
-
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Articles & Guides | Form Precision" />
-  <meta name="twitter:description" content="Expert articles and guides on 3D printing, custom part design, prototyping, materials, and engineering tips from Form Precision." />
-  <meta name="twitter:image" content="https://www.formprecision.com/images/logo.png" />
 
-  <!-- Schema Markup for Blog -->
+  <!-- Schema: Organization (sitewide) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://www.formprecision.com/#org",
+    "name": "Form Precision",
+    "url": "https://www.formprecision.com/",
+    "logo": "https://www.formprecision.com/images/favicon-512x512.png",
+    "description": "Additive Manufacturing, 3D Printing, and custom parts by ABET-accredited engineers.",
+    "contactPoint": [{
+      "@type": "ContactPoint",
+      "telephone": "+1-470-449-1983",
+      "contactType": "Customer Support"
+    }],
+    "sameAs": [
+      "https://www.instagram.com/formprecision/",
+      "https://www.tiktok.com/@formprecision",
+      "https://www.youtube.com/@FormPrecision"
+    ]
+  }
+  </script>
+
+  <!-- Schema: WebSite (sitewide) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Form Precision",
+    "url": "https://www.formprecision.com/"
+  }
+  </script>
+
+  <!-- Schema: Blog (page-specific) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -42,16 +68,17 @@
     "description": "Expert articles and guides on 3D printing, custom part design, prototyping, materials, and engineering tips from Form Precision.",
     "publisher": {
       "@type": "Organization",
+      "@id": "https://www.formprecision.com/#org",
       "name": "Form Precision",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.formprecision.com/images/favicon.svg"
+        "url": "https://www.formprecision.com/images/favicon-512x512.png"
       }
     }
   }
   </script>
 
-  <!-- Breadcrumb Schema -->
+  <!-- Schema: Breadcrumb (page-specific) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -69,12 +96,12 @@
 <!-- Navbar -->
 <nav class="navbar">
   <div class="navbar-left">
-    <button class="menu-toggle" onclick="toggleMenu()">
+    <button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="offcanvasMenu" aria-expanded="false" onclick="toggleMenu()">
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
     </button>
-    <div class="brand">FORM PRECISION</div>
+    <a href="/" class="brand">FORM PRECISION</a>
   </div>
 
   <div class="navbar-right">
@@ -88,10 +115,10 @@
 </nav>
 
 <!-- Off-canvas menu -->
-<div class="offcanvas-menu" id="offcanvasMenu">
+<div class="offcanvas-menu" id="offcanvasMenu" aria-hidden="true">
   <div class="offcanvas-header">
     <h2>MENU</h2>
-    <button class="close-button" onclick="toggleMenu()">×</button>
+    <button class="close-button" aria-label="Close menu" onclick="toggleMenu()">×</button>
   </div>
   <ul>
     <li><a href="/">Home</a></li>
@@ -105,7 +132,7 @@
 </div>
 
 <!-- Overlay background -->
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<div class="overlay" id="overlay" onclick="toggleMenu()" aria-hidden="true"></div>
 
 <!-- Articles Banner -->
 <header class="articles-banner">
@@ -154,16 +181,19 @@
 
 <!-- Menu toggle JS -->
 <script>
-  function toggleMenu() {
-    const menu = document.getElementById('offcanvasMenu');
-    const overlay = document.getElementById('overlay');
-    const isOpen = menu.classList.toggle('show');
-    overlay.classList.toggle('show', isOpen);
+function toggleMenu() {
+  const menu = document.getElementById('offcanvasMenu');
+  const overlay = document.getElementById('overlay');
+  const btn = document.querySelector('.menu-toggle');
 
-    menu.setAttribute('aria-hidden', !isOpen);
-    overlay.setAttribute('aria-hidden', !isOpen);
-  }
+  const isOpen = menu.classList.toggle('show');
+  overlay.classList.toggle('show', isOpen);
+
+  menu.setAttribute('aria-hidden', String(!isOpen));
+  overlay.setAttribute('aria-hidden', String(!isOpen));
+  if (btn) btn.setAttribute('aria-expanded', String(isOpen));
+}
 </script>
-<script src="/script.js"></script>
+<script src="/script.js" defer></script>
 </body>
 </html>
