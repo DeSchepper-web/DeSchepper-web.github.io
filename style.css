@@ -30,6 +30,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Reckless Neue', serif;
 }
+
 /* ==========================
   RESET + BASE
 ========================== */
@@ -47,7 +48,7 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  font-family: 'Satoshi', Arial, sans-serif; /* ← was Arial only */
+  font-family: 'Satoshi', Arial, sans-serif;
   background-color: #f8f9fa;
   color: #333;
 }
@@ -61,6 +62,7 @@ body {
   --theme-b: #2c2828;
   --theme-b-dark: #171515;
   --nav-h: 60px; 
+  --btn-border: #2c2828;
 }
 
 /* ==========================
@@ -91,27 +93,20 @@ body {
 }
 
 .brand {
-  position: relative;     /* allows nudging */
-  top: -1.6px;               /* raise text slightly */
+  position: relative;
+  top: -1.6px;
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
   text-transform: uppercase;
-  text-decoration: none; /* removes underline */
+  text-decoration: none;
 }
 
 .brand:hover {
-  text-decoration: none; /* keep underline off on hover */
-  color: var(--theme-a);  /* optional hover color */
+  text-decoration: none;
+  color: var(--theme-a);
 }
 
-.menu-toggle {
-  font-size: 1.5rem;
-  color: white;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
 /* HAMBURGER BUTTON */
 .menu-toggle {
   display: flex;
@@ -123,7 +118,7 @@ body {
   border: none;
   cursor: pointer;
   z-index: 1001;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .menu-toggle .bar {
@@ -131,20 +126,19 @@ body {
   height: 3px;
   background-color: white;
   border-radius: 2px;
-  transition: all 0.3s ease;
+  transition: width .25s ease, height .25s ease, background-color .25s ease;
 }
 
-.menu-toggle:hover .bar {
-  background-color: var(--theme-a);
-}
+.menu-toggle:hover .bar { background-color: var(--theme-a); }
 
-.menu-toggle.active {
+/* OPEN STATE = three vertical lines */
+.menu-toggle.show {
   flex-direction: row;
-  width: 24px;
-  height: 18px;
+  width: 18px;
+  height: 24px;
 }
 
-.menu-toggle.active .bar {
+.menu-toggle.show .bar {
   width: 3px;
   height: 100%;
 }
@@ -152,10 +146,10 @@ body {
 /* Overlay */
 .overlay {
   position: fixed;
-  top: 60px;                          /* starts under navbar */
+  top: 60px;
   left: 0;
   width: 100%;
-  height: calc(100% - 60px);          /* only below navbar */
+  height: calc(100% - 60px);
   background: rgba(0,0,0,0.6);
   opacity: 0;
   visibility: hidden;
@@ -200,6 +194,7 @@ body {
   font-size: 1.2rem;
   margin: 0;
   text-transform: uppercase;
+  color: white;
 }
 
 .close-button {
@@ -240,11 +235,6 @@ body {
   color: var(--theme-a);
 }
 
-.offcanvas-header h2 {
-  color: white;
-}
-
-
 /* PROPER CART LINK STATES (NAVBAR) */
 .cart-link {
   display: inline-flex;
@@ -271,12 +261,13 @@ body {
 .cart-link:hover {
   color: var(--theme-a);
 }
+
 /* ==========================
   HERO SECTION
 ========================== */
 .hero {
-  min-height: calc(100vh - var(--nav-h)); /* fallback for older browsers */
-  min-height: calc(100dvh - var(--nav-h)); /* modern browsers */
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100dvh - var(--nav-h));
   margin-top: var(--nav-h);
   background: url('/images/cnc-mill2.jpg') center center / cover no-repeat;
   position: relative;
@@ -432,7 +423,7 @@ body {
 .product-card button {
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
-  border: none;
+  border: 1px solid var(--btn-border); /* ensure visible border */
   border-radius: 5px;
   background-color: var(--theme-a);
   color: #fff;
@@ -461,6 +452,7 @@ body {
   border-radius: 6px;
   font-size: 1rem;
   transition: background 0.3s ease;
+  border: 1px solid var(--btn-border); /* outline consistency */
 }
 
 .go-to-cart .cta-button:hover {
@@ -524,7 +516,7 @@ body {
   padding: 0.75rem;
   background-color: var(--theme-a);
   color: #fff;
-  border: none;
+  border: 1px solid var(--btn-border); /* visible outline */
   font-weight: bold;
   text-transform: uppercase;
   border-radius: 4px;
@@ -535,29 +527,30 @@ body {
 .contact-form button:hover {
   background-color: var(--theme-a-dark);
 }
+
 /* ==========================
-  BACK LINK
+  BACK LINK (single unified version)
 ========================== */
 .back-link {
   text-align: center;
-  margin: 2rem;
+  margin: 3rem 0 2rem;
 }
 
 .back-link a {
   display: inline-block;
-  padding: 0.75rem 1.5rem;
+  padding: 0.8rem 1.8rem;
   background-color: var(--theme-a);
   color: #fff;
   text-transform: uppercase;
   text-decoration: none;
   font-weight: bold;
   border-radius: 6px;
-  transition: background 0.3s;
+  transition: background 0.3s ease;
+  border: 1px solid var(--btn-border);
 }
 
-.back-link a:hover {
-  background-color: var(--theme-a-dark);
-}
+.back-link a:hover { background-color: var(--theme-a-dark); }
+
 /* ==========================
   CART PAGE
 ========================== */
@@ -586,9 +579,7 @@ body {
 }
 
 /* Name/price block */
-.cart-item .item-name {
-  flex: 1;
-}
+.cart-item .item-name { flex: 1; }
 
 /* Trash button */
 .remove-item {
@@ -619,18 +610,15 @@ body {
   font-size: 1rem;
 }
 
-.cart-link:hover {
-  color: var(--theme-a);
-}
+.cart-link:hover { color: var(--theme-a); }
 
 .cart-link:active {
   color: var(--theme-a-dark);
   text-decoration: none;
 }
 
-.cart-section {
-  padding-top: calc(3rem + var(--nav-h)); /* was just 3rem */
-}
+.cart-section { padding-top: calc(3rem + var(--nav-h)); /* was just 3rem */ }
+
 /* ==========================
   PAGE BANNERS
 ========================== */
@@ -671,9 +659,7 @@ body {
   transition: color 0.3s;
 }
 
-.site-footer .social-icon:hover {
-  color: var(--theme-a);
-}
+.site-footer .social-icon:hover { color: var(--theme-a); }
 
 /* ==========================
   ABOUT US SECTION
@@ -704,6 +690,7 @@ body {
   max-width: 750px;
   margin: 0 auto;
 }
+
 /* ==========================
   ARTICLES INDEX PAGE
 ========================== */
@@ -768,9 +755,7 @@ body {
   line-height: 1.25;
   transition: color .15s ease;
 }
-.article-card:hover h2 {
-  color: #fff; /* white title when hovered */
-}
+.article-card:hover h2 { color: #fff; /* white title when hovered */ }
 
 /* Teaser text */
 .article-card .teaser {
@@ -779,22 +764,19 @@ body {
   font-size: 1rem;
   transition: color .15s ease;
 }
-.article-card:hover .teaser {
-  color: #fff; /* white teaser on hover */
-}
+.article-card:hover .teaser { color: #fff; /* white teaser on hover */ }
 
 @media (max-width: 768px) {
   .articles-panel { margin: 0 12px; }
   .articles-panel h1 { font-size: 1.6rem; }
   .article-card h2 { font-size: 1.15rem; }
 }
+
 /* ==========================
   ARTICLE PAGE
 ========================== */
 /* ARTICLE CARD */
-body.article-page {
-  background: var(--theme-b, #2c2828); /* dark edges */
-}
+body.article-page { background: var(--theme-b, #2c2828); /* dark edges */ }
 
 .article-page-content {
   background: #fff;
@@ -811,9 +793,7 @@ body.article-page {
 /* HEADINGS — all use theme orange */
 .article-page-content h1,
 .article-page-content h2,
-.article-page-content h3 {
-  color: var(--theme-a);
-}
+.article-page-content h3 { color: var(--theme-a); }
 
 .article-page-content h1 {
   text-align: center;
@@ -863,36 +843,8 @@ body.article-page {
   font-style: italic;
 }
 
-/* CTA BUTTON */
-.back-link { text-align: center; margin: 3rem 0 2rem; }
-.back-link a {
-  display: inline-block;
-  padding: 0.8rem 1.8rem;
-  background-color: var(--theme-a);
-  color: #fff;
-  text-transform: uppercase;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 6px;
-  transition: background 0.3s ease;
-}
-.back-link a:hover { background-color: var(--theme-a-dark); }
-/* Unified outline for all primary actions */
-:root { --btn-border: #2c2828; }
+/* Single unified Back-link already defined above */
 
-button,
-.cta-button,
-.back-link a,
-.go-to-cart .cta-button {
-  border: 1px solid var(--btn-border);
-  border-radius: 6px; /* keep your rounded look */
-}
-
-/* Remove old "border: none" by overriding it */
-.product-card button,
-.contact-form button {
-  border: 1px solid var(--btn-border);
-}
 /* MOBILE */
 @media (max-width: 768px) {
   .article-page-content {
@@ -900,6 +852,7 @@ button,
     padding: 1.25rem;
   }
 }
+
 /* Force article titles to use brand colors even when wrapped in links */
 .articles-content h2,
 .articles-content h2 a,
@@ -911,6 +864,22 @@ button,
 .articles-content article:hover h2,
 .articles-content article:hover h2 a,
 .articles-content a:hover h2,
-.articles-content h2 a:hover {
-  color: var(--theme-a-dark);
+.articles-content h2 a:hover { color: var(--theme-a-dark); }
+
+/* ==========================
+  A11Y: Focus styles for keyboard users
+========================== */
+a:focus-visible,
+button:focus-visible,
+.menu-toggle:focus-visible,
+.close-button:focus-visible {
+  outline: 2px solid var(--theme-a);
+  outline-offset: 2px;
+}
+
+/* ==========================
+  Reduced Motion Preference
+========================== */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
 }
