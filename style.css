@@ -92,7 +92,7 @@ body {
 
 .brand {
   position: relative;     /* allows nudging */
-  top: -1.5px;               /* raise text slightly */
+  top: -1.6px;               /* raise text slightly */
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
@@ -248,7 +248,7 @@ body {
 /* PROPER CART LINK STATES (NAVBAR) */
 .cart-link {
   display: inline-flex;
-  align-items: center;
+  top: -1.2px;  
   gap: 0.4rem;
   text-decoration: none;
   color: white;
