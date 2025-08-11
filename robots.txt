@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.formprecision.com/sitemap.xml
+# Don't crawl transactional pages
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /thank-you/
+
+Sitemap: https://formprecision.com/sitemap.xml
