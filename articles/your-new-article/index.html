@@ -87,14 +87,14 @@
   }
   </script>
 
-  <!-- Page-scoped styles (matches your working article page) -->
+  <!-- Page-scoped styles -->
   <style>
     /* ARTICLE CARD / EDGES */
     body.article-page { background: var(--theme-b, #2c2828); }
     .article-page-content {
       background: #fff;
       max-width: 980px;
-      margin: 60px auto 0;   /* sits right under fixed navbar */
+      margin: 60px auto 0; /* sits under fixed navbar */
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.06);
@@ -121,20 +121,36 @@
       padding-bottom: 0.5rem;
     }
 
-    /* ARTICLE LAYOUT ENHANCERS (optional) */
+    /* TWO-COLUMN OPTIONAL BLOCK */
     .article-columns {
-      display: flex; flex-wrap: wrap; gap: 2rem;
-      align-items: flex-start; margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: flex-start;
+      margin-top: 1.5rem;
     }
     .column { flex: 1; min-width: 280px; }
-    .quick-facts ul { list-style: none; padding-left: 0; }
-    .quick-facts ul li::before { content: "• "; color: var(--theme-a); font-weight: bold; }
+
+    /* BULLETS — unify everywhere (GREY) */
+    .article-page-content ul {
+      list-style: disc;
+      padding-left: 1.5rem;
+      margin: 1rem 0 2rem;
+    }
+    .article-page-content li {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .article-page-content li::marker { color: #333; }
+
+    /* Remove fake bullets in Quick Facts (use real markers) */
+    .quick-facts ul { list-style: disc; padding-left: 1.5rem; }
+    .quick-facts ul li::before { content: none; }
     .quick-facts ul li { margin: 0.5rem 0; }
 
-    /* META / LISTS */
+    /* META / TEXT EMPHASIS */
     .article-page-content em { display: block; text-align: center; color: #666; margin-bottom: 2rem; }
-    .article-page-content ul { padding-left: 1.5rem; margin: 1rem 0 2rem; list-style-type: disc; }
-    .article-page-content li { margin-bottom: 1rem; font-size: 1rem; line-height: 1.6; }
     .article-page-content li strong { font-weight: 600; color: #333; }
     .article-page-content li em { color: #666; font-style: italic; }
     .article-page-content .source { margin-top: 2rem; text-align: center; font-size: 0.9rem; color: #888; font-style: italic; }
@@ -142,10 +158,15 @@
     /* CTA BUTTON */
     .back-link { text-align: center; margin: 3rem 0 2rem; }
     .back-link a {
-      display: inline-block; padding: 0.8rem 1.8rem;
-      background-color: var(--theme-a); color: #fff;
-      text-transform: uppercase; text-decoration: none; font-weight: bold;
-      border-radius: 6px; transition: background 0.3s ease;
+      display: inline-block;
+      padding: 0.8rem 1.8rem;
+      background-color: var(--theme-a);
+      color: #fff;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: background 0.3s ease;
     }
     .back-link a:hover { background-color: var(--theme-a-dark); }
 
@@ -269,7 +290,7 @@
   <p>© 2025 Form Precision — All Rights Reserved</p>
 </footer>
 
-<!-- Rely on your existing unified menu JS in /script.js -->
+<!-- Unified menu JS (your /script.js handles toggle) -->
 <script src="/script.js" defer></script>
 </body>
 </html>

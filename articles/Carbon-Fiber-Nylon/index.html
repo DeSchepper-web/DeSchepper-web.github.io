@@ -113,13 +113,14 @@
     padding-bottom: 0.25rem;
   }
 
-  .quick-facts ul { list-style: none; padding-left: 0; }
-  .quick-facts ul li::before {
-    content: "• ";
-    color: var(--theme-a);
-    font-weight: bold;
-  }
-  .quick-facts ul li { margin: 0.5rem 0; }
+/* Use real list markers everywhere */
+.article-page-content ul { list-style: disc; padding-left: 1.5rem; }
+.article-page-content li::marker { color: #333; }
+
+/* Turn off the fake bullets in Quick Facts */
+.quick-facts ul { list-style: disc; padding-left: 1.5rem; }
+.quick-facts ul li::before { content: none; }
+.quick-facts ul li { margin: 0.5rem 0; }
 
   .bottom-graph { margin-top: 2rem; display: flex; justify-content: flex-end; }
   .bottom-graph img {

@@ -826,7 +826,22 @@ body.article-page {
   transition: background 0.3s ease;
 }
 .back-link a:hover { background-color: var(--theme-a-dark); }
+/* Unified outline for all primary actions */
+:root { --btn-border: #2c2828; }
 
+button,
+.cta-button,
+.back-link a,
+.go-to-cart .cta-button {
+  border: 1px solid var(--btn-border);
+  border-radius: 6px; /* keep your rounded look */
+}
+
+/* Remove old "border: none" by overriding it */
+.product-card button,
+.contact-form button {
+  border: 1px solid var(--btn-border);
+}
 /* MOBILE */
 @media (max-width: 768px) {
   .article-page-content {
