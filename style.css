@@ -80,8 +80,9 @@ body {
 ========================== */
 .navbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  position: relative; /* so .nav-links absolute centering works */
   padding: 1rem 2rem;
   background-color: var(--theme-b);
   position: fixed;
@@ -93,8 +94,8 @@ body {
 
 .navbar-left {
   display: flex;
-  align-items: center;   /* centers by the navbar’s height */
-  height: var(--nav-h);  /* match navbar height */
+  align-items: center;
+  height: var(--nav-h);
   gap: 1rem;
 }
 
@@ -102,6 +103,14 @@ body {
   display: flex;
   align-items: center;
   height: var(--nav-h);
+}
+
+.nav-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1.5rem; /* space between links */
 }
 
 .brand {
@@ -917,7 +926,7 @@ button:focus-visible,
 }
 
 /* Desktop breakpoint */
-@media (min-width: 900px) {
+@media (min-width: 1200px) {
   .menu-toggle {
     display: none; /* hide hamburger on desktop */
   }
