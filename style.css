@@ -108,9 +108,10 @@ body {
 }
 
 /* HAMBURGER BUTTON */
+/* HAMBURGER: horizontal (closed) → vertical (open) */
 .menu-toggle {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;          /* 3 horizontal lines when closed */
   justify-content: space-between;
   width: 24px;
   height: 18px;
@@ -118,31 +119,35 @@ body {
   border: none;
   cursor: pointer;
   z-index: 1001;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
 }
 
 .menu-toggle .bar {
+  display: block;
   width: 100%;
   height: 3px;
   background-color: white;
   border-radius: 2px;
-  transition: width .25s ease, height .25s ease, background-color .25s ease;
+  transition: all 0.3s ease;
 }
 
+/* Hover color (unchanged) */
 .menu-toggle:hover .bar { background-color: var(--theme-a); }
 
-/* OPEN STATE = three vertical lines */
-.menu-toggle.show {
-  flex-direction: row;
-  width: 18px;
-  height: 24px;
+/* OPEN STATE → three vertical lines
+   (support both .show and .active; your JS toggles both) */
+.menu-toggle.show,
+.menu-toggle.active {
+  flex-direction: row;             /* lay bars side‑by‑side (vertical look) */
+  width: 24px;
+  height: 18px;
 }
 
-.menu-toggle.show .bar {
-  width: 3px;
+.menu-toggle.show .bar,
+.menu-toggle.active .bar {
+  width: 3px;                      /* skinny vertical bars */
   height: 100%;
 }
-
 /* Overlay */
 .overlay {
   position: fixed;
