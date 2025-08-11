@@ -1,3 +1,35 @@
+/* Reckless Neue */
+@font-face {
+  font-family: 'Reckless Neue';
+  src: url('/fonts/RecklessNeue-Regular.woff2') format('woff2'),
+       url('/fonts/RecklessNeue-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Satoshi */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Regular.woff2') format('woff2'),
+       url('/fonts/Satoshi-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apply fonts */
+.brand {
+  font-family: 'Reckless Neue', serif;
+}
+
+body {
+  font-family: 'Satoshi', Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Reckless Neue', serif;
+}
 /* ==========================
   RESET + BASE
 ========================== */
@@ -15,7 +47,7 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  font-family: Arial, sans-serif;
+  font-family: 'Satoshi', Arial, sans-serif; /* ← was Arial only */
   background-color: #f8f9fa;
   color: #333;
 }
@@ -59,6 +91,8 @@ body {
 }
 
 .brand {
+  position: relative;     /* allows nudging */
+  top: -1.5px;               /* raise text slightly */
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
@@ -765,13 +799,13 @@ body.article-page {
 .article-page-content {
   background: #fff;
   max-width: 980px;
-  margin: 60px auto 0;     /* sits just under fixed navbar */
+  margin: 60px auto 0;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.06);
   color: #333;
   line-height: 1.7;
-  font-family: Arial, sans-serif;
+  font-family: inherit; /* ← was Arial, or just remove this line */
 }
 
 /* HEADINGS — all use theme orange */
