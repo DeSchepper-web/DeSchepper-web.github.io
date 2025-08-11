@@ -280,12 +280,7 @@ body {
 .cart-link:hover {
   color: var(--theme-a);
 }
-/* Make cart text use Reckless Neue like the brand */
-.cart-link,
-.cart-link .cart-label {
-  font-family: 'Reckless Neue', serif;
-  letter-spacing: 0.02em; /* optional */
-}
+
 /* ==========================
   HERO SECTION
 ========================== */
@@ -906,4 +901,37 @@ button:focus-visible,
 ========================== */
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
+}
+
+
+/* ==========================
+   RESPONSIVE NAVBAR
+========================== */
+
+/* Default mobile-first styles */
+.nav-links {
+  display: none; /* hide desktop nav links */
+}
+.menu-toggle {
+  display: inline-flex; /* show hamburger on mobile */
+}
+
+/* Desktop breakpoint */
+@media (min-width: 900px) {
+  .menu-toggle {
+    display: none; /* hide hamburger on desktop */
+  }
+  .nav-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .nav-links a:hover {
+    color: var(--theme-a);
+  }
 }
