@@ -52,6 +52,16 @@ body {
   background-color: #f8f9fa;
   color: #333;
 }
+/* Accessible hidden text (SEO + screen readers, not display:none) */
+.visually-hidden {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
 
 /* ==========================
   THEME VARIABLES
