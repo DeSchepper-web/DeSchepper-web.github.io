@@ -280,7 +280,12 @@ body {
 .cart-link:hover {
   color: var(--theme-a);
 }
-
+/* Make cart text use Reckless Neue like the brand */
+.cart-link,
+.cart-link .cart-label {
+  font-family: 'Reckless Neue', serif;
+  letter-spacing: 0.02em; /* optional */
+}
 /* ==========================
   HERO SECTION
 ========================== */
