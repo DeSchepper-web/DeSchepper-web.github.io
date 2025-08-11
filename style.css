@@ -673,69 +673,86 @@ body {
 /* ==========================
   ARTICLES INDEX PAGE
 ========================== */
-.articles-content {
+/* Page spacing so the block sits under the fixed navbar */
+.articles-page {
+  padding-top: calc(var(--nav-h, 60px) + 20px);
+  padding-bottom: 40px;
+  background: #f5f6f7; /* light page background */
+}
+
+/* Centered GREY panel */
+.articles-panel {
   max-width: 1000px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-  color: #333;
-  font-family: Arial, sans-serif;
+  margin: 0 auto;
+  background: var(--theme-b); /* dark grey */
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.14);
+  padding: 20px;
 }
 
-.articles-content h1 {
-  text-align: center;
+/* Title directly on grey background */
+.articles-panel h1 {
+  color: #fff; /* white text */
   font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #222;
+  text-align: center;
+  margin: 0 0 18px;
 }
 
-/* Article box container (hover applies to the whole box) */
-.articles-list article {
-  padding: 1rem;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.2s ease-in-out;
+/* Articles list container */
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.articles-list article:hover {
-  background-color: rgba(247, 147, 26, 0.05); /* light orange tint */
-}
-
-/* Headings: orange by default */
-.articles-list h2 {
-  color: var(--theme-a);
-  transition: color 0.2s ease-in-out;
-}
-
-/* Hover state: if either the article, the link, or the h2 is hovered */
-.articles-list article:hover h2,
-.articles-list a:hover h2,
-.articles-list h2:hover {
-  color: var(--theme-a-dark);
-}
-
-/* Generic links inside the list (teaser link, etc.) */
-.articles-content a {
+/* Make the whole article card clickable */
+.article-card {
   display: block;
-  font-size: 1.2rem;
-  color: #222;                  /* non-heading text stays dark */
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 18px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
   text-decoration: none;
-  border-bottom: 1px solid #eee;
-  padding: 0.8rem 0;
-  transition: color 0.3s ease, border-bottom-color 0.3s ease;
+  color: inherit;
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease;
 }
 
-/* Don’t change the h2 color here; it’s handled above */
-.articles-content a:hover {
-  color: #000;
-  border-bottom-color: #ddd;
+/* Hover effect: orange background + white text */
+.article-card:hover {
+  background: var(--theme-a);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.10);
+  color: #fff; /* make default text white */
+}
+
+/* Title inside the clickable card */
+.article-card h2 {
+  margin: 0;
+  color: var(--theme-b); /* default orange title */
+  font-weight: 700;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  transition: color .15s ease;
+}
+.article-card:hover h2 {
+  color: #fff; /* white title when hovered */
+}
+
+/* Teaser text */
+.article-card .teaser {
+  margin-top: 6px;
+  color: #444;
+  font-size: 1rem;
+  transition: color .15s ease;
+}
+.article-card:hover .teaser {
+  color: #fff; /* white teaser on hover */
 }
 
 @media (max-width: 768px) {
-  .articles-content {
-    padding-top: 3rem;
-  }
+  .articles-panel { margin: 0 12px; }
+  .articles-panel h1 { font-size: 1.6rem; }
+  .article-card h2 { font-size: 1.15rem; }
 }
 /* ==========================
   ARTICLE PAGE
