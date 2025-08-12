@@ -199,21 +199,6 @@
   <p>© 2025 Form Precision — All Rights Reserved</p>
 </footer>
 
-<!-- Menu toggle JS -->
-<script>
-function toggleMenu() {
-  const menu = document.getElementById('offcanvasMenu');
-  const overlay = document.getElementById('overlay');
-  const btn = document.querySelector('.menu-toggle');
-
-  const isOpen = menu.classList.toggle('show');
-  overlay.classList.toggle('show', isOpen);
-
-  menu.setAttribute('aria-hidden', String(!isOpen));
-  overlay.setAttribute('aria-hidden', String(!isOpen));
-  if (btn) btn.setAttribute('aria-expanded', String(isOpen));
-}
-</script>
 <script src="/script.js" defer></script>
 </body>
 </html>
