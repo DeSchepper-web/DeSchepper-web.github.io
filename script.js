@@ -1,30 +1,18 @@
-/* =========================
+/* ========================= 
    Off-canvas Menu (single source of truth)
    Uses: body.menu-open, #primary-nav, #overlay, .menu-toggle
 ========================= */
-
 (function () {
-  const SELECTORS = {
-    nav: '#primary-nav',
-    overlay: '#overlay',
-    toggleBtn: '.menu-toggle'
-  };
-
+  const SELECTORS = { nav: '#primary-nav', overlay: '#overlay', toggleBtn: '.menu-toggle' };
   const nav = document.querySelector(SELECTORS.nav);
   const overlay = document.querySelector(SELECTORS.overlay);
   const toggleBtn = document.querySelector(SELECTORS.toggleBtn);
 
-  // Bail gracefully if markup not present on a page
-  if (!nav || !overlay) {
-    window.toggleMenu = function(){};
-    return;
-  }
+  // If this page has no menu/overlay, bail—cart code below still runs
+  if (!nav || !overlay) return;
 
-  // Now it's safe to query inside nav
   const closeBtn = nav.querySelector('.drawer-close');
 
-
-  // Keep ARIA in sync
   function setAria(isOpen) {
     nav.setAttribute('aria-hidden', String(!isOpen));
     overlay.setAttribute('aria-hidden', String(!isOpen));
@@ -35,54 +23,53 @@
     const isOpen = Boolean(open);
     document.body.classList.toggle('menu-open', isOpen);
     setAria(isOpen);
-
-    // optional: lock scroll when menu open
+    // lock page scroll when menu is open
     document.documentElement.style.overflow = isOpen ? 'hidden' : '';
     document.body.style.overflow = isOpen ? 'hidden' : '';
   }
 
-  // Public API for your HTML onclick="toggleMenu()" / toggleMenu(false)
-  window.toggleMenu = function (force) {
+  function toggleMenu(force) {
     const next = typeof force === 'boolean'
       ? force
       : !document.body.classList.contains('menu-open');
     setMenuState(next);
-  };
-
-  // Wire events
-  if (toggleBtn) toggleBtn.addEventListener('click', () => window.toggleMenu());
-  if (closeBtn) closeBtn.addEventListener('click', () => window.toggleMenu(false));
-  overlay.addEventListener('click', () => window.toggleMenu(false));
-
-  // Close when pressing Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') window.toggleMenu(false);
-  });
-
-  // Ensure nav is exposed to AT on desktop widths (>=1200px)
-  const mql = window.matchMedia('(min-width: 1200px)');
-  function syncAriaForDesktop(e) {
-    if (e.matches) {
-      nav.removeAttribute('aria-hidden'); // desktop: not hidden from AT
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-    } else {
-      setAria(document.body.classList.contains('menu-open'));
-    }
   }
-  mql.addEventListener('change', syncAriaForDesktop);
-  syncAriaForDesktop(mql);
 
-  // Close menu when clicking any link inside the nav (nice on mobile)
-  nav.addEventListener('click', (e) => {
-    if (e.target.closest('a')) window.toggleMenu(false);
-  });
+  if (!nav.dataset.bound) {
+    if (toggleBtn) toggleBtn.addEventListener('click', () => toggleMenu());
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleMenu(false));
+    overlay.addEventListener('click', () => toggleMenu(false));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleMenu(false);
+    });
+
+    // Close after clicking any link in the nav
+    nav.addEventListener('click', (e) => {
+      if (e.target.closest('a')) toggleMenu(false);
+    });
+
+    // Keep ARIA + scroll sane on desktop widths
+    const mql = window.matchMedia('(min-width: 1200px)');
+    function syncAriaForDesktop(e) {
+      if (e.matches) {
+        nav.removeAttribute('aria-hidden');
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+      } else {
+        setAria(document.body.classList.contains('menu-open'));
+      }
+    }
+    mql.addEventListener('change', syncAriaForDesktop);
+    syncAriaForDesktop(mql);
+
+    nav.dataset.bound = '1';
+  }
 })();
 
 /* =========================
-   Cart / Toast helpers
+   Cart utilities
 ========================= */
-
 const TRASH_SVG = `
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -94,40 +81,12 @@ const TRASH_SVG = `
   <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
 </svg>`.trim();
 
-function getCart() {
-  try { return JSON.parse(localStorage.getItem('cart') || '[]'); }
-  catch { return []; }
-}
-function setCart(cart) {
-  localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-function addToCart(productName, price) {
-  const cart = getCart();
-  cart.push({ name: productName, price: Number(price) || 0 });
-  setCart(cart);
-  updateCartCount();
-  showCartToast();
-}
-
-function removeFromCart(index) {
-  const cart = getCart();
-  cart.splice(index, 1);
-  setCart(cart);
-  updateCartCount();
-  renderCart();
-}
-
-function clearCart() {
-  localStorage.removeItem('cart');
-  updateCartCount();
-  renderCart();
-}
+function getCart() { try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; } }
+function setCart(cart) { localStorage.setItem('cart', JSON.stringify(cart)); }
 
 function updateCartCount() {
-  const cart = getCart();
-  const countSpan = document.getElementById('cart-count');
-  if (countSpan) countSpan.textContent = cart.length;
+  const el = document.getElementById('cart-count');
+  if (el) el.textContent = getCart().length;
 }
 
 function showCartToast() {
@@ -138,58 +97,97 @@ function showCartToast() {
   showCartToast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
 }
 
+/* =========================
+   Cart rendering (cart page only)
+========================= */
 function renderCart() {
-  const cart = getCart();
-  const cartItemsDiv = document.getElementById('cart-items');
-  const totalSpan = document.getElementById('cart-total');
-  if (!cartItemsDiv || !totalSpan) return;
+  const list = document.getElementById('cart-items');
+  const totalEl = document.getElementById('cart-total');
+  if (!list || !totalEl) return; // not on cart page
 
-  if (cart.length === 0) {
-    cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
-    totalSpan.textContent = "0.00";
+  const items = getCart();
+  if (!items.length) {
+    list.innerHTML = '<p>Your cart is empty.</p>';
+    totalEl.textContent = '0.00';
     return;
   }
 
-  cartItemsDiv.innerHTML = "";
+  list.innerHTML = '';
   let total = 0;
 
-  cart.forEach((item, index) => {
+  items.forEach((item, index) => {
     total += Number(item.price) || 0;
 
     const row = document.createElement('div');
     row.className = 'cart-item';
     row.innerHTML = `
       <span class="item-name">${item.name} — $${(Number(item.price) || 0).toFixed(2)}</span>
-      <button class="remove-item" aria-label="Remove ${item.name}" data-index="${index}">
+      <button class="remove-item" aria-label="Remove ${item.name}" data-remove-index="${index}">
         ${TRASH_SVG}
       </button>
     `;
-    cartItemsDiv.appendChild(row);
+    list.appendChild(row);
   });
 
-  totalSpan.textContent = total.toFixed(2);
+  totalEl.textContent = total.toFixed(2);
 }
 
 /* =========================
-   Page init
+   Global event delegation
 ========================= */
-
 document.addEventListener('DOMContentLoaded', () => {
+  // Initial sync
   updateCartCount();
   renderCart();
 
-  // Delegate remove clicks inside cart
-  const cartItemsDiv = document.getElementById('cart-items');
-  if (cartItemsDiv) {
-    cartItemsDiv.addEventListener('click', (e) => {
-      const btn = e.target.closest('.remove-item');
-      if (!btn) return;
-      const idx = Number(btn.dataset.index);
-      if (!Number.isNaN(idx)) removeFromCart(idx);
-    });
-  }
+  // Add to Cart (any page)
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-add-to-cart]');
+    if (!btn) return;
+    const name = btn.getAttribute('data-name') || 'Item';
+    const price = Number(btn.getAttribute('data-price') || '0');
+    const items = getCart();
+    items.push({ name, price: Number(price) || 0 });
+    setCart(items);
+    updateCartCount();
+    renderCart();       // if on cart page, reflect immediately
+    showCartToast();
+  });
 
-  // Optional: wire up "Clear Cart" button if present
-  const clearBtn = document.getElementById('clear-cart');
-  if (clearBtn) clearBtn.addEventListener('click', clearCart);
+  // Remove single item (cart page)
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-remove-index]');
+    if (!btn) return;
+    const idx = Number(btn.getAttribute('data-remove-index'));
+    if (Number.isNaN(idx)) return;
+    const items = getCart();
+    items.splice(idx, 1);
+    setCart(items);
+    updateCartCount();
+    renderCart();
+  });
+
+  // Clear cart (cart page)
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-clear-cart]');
+    if (!btn) return;
+    localStorage.removeItem('cart');
+    updateCartCount();
+    renderCart();
+  });
+
+  // Proceed to checkout buttons/links with data attribute
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-proceed-checkout]');
+    if (!btn) return;
+    window.location.href = '/checkout/';
+  });
+});
+
+// Keep multiple tabs/windows in sync
+window.addEventListener('storage', (e) => {
+  if (e.key === 'cart') {
+    updateCartCount();
+    renderCart();
+  }
 });
