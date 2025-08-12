@@ -23,10 +23,6 @@
   font-family: 'Reckless Neue', serif;
 }
 
-body {
-  font-family: 'Satoshi', Arial, sans-serif;
-}
-
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Reckless Neue', serif;
 }
@@ -42,6 +38,7 @@ h1, h2, h3, h4, h5, h6 {
 
 html {
   height: 100%;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -52,6 +49,7 @@ body {
   background-color: #f8f9fa;
   color: #333;
 }
+
 /* Accessible hidden text (SEO + screen readers, not display:none) */
 .visually-hidden {
   position: absolute;
@@ -82,7 +80,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative; /* so .nav-links absolute centering works */
   padding: 1rem 2rem;
   background-color: var(--theme-b);
   position: fixed;
@@ -105,13 +102,20 @@ body {
   height: var(--nav-h);
 }
 
+/* One list used for mobile off‑canvas + desktop inline */
 .nav-links {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 1.5rem; /* space between links */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;            /* desktop will keep this; mobile will switch to column in off-canvas */
+  gap: 1.25rem;
 }
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+.nav-links a:hover { color: var(--theme-a); }
 
 .brand {
   display: inline-flex;       /* vertical centering */
@@ -157,111 +161,27 @@ body {
 /* Hover color (unchanged) */
 .menu-toggle:hover .bar { background-color: var(--theme-a); }
 
-/* OPEN STATE → three vertical lines
-   (support both .show and .active; your JS toggles both) */
-.menu-toggle.show,
-.menu-toggle.active {
-  flex-direction: row;             /* lay bars side‑by‑side (vertical look) */
+/* When menu is open, make the three vertical bars look */
+body.menu-open .menu-toggle {
+  flex-direction: row;
   width: 24px;
   height: 18px;
 }
-
-.menu-toggle.show .bar,
-.menu-toggle.active .bar {
-  width: 3px;                      /* skinny vertical bars */
+body.menu-open .menu-toggle .bar {
+  width: 3px;
   height: 100%;
 }
-/* Overlay */
+/* Full‑viewport overlay (sits under fixed navbar via z-index) */
 .overlay {
   position: fixed;
-  top: 60px;
-  left: 0;
-  width: 100%;
-  height: calc(100% - 60px);
-  background: rgba(0,0,0,0.6);
+  inset: 0;
+  background: #000;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease;
-  z-index: 1000;
+  transition: opacity .3s ease, visibility .3s ease;
+  z-index: 900; /* navbar is 999 */
 }
-
-.overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Off-canvas menu */
-.offcanvas-menu {
-  position: fixed;
-  top: 60px;
-  left: -250px;
-  width: 250px;
-  height: calc(100% - 60px);
-  background-color: var(--theme-b);
-  box-shadow: 2px 0 6px rgba(0,0,0,0.2);
-  padding: 1rem;
-  transition: left 0.3s ease;
-  z-index: 1001;
-  display: flex;
-  flex-direction: column;
-}
-
-.offcanvas-menu.active {
-  left: 0;
-}
-
-/* Off-canvas header */
-.offcanvas-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.offcanvas-header h2 {
-  font-size: 1.2rem;
-  margin: 0;
-  text-transform: uppercase;
-  color: white;
-}
-
-.close-button {
-  font-size: 1.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: white;
-  transition: color 0.3s ease;
-}
-
-.close-button:hover {
-  color: var(--theme-a);
-}
-
-/* Menu items */
-.offcanvas-menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.offcanvas-menu li {
-  margin: 1rem 0;
-}
-
-.offcanvas-menu a {
-  text-decoration: none;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-  display: block;
-  padding: 0.5rem 0;
-  transition: color 0.3s ease;
-}
-
-.offcanvas-menu a:hover {
-  color: var(--theme-a);
-}
+body.menu-open .overlay { opacity: .6; visibility: visible; }
 
 /* PROPER CART LINK STATES (NAVBAR) */
 .cart-link {
@@ -288,6 +208,87 @@ body {
 
 .cart-link:hover {
   color: var(--theme-a);
+}
+/* Mobile off‑canvas for the same <ul id="primary-nav"> */
+/* Base: closed drawer — no transition */
+.nav-links[data-behavior="offcanvas"]{
+  position: fixed;
+  top: var(--nav-h, 60px);
+  left: -320px;
+  width: 300px;
+  height: calc(100dvh - var(--nav-h, 60px));
+  background: var(--theme-b);
+  box-shadow: 2px 0 12px rgba(0,0,0,.35);
+  padding: 16px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 1000;
+
+  /* keep keyboard/mouse out when closed */
+  visibility: hidden;
+  pointer-events: none;
+
+  /* IMPORTANT: no transition here to avoid breakpoint “shooting” */
+  transition: none;
+  will-change: left, visibility;
+}
+
+/* Only animate when toggling the menu open/closed */
+body.menu-open .nav-links[data-behavior="offcanvas"]{
+  left: 0;
+  visibility: visible;
+  pointer-events: auto;
+  transition: left .28s ease, visibility .28s ease;
+}
+
+/* Drawer header (MENU + ×) */
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 2px 12px;
+  border-bottom: 1px solid #fff; /* now white */
+}
+
+.drawer-header span{
+  font-family: 'Reckless Neue', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.drawer-close{
+  background: none; border: 0; color: #fff; font-size: 1.4rem; line-height: 1;
+  cursor: pointer; padding: 4px 6px; border-radius: 6px;
+}
+.drawer-close:hover{ color: var(--theme-a); }
+.drawer-close:focus-visible{ outline: 2px solid var(--theme-a); outline-offset: 2px; }
+
+/* Links */
+#primary-nav > li > a{
+  display: block;
+  padding: 12px 0;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  font-size: 1.05rem;
+}
+#primary-nav > li > a:hover{ color: var(--theme-a); }
+
+/* Desktop reset */
+@media (min-width: 1200px){
+  .drawer-header{ display: none; }
+  .nav-links[data-behavior="offcanvas"]{
+    position: static; left: auto; height: auto; width: auto;
+    box-shadow: none; padding: 0; gap: 1.25rem; flex-direction: row; background: transparent;
+  }
+  #primary-nav > li > a{
+    padding: 0; text-transform: none; letter-spacing: 0; font-weight: 700; font-size: 1rem;
+  }
 }
 
 /* ==========================
@@ -902,10 +903,12 @@ body.article-page { background: var(--theme-b, #2c2828); /* dark edges */ }
 /* ==========================
   A11Y: Focus styles for keyboard users
 ========================== */
+/* ==========================
+  A11Y: Focus styles for keyboard users
+========================== */
 a:focus-visible,
 button:focus-visible,
-.menu-toggle:focus-visible,
-.close-button:focus-visible {
+.menu-toggle:focus-visible {
   outline: 2px solid var(--theme-a);
   outline-offset: 2px;
 }
@@ -922,30 +925,43 @@ button:focus-visible,
    RESPONSIVE NAVBAR
 ========================== */
 
-/* Default mobile-first styles */
-.nav-links {
-  display: none; /* hide desktop nav links */
-}
-.menu-toggle {
-  display: inline-flex; /* show hamburger on mobile */
+/* Mobile-first: hamburger visible */
+@media (min-width: 1200px){
+  .menu-toggle { display: none; }
+  .drawer-header { display: none; }
+  .overlay { display: none; }
+
+  .navbar { position: fixed; height: var(--nav-h); }
+  .navbar-left, .navbar-right { position: relative; z-index: 2; }
+
+  .nav-links[data-behavior="offcanvas"]{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: row;
+    gap: 1.25rem;
+    width: max-content;
+    height: auto;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    border: 0;
+
+    /* IMPORTANT: no transition at desktop */
+    transition: none !important;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Optional: desktop link style reset */
+  #primary-nav > li > a{
+    padding: 0;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 700;
+    font-size: 1rem;
+  }
 }
 
-/* Desktop breakpoint */
-@media (min-width: 1200px) {
-  .menu-toggle {
-    display: none; /* hide hamburger on desktop */
-  }
-  .nav-links {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
-  .nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  .nav-links a:hover {
-    color: var(--theme-a);
-  }
-}

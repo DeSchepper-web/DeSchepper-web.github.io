@@ -1,49 +1,87 @@
-/* ---------- Off-canvas Menu: unified behavior ---------- */
+/* =========================
+   Off-canvas Menu (single source of truth)
+   Uses: body.menu-open, #primary-nav, #overlay, .menu-toggle
+========================= */
 
-function setMenuState(open) {
-  const menu = document.getElementById('offcanvasMenu');
-  const overlay = document.getElementById('overlay');
-  const button = document.querySelector('.menu-toggle');
+(function () {
+  const SELECTORS = {
+    nav: '#primary-nav',
+    overlay: '#overlay',
+    toggleBtn: '.menu-toggle'
+  };
 
-  if (!menu || !overlay) return;
+  const nav = document.querySelector(SELECTORS.nav);
+  const overlay = document.querySelector(SELECTORS.overlay);
+  const toggleBtn = document.querySelector(SELECTORS.toggleBtn);
 
-  // Primary classes
-  menu.classList.toggle('show', open);
-  overlay.classList.toggle('show', open);
-  if (button) button.classList.toggle('show', open);
-
-  // Back-compat with older CSS that used "active"
-  menu.classList.toggle('active', open);
-  overlay.classList.toggle('active', open);
-  if (button) button.classList.toggle('active', open);
-
-  // Accessibility
-  menu.setAttribute('aria-hidden', !open);
-  overlay.setAttribute('aria-hidden', !open);
-}
-
-function toggleMenu() {
-  const menu = document.getElementById('offcanvasMenu');
-  if (!menu) return;
-  const open = !menu.classList.contains('show') && !menu.classList.contains('active');
-  setMenuState(open);
-}
-
-// Close menu when pressing Escape
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') setMenuState(false);
-});
-
-// Close menu when clicking any link inside the menu (nice on mobile)
-document.addEventListener('click', (e) => {
-  const menu = document.getElementById('offcanvasMenu');
-  if (!menu) return;
-  if (menu.contains(e.target) && e.target.closest('a')) {
-    setMenuState(false);
+  // Bail gracefully if markup not present on a page
+  if (!nav || !overlay) {
+    window.toggleMenu = function(){};
+    return;
   }
-});
 
-/* ---------- Cart / Toast Helpers ---------- */
+  // Now it's safe to query inside nav
+  const closeBtn = nav.querySelector('.drawer-close');
+
+
+  // Keep ARIA in sync
+  function setAria(isOpen) {
+    nav.setAttribute('aria-hidden', String(!isOpen));
+    overlay.setAttribute('aria-hidden', String(!isOpen));
+    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', String(isOpen));
+  }
+
+  function setMenuState(open) {
+    const isOpen = Boolean(open);
+    document.body.classList.toggle('menu-open', isOpen);
+    setAria(isOpen);
+
+    // optional: lock scroll when menu open
+    document.documentElement.style.overflow = isOpen ? 'hidden' : '';
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  }
+
+  // Public API for your HTML onclick="toggleMenu()" / toggleMenu(false)
+  window.toggleMenu = function (force) {
+    const next = typeof force === 'boolean'
+      ? force
+      : !document.body.classList.contains('menu-open');
+    setMenuState(next);
+  };
+
+  // Wire events
+  if (toggleBtn) toggleBtn.addEventListener('click', () => window.toggleMenu());
+  if (closeBtn) closeBtn.addEventListener('click', () => window.toggleMenu(false));
+  overlay.addEventListener('click', () => window.toggleMenu(false));
+
+  // Close when pressing Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') window.toggleMenu(false);
+  });
+
+  // Ensure nav is exposed to AT on desktop widths (>=1200px)
+  const mql = window.matchMedia('(min-width: 1200px)');
+  function syncAriaForDesktop(e) {
+    if (e.matches) {
+      nav.removeAttribute('aria-hidden'); // desktop: not hidden from AT
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    } else {
+      setAria(document.body.classList.contains('menu-open'));
+    }
+  }
+  mql.addEventListener('change', syncAriaForDesktop);
+  syncAriaForDesktop(mql);
+
+  // Close menu when clicking any link inside the nav (nice on mobile)
+  nav.addEventListener('click', (e) => {
+    if (e.target.closest('a')) window.toggleMenu(false);
+  });
+})();
+
+/* =========================
+   Cart / Toast helpers
+========================= */
 
 const TRASH_SVG = `
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -57,13 +95,12 @@ const TRASH_SVG = `
 </svg>`.trim();
 
 function getCart() {
-  return JSON.parse(localStorage.getItem('cart') || '[]');
+  try { return JSON.parse(localStorage.getItem('cart') || '[]'); }
+  catch { return []; }
 }
 function setCart(cart) {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
-
-/* ---------- Cart API ---------- */
 
 function addToCart(productName, price) {
   const cart = getCart();
@@ -98,12 +135,8 @@ function showCartToast() {
   if (!toast) return;
   toast.style.opacity = '1';
   clearTimeout(showCartToast._t);
-  showCartToast._t = setTimeout(() => {
-    toast.style.opacity = '0';
-  }, 2000);
+  showCartToast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
 }
-
-/* ---------- Render Cart ---------- */
 
 function renderCart() {
   const cart = getCart();
@@ -137,20 +170,13 @@ function renderCart() {
   totalSpan.textContent = total.toFixed(2);
 }
 
-/* ---------- Page init ---------- */
+/* =========================
+   Page init
+========================= */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Keep counts current across all pages
   updateCartCount();
-
-  // If on cart page, render items
   renderCart();
-
-  // Ensure overlay click always closes (in case inline onclick is missing)
-  const overlay = document.getElementById('overlay');
-  if (overlay && !overlay.hasAttribute('onclick')) {
-    overlay.addEventListener('click', () => setMenuState(false));
-  }
 
   // Delegate remove clicks inside cart
   const cartItemsDiv = document.getElementById('cart-items');
