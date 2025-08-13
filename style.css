@@ -99,7 +99,6 @@ body {
 .navbar-right {
   display: flex;
   align-items: center;
-  margin-left: auto; /* pushes to far right */
   height: var(--nav-h);
 }
 
@@ -192,7 +191,6 @@ body.menu-open .overlay { opacity: .6; visibility: visible; }
   text-decoration: none;
   color: white;
   transition: color 0.3s;
-  padding-right: 0.25rem; /* tighter to right edge */
 }
 
 .cart-link .cart-icon {
