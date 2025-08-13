@@ -420,6 +420,11 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   .hero-right {
     flex: 1 1 100%;
   }
+  .cart-link {            /* icon then text → text then icon */
+    display: inline-flex; /* already set, but safe */
+    flex-direction: row-reverse;
+    gap: 0.4rem;          /* keep your spacing */
+  }
 }
 
 /* ==========================
