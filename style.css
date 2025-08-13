@@ -975,10 +975,69 @@ body.article-page { background: var(--theme-b, #2c2828); /* dark edges */ }
 .articles-content article:hover h2 a,
 .articles-content a:hover h2,
 .articles-content h2 a:hover { color: var(--theme-a-dark); }
+/* ===== A11Y: Skip to content (sitewide) ===== */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  width: auto;
+  height: auto;
+  padding: .5rem .75rem;
+  background: #000;
+  color: #fff;
+  z-index: 10000;
+  border-radius: .25rem;
+}
 
-/* ==========================
-  A11Y: Focus styles for keyboard users
-========================== */
+/* ===== Article Layout (shared across all articles) ===== */
+.article-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+}
+.column { flex: 1; min-width: 280px; }
+
+/* Per‑column section headings to match your theme */
+.column h2,
+.column h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid var(--theme-a);
+  padding-bottom: 0.25rem;
+}
+
+/* Quick Facts list uses real bullets and tidy spacing */
+.quick-facts ul { list-style: disc; padding-left: 1.5rem; }
+.quick-facts ul li::before { content: none; }
+.quick-facts ul li { margin: 0.5rem 0; }
+
+/* Figure + caption semantics for images in articles */
+.article-page figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.article-page figcaption {
+  text-align: center;
+  font-style: italic;
+  margin-top: .5rem;
+}
+
+/* You already have .bottom-graph img; this adds the container rule */
+.bottom-graph {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
 /* ==========================
   A11Y: Focus styles for keyboard users
 ========================== */
