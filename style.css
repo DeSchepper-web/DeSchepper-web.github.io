@@ -97,7 +97,6 @@ body {
 }
 
 .navbar-right {
-  margin-left: auto; /* pushes it to the far right */
   display: flex;
   align-items: center;
   height: var(--nav-h);
@@ -953,8 +952,24 @@ body.article-page { background: var(--theme-b, #2c2828); /* dark edges */ }
   color: #888;
   font-style: italic;
 }
+/* Fix figure overflow on mobile */
+.article-page figure {
+  margin: 1rem 0;      /* remove the default 40px side margins */
+  width: 100%;
+}
 
-/* Single unified Back-link already defined above */
+.article-page figure img,
+.article-page figure canvas,
+.article-page figure svg {
+  display: block;      /* remove inline-img whitespace */
+  width: 100%;         /* fill figure’s width */
+  height: auto;
+}
+
+/* Optional: center the bottom graph container instead of pushing right */
+.bottom-graph {
+  justify-content: center;   /* was flex-end */
+}
 
 /* MOBILE */
 @media (max-width: 768px) {
