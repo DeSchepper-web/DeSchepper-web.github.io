@@ -353,6 +353,7 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s;
+  border: 1px solid var(--btn-border);
 }
 
 .cta-button:hover {
@@ -486,7 +487,6 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   border-radius: 6px;
   font-size: 1rem;
   transition: background 0.3s ease;
-  border: 1px solid var(--btn-border); /* outline consistency */
 }
 
 .go-to-cart .cta-button:hover {
