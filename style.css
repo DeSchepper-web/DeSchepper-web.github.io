@@ -953,13 +953,14 @@ body.article-page { background: var(--theme-b, #2c2828); /* dark edges */ }
   font-style: italic;
 }
 
-/* Single unified Back-link already defined above */
-
 /* MOBILE */
 @media (max-width: 768px) {
   .article-page-content {
     margin: 60px 1rem 0;   /* still tight to the top on mobile */
     padding: 1.25rem;
+  }
+  .cart-items {
+    text-align: right;
   }
 }
 
@@ -1054,7 +1055,13 @@ button:focus-visible,
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
-
+/* Responsive media (especially the chart in articles) */
+.article-page-content img,
+.article-page-content svg,
+.article-page-content canvas {
+  max-width: 100%;
+  height: auto;
+}
 
 /* ==========================
    RESPONSIVE NAVBAR
