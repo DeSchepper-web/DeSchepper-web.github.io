@@ -97,6 +97,7 @@ body {
 }
 
 .navbar-right {
+  margin-left: auto; /* pushes it to the far right */
   display: flex;
   align-items: center;
   height: var(--nav-h);
