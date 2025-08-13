@@ -80,7 +80,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
+  padding-left: 2rem;  /* match */
+  padding-right: 2rem; /* match */
   background-color: var(--theme-b);
   position: fixed;
   width: 100%;
