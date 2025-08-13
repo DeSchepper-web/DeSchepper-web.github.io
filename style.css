@@ -593,6 +593,7 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
+  padding-top: calc(3rem + var(--nav-h)); /* account for fixed navbar */
 }
 
 .cart-items {
@@ -621,18 +622,16 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   border: 1px solid #333;
   border-radius: 6px;
   padding: 6px;
-  line-height: 0;           /* tight box around icon */
+  line-height: 0; /* tight box around icon */
   cursor: pointer;
   color: #333;
   transition: color .2s, border-color .2s, transform .1s;
 }
-
 .remove-item:hover {
   color: var(--theme-a);
   border-color: var(--theme-a);
   transform: translateY(-1px);
 }
-
 .remove-item:active { transform: translateY(0); }
 
 /* PROPER CART LINK STATES (CART PAGE) */
@@ -643,16 +642,93 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   font-weight: bold;
   font-size: 1rem;
 }
-
 .cart-link:hover { color: var(--theme-a); }
-
 .cart-link:active {
   color: var(--theme-a-dark);
   text-decoration: none;
 }
 
-.cart-section { padding-top: calc(3rem + var(--nav-h)); /* was just 3rem */ }
+/* === Connected qty controls === */
+.cart-item .qty-controls {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0; /* no space between pieces */
+}
 
+/* Shared size + base look */
+.cart-item .qty-btn,
+.cart-item .qty-input {
+  height: 30px;
+  min-width: 30px;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  transition: background .2s, border-color .2s;
+}
+
+/* Plus & minus buttons */
+.cart-item .qty-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Quantity input */
+.cart-item .qty-input {
+  width: 42px;
+  background: #fff;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  border-radius: 0;
+}
+
+/* Qty input: standards-first + cross-browser spinner removal */
+.cart-item .qty-input[type="number"] {
+  appearance: textfield; /* modern, standard */
+}
+
+/* WebKit spinner removal (Chrome, Edge, Safari) */
+.cart-item .qty-input[type="number"]::-webkit-outer-spin-button,
+.cart-item .qty-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove double borders between elements */
+.cart-item .qty-btn + .qty-input,
+.cart-item .qty-input + .qty-btn {
+  margin-left: -1px;
+}
+
+/* Rounded corners only on outer edges */
+.cart-item [data-action="dec"] { border-radius: 6px 0 0 6px; }
+.cart-item [data-action="inc"] { border-radius: 0 6px 6px 0; }
+
+/* Hover/focus styles */
+.cart-item .qty-btn:hover,
+.cart-item .qty-input:hover {
+  border-color: var(--theme-a);
+  background: #eee;
+}
+
+.cart-item .qty-input:hover {
+  background: #fff; /* keep input white on hover */
+  position: relative; /* bring input above + button */
+  z-index: 2;
+}
+
+.cart-item .qty-btn:focus-visible,
+.cart-item .qty-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--theme-a);
+  position: relative; /* keep glow on all edges */
+  z-index: 2;          /* ensure it overlays neighbor borders */
+}
 /* ==========================
   PAGE BANNERS
 ========================== */
