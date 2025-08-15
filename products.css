@@ -1,0 +1,353 @@
+/* ==========================
+   PRODUCT PAGE — SCOPED (clean)
+========================== */
+
+/* A11y hide */
+.product-page .sr-only{
+  position:absolute; left:-9999px; top:auto; width:1px; height:1px;
+  overflow:hidden; white-space:nowrap;
+}
+
+/* ---- Layout grid with areas ---- */
+.product-page .grid{
+  display:grid;
+  grid-template-columns:
+    clamp(240px, 20vw, 320px)      /* left details */
+    minmax(520px, 1fr)             /* hero */
+    clamp(280px, 22vw, 380px);     /* buy box */
+  row-gap:2rem; column-gap:2rem;
+  max-width:1200px;
+  margin:calc(var(--nav-h,64px) + 1.5rem) auto 2.5rem;
+  padding:0 1rem;
+  grid-template-areas:
+    ". header ."
+    "left hero buybox"
+    "bottom bottom bottom";
+  align-items:start;
+}
+.product-page .center-col{ display:contents; }
+.product-page .product-header{ grid-area:header; text-align:center; margin-bottom:.75rem; }
+.product-page .left-col{ grid-area:left; }
+.product-page .hero{ grid-area:hero; margin-top:0; }
+.product-page .buybox{ grid-area:buybox; }
+.product-page #reviews-bottom{ grid-area:bottom; }
+
+@media (max-width:1024px){
+  .product-page .grid{
+    grid-template-columns:1fr;
+    row-gap:1.25rem;
+    grid-template-areas:
+      "header"
+      "hero"
+      "buybox"
+      "left"
+      "bottom";
+  }
+}
+
+/* ---- Side cards (details) ---- */
+.product-page .card{
+  background:#fff;
+  border:1px solid #ccc;
+  border-radius:8px;
+  padding:1rem;
+  box-shadow:none;
+}
+.product-page .bullets{ list-style:disc; padding-left:1.2rem; }
+.product-page .bullets li{ margin:.5rem 0; }
+
+/* ---- Header polish ---- */
+.product-page .product-title{ font-size:2.4rem; line-height:1.15; }
+.product-page .subtitle{ color:#666; }
+.product-page .title-rule{
+  border:0; border-top:3px solid var(--theme-a);
+  width:72px; margin:.55rem auto 0; border-radius:3px;
+}
+
+/* ==========================
+   GALLERY
+========================== */
+.product-page .hero{
+  position:relative;
+  margin:0 0 1rem;
+  background:transparent;
+  border-radius:12px;
+  overflow:hidden;
+  line-height:0;
+  min-width:0;
+}
+.product-page .hero::before{ content:none; }
+
+.product-page .hero-frame{
+  position:relative;
+  aspect-ratio:1 / 1;
+  width:100%; max-width:100%;
+  overflow:hidden;
+  border-radius:12px;
+  background:transparent;
+  transform:translateZ(0);
+  box-shadow:0 12px 28px rgba(0,0,0,.10);
+}
+
+.product-page #hero-img{
+  position:absolute;
+  inset:-0.5px;                          /* 1px bleed to avoid seams */
+  width:calc(100% + 1px);
+  height:calc(100% + 1px);
+  object-fit:cover;
+  display:block;
+  background:transparent;
+  border:0;
+}
+
+/* Arrows */
+.product-page .hero-nav{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:42px; height:42px; border:0; border-radius:999px;
+  display:grid; place-items:center;
+  background:rgba(0,0,0,.55); color:#fff; cursor:pointer;
+  box-shadow:0 8px 18px rgba(0,0,0,.28);
+  transition:background .2s, transform .08s;
+}
+.product-page .hero-nav:hover{ background:rgba(0,0,0,.75); }
+.product-page .hero-nav:active{ transform:translateY(-50%) scale(.98); }
+.product-page .hero-nav.prev{ left:.65rem; }
+.product-page .hero-nav.next{ right:.65rem; }
+.product-page .hero-nav svg{ width:22px; height:22px; fill:currentColor; }
+@media (max-width:768px){
+  .product-page .hero-nav{ width:48px; height:48px; }
+}
+
+/* Dots */
+.product-page .hero-dots{
+  display:flex; justify-content:center; gap:.5rem;
+  background:transparent; padding:.35rem 0 .5rem;
+}
+.product-page .hero-dots:empty{ display:none; }
+.product-page .hero-dots button{
+  width:10px; height:10px; border-radius:999px; border:0; cursor:pointer;
+  background:#d3d3d3; transition:transform .12s, background .15s;
+}
+.product-page .hero-dots button[aria-selected="true"]{
+  background:var(--theme-a); transform:scale(1.15);
+}
+.product-page .hero-dots button:focus-visible{
+  outline:2px solid var(--theme-a); outline-offset:2px;
+}
+
+/* ==========================
+   BUYBOX (flat + consistent)
+========================== */
+.product-page .buybox{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-areas:
+    "price cta"
+    "variant qty";
+  gap:0.85rem;
+  align-items:center; justify-items:stretch; text-align:left;
+  background:#fff; border:1px solid #ccc; border-radius:8px;
+  padding:1rem;
+  box-shadow:none;
+  max-width:820px;
+  margin:0 auto 2.25rem;
+  align-self:start;
+}
+
+/* areas */
+.product-page .price-wrap{ grid-area:price; justify-self:start; }
+.product-page .buy-actions{ grid-area:cta; margin:0; }
+.product-page .variant-wrap{ grid-area:variant; }
+.product-page .qty-control{ grid-area:qty; }
+
+/* text bits */
+.product-page .buybox .price{ font-size:1.5rem; font-weight:700; color:var(--theme-b); }
+.product-page .buybox .meta{ color:#666; font-size:.95rem; }
+
+/* controls (select/input) */
+.product-page .select,
+.product-page .input{
+  padding:.65rem .9rem; border:1px solid #ccc; border-radius:6px; font:inherit; height:44px;
+}
+.product-page .variant-wrap .select,
+.product-page .buy-actions .cta{ width:100%; }
+
+/* Qty control — match shop/cart look */
+.product-page .qty-control{
+  display:inline-flex; align-items:stretch; gap:0; padding:0;
+  background:#fff; border:1px solid #ccc; border-radius:6px;
+}
+.product-page .qty-btn,
+.product-page .qty-control .qty{
+  height:44px; min-width:44px; border:0; background:#f8f8f8; font:inherit; line-height:1;
+}
+.product-page .qty-control .qty{
+  width:56px; background:#fff; text-align:center;
+  border-left:1px solid #ccc; border-right:1px solid #ccc;
+  -moz-appearance:textfield;
+}
+.product-page .qty-control .qty::-webkit-outer-spin-button,
+.product-page .qty-control .qty::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+.product-page .qty-btn{ display:inline-flex; justify-content:center; align-items:center; cursor:pointer; }
+.product-page .qty-btn:first-child{ border-radius:6px 0 0 6px; }
+.product-page .qty-btn:last-child { border-radius:0 6px 6px 0; }
+.product-page .qty-btn:hover{ background:#eee; }
+
+/* CTA button — solid brand orange */
+.product-page .buy-actions .cta{
+  background:var(--theme-a);
+  border:1px solid var(--btn-border);
+  border-radius:6px;
+  color:#fff; font-weight:700; font-size:1rem;
+  padding:.65rem 1rem; min-height:44px;
+  box-shadow:none; transition:background .2s ease;
+  cursor:pointer;
+}
+.product-page .buy-actions .cta:hover,
+.product-page .buy-actions .cta:active{ background:var(--theme-a-dark); }
+
+/* Mobile tweaks */
+@media (max-width:768px){
+  .product-page .buybox{
+    grid-template-columns:1fr 1fr;
+    grid-template-areas:
+      "price cta"
+      "variant qty";
+    max-width:100%;
+    margin:0 auto 1.25rem;
+  }
+  .product-page .variant-wrap .select,
+  .product-page .buy-actions .cta,
+  .product-page .qty-control .qty,
+  .product-page .qty-btn{ height:48px; }
+}
+
+/* ==========================
+   REVIEWS
+========================== */
+.product-page .reviews-panel{
+  background:#fff;
+  border:1px solid #ccc;
+  border-radius:8px;
+  box-shadow:none;
+  padding:1rem;
+  width:100%;
+  max-width:100%;     /* full width under the grid */
+  margin:0 auto;      /* center horizontally */
+}
+.product-page .reviews-panel .stars{ color:#f4c84a; }
+.product-page .reviews-panel .bullets li{ font-style:italic; }
+
+/* ==========================
+   FULLSCREEN LIGHTBOX
+========================== */
+#lightbox{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.92);
+  display:grid; place-items:center;
+  opacity:0; visibility:hidden;
+  transition:opacity .2s ease, visibility .2s ease;
+  z-index:10000;
+}
+#lightbox[aria-hidden="false"]{ opacity:1; visibility:visible; }
+#lightbox-img{
+  max-width:92vw; max-height:90vh; object-fit:contain; display:block;
+  border-radius:10px; box-shadow:0 16px 36px rgba(0,0,0,.6);
+}
+
+/* ===== Theme overrides to keep hero aligned top ===== */
+.product-page .buybar{ display:none !important; }
+.product-page .hero{
+  align-self:start !important;
+  margin-top:0 !important; padding-top:0 !important; min-height:0 !important;
+  background:transparent !important; border-radius:0 !important; box-shadow:none !important;
+}
+.product-page .hero::before{ content:none !important; }
+.product-page .hero-frame{ box-shadow:0 12px 28px rgba(0,0,0,.10) !important; border-radius:12px !important; }
+.product-page .buybox{ margin-top:0 !important; align-self:start !important; }
+.product-page .left-col{ align-self:start !important; }
+
+/* ===== Optional: keep details + buybox same “box” look on desktop widths ===== */
+@media (min-width:1025px){
+  .product-page .left-col .card,
+  .product-page .buybox{
+    width:100%;
+    max-width:380px;   /* visual parity; grid column still limits actual width */
+  }
+}
+@media (max-width:1024px){
+  .product-page .left-col .card,
+  .product-page .buybox{ max-width:100%; }
+}
+/* ==== Product page qty control — IDENTICAL to shop/cart ==== */
+
+/* Wrapper = just a container */
+.product-page .qty-control{
+  display:inline-flex;
+  align-items:stretch;
+  gap:0;
+  padding:0;
+  background:transparent;
+  border:0;                 /* borders live on the children */
+}
+
+/* Shared size + base look (44px high to match buybox; change to 30px to match cart exactly) */
+.product-page .qty-btn,
+.product-page .qty-control .qty{
+  height:44px;              /* set 30px if you want the smaller cart size */
+  min-width:44px;
+  border:1px solid #ccc;
+  background:#f8f8f8;
+  transition:background .2s, border-color .2s;
+  font:inherit;
+  line-height:1;
+  padding:0;
+  margin:0;
+}
+
+/* Input */
+.product-page .qty-control .qty{
+  width:56px;               /* set 42px if using the 30px height variant */
+  background:#fff;
+  text-align:center;
+  border-radius:0;          /* square center like cart */
+  appearance:textfield;
+  -moz-appearance:textfield;
+}
+.product-page .qty-control .qty::-webkit-outer-spin-button,
+.product-page .qty-control .qty::-webkit-inner-spin-button{
+  -webkit-appearance:none; margin:0;
+}
+
+/* Remove double borders between siblings (exact cart behavior) */
+.product-page .qty-btn + .qty-control .qty,
+.product-page .qty-control .qty + .qty-btn,
+.product-page .qty-btn + .qty-btn,
+.product-page .qty-control .qty + .qty-control .qty{
+  /* selector redundancy to be robust to markup */
+}
+.product-page .qty-control > * + *{ margin-left:-1px; }
+
+/* Outer corners only */
+.product-page .qty-control [data-action="dec"],
+.product-page .qty-btn:first-child{ border-radius:6px 0 0 6px; }
+.product-page .qty-control [data-action="inc"],
+.product-page .qty-btn:last-child { border-radius:0 6px 6px 0; }
+
+/* Interactions (match cart) */
+.product-page .qty-btn:hover,
+.product-page .qty-control .qty:hover{
+  border-color:var(--theme-a);
+  background:#eee;
+}
+.product-page .qty-control .qty:hover{ background:#fff; z-index:2; position:relative; }
+
+.product-page .qty-btn:focus-visible,
+.product-page .qty-control .qty:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 2px var(--theme-a);
+  position:relative; z-index:2;
+}
+
+/* Optional: icon size inside buttons */
+.product-page .qty-btn svg{ width:16px; height:16px; fill:#333; }
