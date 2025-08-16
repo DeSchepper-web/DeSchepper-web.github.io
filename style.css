@@ -192,6 +192,11 @@ body.menu-open .overlay { opacity: .6; visibility: visible; }
   text-decoration: none;
   color: white;
   transition: color 0.3s;
+
+  /* NEW: force Reckless Neue */
+  font-family: 'Reckless Neue', serif;
+  font-weight: 600; /* adjust to taste */
+  font-variant-numeric: lining-nums tabular-nums; /* clean digits */
 }
 
 .cart-link .cart-icon {
@@ -210,7 +215,6 @@ body.menu-open .overlay { opacity: .6; visibility: visible; }
 .cart-link:hover {
   color: var(--theme-a);
 }
-/* Mobile off‑canvas for the same <ul id="primary-nav"> */
 /* Base: closed drawer — no transition */
 .nav-links[data-behavior="offcanvas"]{
   position: fixed;
@@ -615,7 +619,7 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   text-align: left;
 }
 
-/* Name/price block */
+/* Name/price block flex */
 .cart-item .item-name { flex: 1; }
 
 /* Trash button */
@@ -624,7 +628,7 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   border: 1px solid #333;
   border-radius: 6px;
   padding: 6px;
-  line-height: 0; /* tight box around icon */
+  line-height: 0;
   cursor: pointer;
   color: #333;
   transition: color .2s, border-color .2s, transform .1s;
@@ -654,7 +658,7 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
 .cart-item .qty-controls {
   display: inline-flex;
   align-items: stretch;
-  gap: 0; /* no space between pieces */
+  gap: 0;
 }
 
 /* Shared size + base look */
@@ -678,6 +682,16 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   line-height: 1;
 }
 
+/* Use Reckless Neue for cart qty controls */
+.cart-item .qty-input,
+.cart-item .qty-btn {
+  font-family: 'Reckless Neue', serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
 /* Quantity input */
 .cart-item .qty-input {
   width: 42px;
@@ -685,23 +699,20 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   text-align: center;
   padding: 0;
   margin: 0;
-  font-size: 0.95rem;
   border-radius: 0;
 }
 
-/* Qty input: standards-first + cross-browser spinner removal */
+/* Spinner removal */
 .cart-item .qty-input[type="number"] {
-  appearance: textfield; /* modern, standard */
+  appearance: textfield;
 }
-
-/* WebKit spinner removal (Chrome, Edge, Safari) */
 .cart-item .qty-input[type="number"]::-webkit-outer-spin-button,
 .cart-item .qty-input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Remove double borders between elements */
+/* Remove double borders */
 .cart-item .qty-btn + .qty-input,
 .cart-item .qty-input + .qty-btn {
   margin-left: -1px;
@@ -717,20 +728,47 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   border-color: var(--theme-a);
   background: #eee;
 }
-
 .cart-item .qty-input:hover {
-  background: #fff; /* keep input white on hover */
-  position: relative; /* bring input above + button */
+  background: #fff;
+  position: relative;
   z-index: 2;
 }
-
 .cart-item .qty-btn:focus-visible,
 .cart-item .qty-input:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px var(--theme-a);
-  position: relative; /* keep glow on all edges */
-  z-index: 2;          /* ensure it overlays neighbor borders */
+  position: relative;
+  z-index: 2;
 }
+
+/* ==========================
+   FORCE RECKLESS NEUE
+   for product names + prices + totals
+========================== */
+.cart-item .item-title,
+.cart-item .price,
+.cart-item .item-price,
+.cart-summary .price,
+.cart-summary .total,
+.cart-summary .total-amount,
+.cart-section #cart-total,
+.cart-section [id*="total"],
+.cart-section [class*="total"],
+.cart-section [id*="price"],
+.cart-section [class*="price"] {
+  font-family: 'Reckless Neue', serif !important;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Optional sizing tweaks */
+.cart-item .price,
+.cart-item .item-price { font-size: 1.1rem; }
+.cart-summary .total,
+.cart-summary .total-amount,
+.cart-section #cart-total { font-size: 1.2rem; }
+
 /* ==========================
   PAGE BANNERS
 ========================== */

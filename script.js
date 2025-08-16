@@ -150,7 +150,9 @@ function renderCart() {
     const row = document.createElement('div');
     row.className = 'cart-item';
     row.innerHTML = `
-      <span class="item-name">${g.name} — $${g.price.toFixed(2)}</span>
+      <span class="item-name">
+        <span class="item-title">${g.name}</span> — <span class="price item-price">$${g.price.toFixed(2)}</span>
+      </span>
       <div class="qty-controls" role="group" aria-label="Quantity for ${g.name}">
         <button class="qty-btn" data-action="dec" data-key="${g.key}" aria-label="Decrease quantity">−</button>
         <input class="qty-input" type="number" inputmode="numeric" pattern="[0-9]*" min="0" step="1" value="${g.qty}" data-key="${g.key}" aria-label="Quantity for ${g.name}">
