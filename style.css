@@ -658,128 +658,103 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
 .cart-item .qty-controls {
   display: inline-flex;
   align-items: stretch;
-  gap: 0;
-}
-
-/* Shared size + base look */
-.cart-item .qty-controls {
-  display: inline-flex;
-  align-items: stretch;
   border: 1px solid #ccc;
   border-radius: 6px;
   background: #fff;
-  overflow: hidden;
+  overflow: visible;             /* was hidden → allow outer ring to show */
 }
 
-.cart-item .qty-btn,
-.cart-item .qty-input {
-  border: 0;                  /* no inner dividers */
-  background: #fff;           /* white default */
+/* Shared sizing (split so input stays editable) */
+.cart-item .qty-btn {
+  border: 0;
+  background: #fff;
   height: 30px;
   min-width: 30px;
-  display: flex;
+  display: flex;                 /* buttons are flex to center the glyph */
   align-items: center;
   justify-content: center;
-  font-family: 'Reckless Neue', serif;
-  font-variant-numeric: lining-nums tabular-nums;
-  cursor: pointer;
+  cursor: pointer;               /* pointer on buttons */
 }
 
-/* Middle number field */
 .cart-item .qty-input {
+  border: 0;
+  background: #fff;
+  height: 30px;
+  min-width: 30px;
+  display: inline-block;         /* NOT flex → allow text cursor */
   width: 42px;
   text-align: center;
-  appearance: textfield;
-  -moz-appearance: textfield;
-  cursor: default;
-}
-
-/* Hover effect — light grey background, no borders */
-.cart-item .qty-btn:hover {
-  background: #f8f8f8;
-}
-
-/* Keep overall border highlight */
-.cart-item .qty-controls:hover {
-  border-color: var(--theme-a);
-}
-
-/* Focus states */
-.cart-item .qty-btn:focus-visible,
-.cart-item .qty-input:focus-visible {
-  outline: none;
-  box-shadow: inset 0 0 0 2px var(--theme-a);
-}
-
-/* Plus & minus buttons */
-.cart-item .qty-btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1;
-}
-
-/* Use Reckless Neue for cart qty controls */
-.cart-item .qty-input,
-.cart-item .qty-btn {
+  appearance: textfield;         /* modern browsers */
+  cursor: text;                  /* I-beam on the number */
   font-family: 'Reckless Neue', serif;
   font-weight: 400;
   font-size: 0.95rem;
   line-height: 1.2;
   font-variant-numeric: lining-nums tabular-nums;
-}
-
-/* Quantity input */
-.cart-item .qty-input {
-  width: 42px;
-  background: #fff;
-  text-align: center;
   padding: 0;
   margin: 0;
   border-radius: 0;
 }
 
-/* Spinner removal */
-.cart-item .qty-input[type="number"] {
-  appearance: textfield;
+/* Plus & minus buttons (typography to match product page) */
+.cart-item .qty-btn {
+  font-family: 'Reckless Neue', serif;
+  font-weight: 600;              /* darker */
+  font-size: 1.25rem;            /* larger glyphs */
+  line-height: 1;
+  padding: 0;
 }
+
+/* Hover effect — light grey on buttons only */
+/* Cart qty buttons — match product page hover */
+.cart-item .qty-btn {
+  position: relative;
+  box-sizing: border-box;
+  z-index: 0; /* let text sit above the pill */
+}
+
+.cart-item .qty-btn:hover::before {
+  content: "";
+  position: absolute;
+  inset: 3px 3px 3px 3px;   /* tweak to raise the grey above the orange outline */
+  background: #ccc;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: -1;              /* keep behind the glyphs */
+}
+
+/* Unified hover/focus states on the OUTER wrapper (like product page) */
+.cart-item .qty-controls:hover,
+.cart-item .qty-controls:focus-within {
+  border-color: var(--theme-a);
+  box-shadow: 0 0 0 2px var(--theme-a); /* orange outline around whole group */
+  position: relative;
+  z-index: 2;
+}
+
+/* Focus states — remove inner outlines (so only the outer ring shows) */
+.cart-item .qty-btn:focus,
+.cart-item .qty-btn:focus-visible,
+.cart-item .qty-input:focus,
+.cart-item .qty-input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Spinner removal */
 .cart-item .qty-input[type="number"]::-webkit-outer-spin-button,
 .cart-item .qty-input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Remove double borders */
+/* Remove double borders between segments (keeps single frame) */
 .cart-item .qty-btn + .qty-input,
-.cart-item .qty-input + .qty-btn {
-  margin-left: -1px;
-}
+.cart-item .qty-input + .qty-btn { margin-left: -1px; }
 
 /* Rounded corners only on outer edges */
 .cart-item [data-action="dec"] { border-radius: 6px 0 0 6px; }
 .cart-item [data-action="inc"] { border-radius: 0 6px 6px 0; }
-
-/* Hover/focus styles */
-.cart-item .qty-btn:hover,
-.cart-item .qty-input:hover {
-  border-color: var(--theme-a);
-  background: #eee;
-}
-.cart-item .qty-input:hover {
-  background: #fff;
-  position: relative;
-  z-index: 2;
-}
-.cart-item .qty-btn:focus-visible,
-.cart-item .qty-input:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--theme-a);
-  position: relative;
-  z-index: 2;
-}
 
 /* ==========================
    FORCE RECKLESS NEUE
