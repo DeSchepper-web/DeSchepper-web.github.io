@@ -215,21 +215,29 @@
 ========================== */
 .product-page .qty-control{
   display:inline-flex; align-items:stretch; gap:0; padding:0;
-  background:transparent; border:0; /* borders live on children */
+  background:transparent; border:0;
 }
 .product-page .qty-btn,
 .product-page .qty-control .qty{
-  height:44px; min-width:44px; border:1px solid #ccc;
+  height:44px; border:1px solid #ccc;
   background:#f8f8f8; transition:background .2s, border-color .2s;
   font:inherit; line-height:1; padding:0; margin:0;
 }
 .product-page .qty-control .qty{
-  width:56px; background:#fff; text-align:center; border-radius:0;
+  width:90px; min-width:90px;         /* wider number box */
+  background:#fff;
+  text-align:center;
+  border-radius:0;
   appearance:textfield; -moz-appearance:textfield;
-  font-family:'Reckless Neue', serif !important;  /* count only */
+  font-family:'Reckless Neue', serif !important;
   font-weight:400; font-size:1.15rem; line-height:1.2;
   font-variant-numeric: lining-nums tabular-nums;
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+
+  display:flex; align-items:center; justify-content:center;
+}
+.product-page .qty-btn{
+  width:44px; min-width:44px;        /* slimmer side buttons */
 }
 .product-page .qty-control .qty::-webkit-outer-spin-button,
 .product-page .qty-control .qty::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
@@ -265,7 +273,7 @@
 
 /* ===== Buybox info section (full-width) ===== */
 .product-page .buybox .buy-info{
-  grid-column:1 / -1;      /* span both columns */
+  grid-column:1 / -1;
   border-top:1px solid #e6e6e6;
   margin-top:1rem;
   padding-top:1rem;
@@ -313,7 +321,7 @@
   border-radius:10px; box-shadow:0 16px 36px rgba(0,0,0,.6);
 }
 
-/* ===== Minimal theme overrides to keep hero aligned top / remove theme chrome ===== */
+/* ===== Minimal theme overrides ===== */
 .product-page .buybar{ display:none !important; }
 .product-page .hero{
   align-self:start !important;
@@ -322,7 +330,7 @@
 }
 .product-page .hero::before{ content:none !important; }
 
-/* ===== Optional: keep details + buybox same “box” width on desktop ===== */
+/* ===== Optional: keep details + buybox same width ===== */
 @media (min-width:1025px){
   .product-page .left-col .card,
   .product-page .buybox{
@@ -333,4 +341,136 @@
 @media (max-width:1024px){
   .product-page .left-col .card,
   .product-page .buybox{ max-width:100%; }
+}
+.product-header .subtitle {
+  display: inline-block;
+  position: relative;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0.5rem 0 0;
+  text-align: center;
+}
+.product-header .subtitle::after {
+  content: "";
+  display: block;
+  height: 3px;
+  background: var(--theme-a);
+  margin: 0.4rem auto 0;
+  width: 100%;
+  border-radius: 2px;
+}
+/* ===== Full-width framed qty that matches CTA/Select width ===== */
+
+/* 1) The grid item itself fills the track exactly like the CTA/select */
+.product-page .qty-control{
+  grid-area: qty;
+  justify-self: stretch;       /* belt-and-suspenders */
+  width: 100%;
+  min-width: 0;
+
+  /* Make the outer group the "box" so its width = CTA/select width */
+  display: grid;
+  grid-template-columns: var(--qty-btn-w,40px) 1fr var(--qty-btn-w,40px);
+  align-items: stretch;
+
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;            /* clip inner edges cleanly */
+  padding: 0;                  /* ensure exact width parity */
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+/* 2) Inner pieces are borderless; middle input expands to fill */
+.product-page .qty-btn,
+.product-page .qty-control .qty{
+  border: 0 !important;        /* remove inner borders */
+  background: transparent;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font: inherit;
+  flex: 0 0 auto;              /* no flex growth/shrink overrides */
+}
+
+/* Middle number field centers and stretches */
+.product-page .qty-control .qty{
+  width: 100% !important;      /* fill the 1fr track */
+  min-width: 0 !important;
+  text-align: center;
+
+  font-family:'Reckless Neue', serif !important;
+  font-weight: 400;
+  font-size: 1.15rem;
+  font-variant-numeric: lining-nums tabular-nums;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  appearance: textfield; -moz-appearance: textfield;
+}
+.product-page .qty-control .qty::-webkit-outer-spin-button,
+.product-page .qty-control .qty::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+
+/* Buttons fixed width; add subtle separators via left borders */
+.product-page .qty-btn{
+  width: var(--qty-btn-w,40px);
+  min-width: var(--qty-btn-w,40px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.product-page .qty-btn:first-child{ border-right: 1px solid #e6e6e6; }
+.product-page .qty-btn:last-child { border-left:  1px solid #e6e6e6; }
+
+/* Hover/focus states (on the outer frame for consistency) */
+.product-page .qty-control:hover{ border-color: var(--theme-a); }
+.product-page .qty-btn:focus-visible,
+.product-page .qty-control .qty:focus-visible{
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--theme-a);
+}
+
+/* Match component heights with CTA/select */
+.product-page .select,
+.product-page .input,
+.product-page .buy-actions .cta,
+.product-page .qty-control { height: 44px; }
+
+/* Mobile: larger touch targets (keeps exact width parity) */
+@media (max-width:768px){
+  :root{ --qty-btn-w: 44px; }
+  .product-page .qty-control,
+  .product-page .select,
+  .product-page .input,
+  .product-page .buy-actions .cta { height: 48px; }
+}
+
+/* IMPORTANT: kill the old equal-thirds rule if it exists anywhere above */
+.product-page .qty-control .qty,
+.product-page .qty-control .qty-btn{ flex: 0 0 auto !important; }
+/* Keep "Add to Cart" on one line and centered */
+.product-page .buy-actions { 
+  display: flex; 
+  min-width: 0;               /* allow the child to shrink without weird wrapping */
+}
+
+.product-page .buy-actions .cta{
+  display: inline-flex;       /* center text vertically/horizontally */
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;        /* <-- no wrapping */
+  line-height: 1;             /* avoid tall text metrics causing wrap */
+  height: 44px;               /* match components */
+  padding: 0 1rem;            /* horizontal breathing room */
+  min-width: 0;               /* allow shrink within grid column */
+}
+
+@media (max-width:768px){
+  .product-page .buy-actions .cta{ height: 48px; }
 }

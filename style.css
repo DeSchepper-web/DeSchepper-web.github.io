@@ -662,13 +662,53 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
 }
 
 /* Shared size + base look */
+.cart-item .qty-controls {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+}
+
 .cart-item .qty-btn,
 .cart-item .qty-input {
+  border: 0;                  /* no inner dividers */
+  background: #fff;           /* white default */
   height: 30px;
   min-width: 30px;
-  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Reckless Neue', serif;
+  font-variant-numeric: lining-nums tabular-nums;
+  cursor: pointer;
+}
+
+/* Middle number field */
+.cart-item .qty-input {
+  width: 42px;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+  cursor: default;
+}
+
+/* Hover effect — light grey background, no borders */
+.cart-item .qty-btn:hover {
   background: #f8f8f8;
-  transition: background .2s, border-color .2s;
+}
+
+/* Keep overall border highlight */
+.cart-item .qty-controls:hover {
+  border-color: var(--theme-a);
+}
+
+/* Focus states */
+.cart-item .qty-btn:focus-visible,
+.cart-item .qty-input:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--theme-a);
 }
 
 /* Plus & minus buttons */
