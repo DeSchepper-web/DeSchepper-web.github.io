@@ -783,7 +783,19 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
 .cart-summary .total,
 .cart-summary .total-amount,
 .cart-section #cart-total { font-size: 1.2rem; }
+/* Cart qty buttons — force glyph color on mobile (iOS/Android) */
+.cart-item .qty-controls { color: #333; } /* make children inherit */
 
+.cart-item .qty-btn,
+.cart-item .qty-btn:active,
+.cart-item .qty-btn:focus {
+  color: #333 !important;             /* stop system blue */
+  -webkit-text-fill-color: #333;      /* iOS Safari */
+  text-decoration: none !important;   /* belt & suspenders */
+  -webkit-appearance: none;           /* strip native button look */
+  appearance: none;
+  -webkit-tap-highlight-color: transparent; /* remove blue flash on tap */
+}
 /* ==========================
   PAGE BANNERS
 ========================== */
