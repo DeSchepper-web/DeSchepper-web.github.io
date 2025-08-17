@@ -1,5 +1,9 @@
-/* /product-page.js  — v7
-   Gallery + Dots + Lightbox + Buy UI sync + Duplicate guards
+/* /products.js — v8.6 (client-cart aligned + global toast)
+   - Adds N unit items (global schema: [{name, price}, ...])
+   - Qty buttons wired (.qty-control .qty-btn.down/.up)
+   - Calls window.showCartToast() just like your global JS
+   - Optionally injects #cart-toast if missing (safe to remove if you include it in HTML)
+   - Gallery + Dots + Lightbox + Duplicate guards
 */
 (function () {
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -7,6 +11,25 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     var root = $('.product-page') || document;
+
+    /* ---------------------------------------------
+       Ensure #cart-toast exists (so global showCartToast works everywhere)
+    --------------------------------------------- */
+    (function ensureCartToast(){
+      if (!document.getElementById('cart-toast')) {
+        var t = document.createElement('div');
+        t.id = 'cart-toast';
+        t.textContent = 'Added to cart';
+        // Minimal inline styles; remove if you style #cart-toast in CSS already
+        Object.assign(t.style, {
+          position: 'fixed', left: '50%', bottom: '24px', transform: 'translateX(-50%)',
+          padding: '10px 14px', background: 'rgba(0,0,0,0.85)', color: '#fff',
+          borderRadius: '10px', fontSize: '14px', zIndex: 9999, opacity: '0',
+          transition: 'opacity .25s'
+        });
+        document.body.appendChild(t);
+      }
+    })();
 
     /* ---------------------------------------------
        Footer year
@@ -34,25 +57,27 @@
     }
 
     /* ---------------------------------------------
-       BUY UI sync
+       BUY UI — CLIENT-SIDE CART (global schema)
     --------------------------------------------- */
     var buyForm        = $('#buy-form', root);
     var priceDesktop   = $('#price', root);
     var variantDesktop = $('#variant', root);
     var qtyDesktop     = $('#qty', root);
 
+    // Optional mobile hooks
     var buybar         = $('.buybar', root);
     var priceMobile    = $('#price-mobile', buybar || root);
     var variantMobile  = $('#variant-mobile', buybar || root);
     var qtyMobile      = $('#qty-mobile', buybar || root);
-    var addMobileBtn   = $('#add-mobile', buybar || root);
+
+    var titleEl        = $('#product-title', root) || $('.product-title', root) || $('h1', root);
 
     function formatPrice(num) { return '$' + Number(num).toFixed(2); }
     function getVariantPrice(selectEl) {
       if (!selectEl) return null;
-      var opt = selectEl.selectedOptions && selectEl.selectedOptions[0];
-      var n = parseFloat((opt && opt.dataset ? opt.dataset.price : '') || '');
-      return isFinite(n) ? n : null;
+      var opt = selectEl.selectedOptions ? selectEl.selectedOptions[0] : null;
+      var n = parseFloat(opt && opt.dataset ? opt.dataset.price || '' : '');
+      return Number.isFinite(n) ? n : null;
     }
     function updatePrices() {
       var p = getVariantPrice(variantDesktop);
@@ -62,6 +87,8 @@
         if (priceMobile)  priceMobile.textContent  = formatPrice(p);
       }
     }
+
+    // Mirror helpers
     function mirrorSelect(from, to) {
       if (!from || !to) return;
       if (to.value !== from.value) {
@@ -77,20 +104,129 @@
       }
     }
 
-    if (variantDesktop) variantDesktop.addEventListener('change', function () { mirrorSelect(variantDesktop, variantMobile); updatePrices(); });
-    if (variantMobile)  variantMobile.addEventListener('change',  function () { mirrorSelect(variantMobile,  variantDesktop); updatePrices(); });
+    // Wire mirrors
+    if (variantDesktop) variantDesktop.addEventListener('change', function () {
+      mirrorSelect(variantDesktop, variantMobile); updatePrices();
+    });
+    if (variantMobile) variantMobile.addEventListener('change', function () {
+      mirrorSelect(variantMobile, variantDesktop); updatePrices();
+    });
+    if (qtyDesktop) qtyDesktop.addEventListener('input', function () {
+      mirrorInput(qtyDesktop, qtyMobile);
+    });
+    if (qtyMobile) qtyMobile.addEventListener('input', function () {
+      mirrorInput(qtyMobile, qtyDesktop);
+    });
+    updatePrices();
 
-    if (qtyDesktop) qtyDesktop.addEventListener('input', function () { mirrorInput(qtyDesktop, qtyMobile); });
-    if (qtyMobile)  qtyMobile.addEventListener('input',  function () { mirrorInput(qtyMobile,  qtyDesktop); });
+    // ---- Quantity controls (.qty-btn.down/.up)
+    (function attachQtyControls(){
+      function toInt(v, d){ var n = parseInt(String(v||'').trim(), 10); return Number.isFinite(n) ? n : d; }
+      function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+      function setQty(input, val){
+        input.value = String(val);
+        input.dispatchEvent(new Event('input',  { bubbles:true }));
+        input.dispatchEvent(new Event('change', { bubbles:true }));
+      }
 
-    if (addMobileBtn) addMobileBtn.addEventListener('click', function (e) {
-      e.preventDefault();
+      document.addEventListener('click', function(e){
+        var btn = e.target.closest('.qty-control .qty-btn');
+        if(!btn) return;
+
+        var wrap  = btn.closest('.qty-control');
+        var input = wrap && wrap.querySelector('input[type="number"]');
+        if(!input) return;
+
+        e.preventDefault();
+
+        var step = toInt(input.step, 1) || 1;
+        var min  = toInt(input.min, 1) || 1;
+        var max  = Number.isFinite(parseFloat(input.max)) ? parseInt(input.max,10) : Infinity;
+
+        var val = toInt(input.value, min);
+        if (btn.classList.contains('up'))   val += step;
+        if (btn.classList.contains('down')) val -= step;
+
+        setQty(input, clamp(val, min, max));
+
+        if (input === qtyDesktop) mirrorInput(qtyDesktop, qtyMobile);
+        if (input === qtyMobile)  mirrorInput(qtyMobile,  qtyDesktop);
+      });
+
+      var q = qtyDesktop;
+      if (q){
+        var min = toInt(q.min, 1), step = toInt(q.step, 1) || 1;
+        var max = Number.isFinite(parseFloat(q.max)) ? parseInt(q.max,10) : Infinity;
+        function clampSelf(){ setQty(q, clamp(toInt(q.value, min), min, max)); }
+        q.addEventListener('blur', clampSelf);
+        q.addEventListener('change', clampSelf);
+        q.addEventListener('keydown', function(e){
+          if (e.key === 'ArrowUp')   { e.preventDefault(); setQty(q, clamp(toInt(q.value,min)+step, min, max)); }
+          if (e.key === 'ArrowDown') { e.preventDefault(); setQty(q, clamp(toInt(q.value,min)-step, min, max)); }
+        });
+      }
+    })();
+
+    // ---- Submit: add N unit items to match global cart schema ----
+    var submitting = false;
+    function submitBuy(e) {
+      if (e) e.preventDefault();
+      if (submitting) return;
+
       mirrorSelect(variantMobile, variantDesktop);
       mirrorInput(qtyMobile, qtyDesktop);
-      if (buyForm) buyForm.submit();
-    });
 
-    updatePrices();
+      var productName = (titleEl && titleEl.textContent.trim()) || 'Product';
+      var vSel = variantDesktop || variantMobile;
+      var variantText = '';
+      if (vSel) {
+        var opt = vSel.options[vSel.selectedIndex];
+        variantText = opt ? (opt.text || opt.label || '') : '';
+      }
+      var displayName = variantText ? (productName + ' — ' + variantText) : productName;
+
+      var priceVal = getVariantPrice(variantDesktop) ?? getVariantPrice(variantMobile) ?? 0;
+      var qtyInput = buyForm && buyForm.querySelector('.qty-control input[type="number"]');
+      if (!qtyInput) qtyInput = qtyDesktop || qtyMobile;
+      var qtyVal = Math.max(1, parseInt(String(qtyInput ? qtyInput.value : '1').trim(), 10) || 1);
+
+      var key = displayName + '|' + Number(priceVal || 0);
+
+      var haveEnsureOrder     = (typeof window.ensureOrder === 'function');
+      var haveGetCart         = (typeof window.getCart === 'function');
+      var haveSetCart         = (typeof window.setCart === 'function');
+      var haveUpdateCartCount = (typeof window.updateCartCount === 'function');
+      var haveShowCartToast   = (typeof window.showCartToast === 'function');
+
+      submitting = true;
+      try {
+        if (haveEnsureOrder) window.ensureOrder(key);
+
+        var items = haveGetCart ? window.getCart() : (function(){ try { return JSON.parse(localStorage.getItem('cart')||'[]'); } catch { return []; } })();
+        if (!Array.isArray(items)) items = [];
+
+        for (var i = 0; i < qtyVal; i++) {
+          items.push({ name: displayName, price: Number(priceVal) || 0 });
+        }
+
+        if (haveSetCart) window.setCart(items);
+        else localStorage.setItem('cart', JSON.stringify(items));
+
+        if (haveUpdateCartCount) window.updateCartCount();
+        if (haveShowCartToast)   window.showCartToast();   // <-- same notification as global
+        // Optional redirect:
+        // location.href = '/cart/';
+      } finally {
+        submitting = false;
+      }
+    }
+
+    if (buyForm) {
+      buyForm.addEventListener('submit', function (e) {
+        var clientMode = (buyForm.dataset.mode || '').toLowerCase() === 'client';
+        if (clientMode) submitBuy(e);
+      });
+    }
 
     /* ---------------------------------------------
        GALLERY + DOTS + LIGHTBOX
@@ -105,17 +241,12 @@
     var lightbox    = $('#lightbox');
     var lightboxImg = $('#lightbox-img');
 
-    // Quick one-line heartbeat so you know this file is loaded:
-    // (Open DevTools → Console, you should see this once.)
-    if (hero) console.log('[product-page.js v7] hero found, building gallery…');
+    if (hero) console.log('[products.js v8.6] hero found, building gallery…');
 
     if (hero && heroImg && heroFrame && dotsWrap) {
       function parseImagesFromAttr(raw) {
-        // 1) Try raw JSON
         try { var arr = JSON.parse(raw); if (Array.isArray(arr) && arr.length) return arr; } catch(e){}
-        // 2) Replace &quot; with " and retry
         try { var arr2 = JSON.parse(raw.replace(/&quot;/g, '"')); if (Array.isArray(arr2) && arr2.length) return arr2; } catch(e){}
-        // 3) Last resort: extract anything inside straight quotes
         var out = []; var m; var rx = /"([^"]+)"/g;
         while ((m = rx.exec(raw))) out.push(m[1]);
         return out;
@@ -143,7 +274,7 @@
           dotsWrap.style.display = 'none';
           return;
         }
-        dotsWrap.style.display = ''; // use CSS default
+        dotsWrap.style.display = '';
         images.forEach(function (_, idx) {
           var b = document.createElement('button');
           b.type = 'button';
@@ -176,21 +307,17 @@
       function next()  { go(i + 1); }
       function prev()  { go(i - 1); }
 
-      // Init
       renderDots();
       show();
 
-      // Buttons
       if (prevBtn) prevBtn.addEventListener('click', prev);
       if (nextBtn) nextBtn.addEventListener('click', next);
 
-      // Keyboard (when hero is focused)
       hero.addEventListener('keydown', function (e) {
         if (e.key === 'ArrowRight') { next(); e.preventDefault(); }
         if (e.key === 'ArrowLeft')  { prev(); e.preventDefault(); }
       });
 
-      // Swipe
       var touchX = null, touchY = null, swiping = false;
       function onTouchStart(e) {
         if (!e.touches || e.touches.length !== 1) return;
@@ -201,15 +328,16 @@
         if (!swiping || touchX == null) return;
         var dx = e.touches[0].clientX - touchX;
         var dy = e.touches[0].clientY - touchY;
-        if (Math.abs(dy) > Math.abs(dx)) return; // ignore vertical scroll
+        if (Math.abs(dy) > Math.abs(dx)) return;
         if (Math.abs(dx) > 36) { if (dx > 0) prev(); else next(); swiping = false; }
       }
       function onTouchEnd() { swiping = false; touchX = touchY = null; }
-      heroFrame.addEventListener('touchstart', onTouchStart, { passive: true });
-      heroFrame.addEventListener('touchmove',  onTouchMove,  { passive: true });
-      heroFrame.addEventListener('touchend',   onTouchEnd,   { passive: true });
+      if (heroFrame) {
+        heroFrame.addEventListener('touchstart', onTouchStart, { passive: true });
+        heroFrame.addEventListener('touchmove',  onTouchMove,  { passive: true });
+        heroFrame.addEventListener('touchend',   onTouchEnd,   { passive: true });
+      }
 
-      // Lightbox
       function openLightbox() {
         if (!lightbox || !lightboxImg) return;
         lightbox.setAttribute('aria-hidden', 'false');
@@ -223,7 +351,7 @@
         document.documentElement.style.overflow = '';
         document.body.style.overflow = '';
       }
-      heroImg.addEventListener('click', openLightbox);
+      if (heroImg) heroImg.addEventListener('click', openLightbox);
       if (lightbox) {
         lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLightbox(); });
       }
@@ -242,33 +370,34 @@
         });
       }
 
-      // Missing image resilience
       var EXT_ALTS = ['.jpg', '.jpeg', '.png', '.webp'];
       var triedByIndex = new Map();
-      heroImg.addEventListener('error', function () {
-        var url = images[i] || '';
-        var m = url.match(/\.(jpe?g|png|webp)(\?.*)?$/i);
-        var curExt = m ? '.' + m[1].toLowerCase() : '';
-        var rest   = m ? (m[2] || '') : '';
-        var tried  = triedByIndex.get(i) || new Set();
-        if (curExt) tried.add(curExt);
-        triedByIndex.set(i, tried);
+      if (heroImg) {
+        heroImg.addEventListener('error', function () {
+          var url = images[i] || '';
+          var m = url.match(/\.(jpe?g|png|webp)(\?.*)?$/i);
+          var curExt = m ? '.' + m[1].toLowerCase() : '';
+          var rest   = m ? (m[2] || '') : '';
+          var tried  = triedByIndex.get(i) || new Set();
+          if (curExt) tried.add(curExt);
+          triedByIndex.set(i, tried);
 
-        var nextExt = m && EXT_ALTS.find(function (ext) { return !tried.has(ext); });
-        if (nextExt) {
-          var candidate = url.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, nextExt + rest);
-          console.warn('Gallery image failed, retrying with', nextExt, candidate);
-          images[i] = candidate;
-          heroImg.src = candidate;
-          return;
-        }
-        console.warn('Gallery image missing, skipping:', url);
-        images.splice(i, 1);
-        if (!images.length) return;
-        if (i >= images.length) i = 0;
-        renderDots();
-        heroImg.src = images[i];
-      });
+          var nextExt = m && EXT_ALTS.find(function (ext) { return !tried.has(ext); });
+          if (nextExt) {
+            var candidate = url.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, nextExt + rest);
+            console.warn('Gallery image failed, retrying with', nextExt, candidate);
+            images[i] = candidate;
+            heroImg.src = candidate;
+            return;
+          }
+          console.warn('Gallery image missing, skipping:', url);
+          images.splice(i, 1);
+          if (!images.length) return;
+          if (i >= images.length) i = 0;
+          renderDots();
+          heroImg.src = images[i];
+        });
+      }
     }
   });
 })();

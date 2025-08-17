@@ -6,6 +6,7 @@
 
   <title>PRODUCT NAME | Form Precision</title>
   <meta name="description" content="Benefit-led one-liner for PRODUCT NAME: material, compatibility, key value." />
+  <meta name="robots" content="noindex,follow">
   <link rel="canonical" href="https://formprecision.com/products/PRODUCT-SLUG/" />
 
   <!-- Fonts -->
@@ -16,7 +17,7 @@
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/products.css" />
 
-  <!-- Favicons -->
+  <!-- Favicons (unchanged for compatibility) -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/images/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96"  href="/images/favicon-96x96.png">
@@ -25,7 +26,6 @@
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/images/site.webmanifest">
 
-  <!-- Social meta -->
   <meta property="og:type" content="product">
   <meta property="og:title" content="PRODUCT NAME | Form Precision">
   <meta property="og:description" content="Benefit-led one-liner for PRODUCT NAME.">
@@ -92,44 +92,43 @@
           <p class="subtitle">One-sentence positioning statement (material, fitment, benefit).</p>
         </header>
 
-        <!-- Gallery -->
         <!-- ===== Product Gallery ===== -->
-<figure class="hero" aria-label="Product gallery">
-  <div class="hero-frame">
-    <img id="hero-img" 
-         src="/images/favicon-512x512.png" 
-         alt="PRODUCT NAME installed on VEHICLE/USE-CASE"
-         decoding="async" loading="eager">
+        <figure class="hero" aria-label="Product gallery">
+          <div class="hero-frame">
+            <img id="hero-img" 
+                 src="/images/favicon-512x512.webp" 
+                 alt="PRODUCT NAME installed on VEHICLE/USE-CASE"
+                 decoding="async" loading="eager">
 
-    <!-- Navigation arrows -->
-    <button class="hero-nav prev" type="button" aria-label="Previous image">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M15.41 16.59 10.83 12 15.41 7.41 14 6l-6 6 6 6z"/>
-      </svg>
-    </button>
-    <button class="hero-nav next" type="button" aria-label="Next image">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
-      </svg>
-    </button>
-  </div>
+            <!-- Navigation arrows -->
+            <button class="hero-nav prev" type="button" aria-label="Previous image">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.41 16.59 10.83 12 15.41 7.41 14 6l-6 6 6 6z"/>
+              </svg>
+            </button>
+            <button class="hero-nav next" type="button" aria-label="Next image">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+              </svg>
+            </button>
+          </div>
 
-  <!-- ✅ Dots moved here (outside hero-frame, under image) -->
-  <div class="hero-dots" role="tablist" aria-label="Image navigation">
-    <button type="button" role="tab" aria-selected="true" aria-controls="hero-img" tabindex="0"></button>
-    <button type="button" role="tab" aria-selected="false" aria-controls="hero-img" tabindex="-1"></button>
-    <button type="button" role="tab" aria-selected="false" aria-controls="hero-img" tabindex="-1"></button>
-    <button type="button" role="tab" aria-selected="false" aria-controls="hero-img" tabindex="-1"></button>
-  </div>
+          <!-- Dots under image -->
+          <div class="hero-dots" role="tablist" aria-label="Image navigation">
+            <button type="button" role="tab" aria-selected="true" aria-controls="hero-img" tabindex="0"></button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="hero-img" tabindex="-1"></button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="hero-img" tabindex="-1"></button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="hero-img" tabindex="-1"></button>
+          </div>
 
-  <figcaption class="sr-only">
-    Use arrows or dots to change product images. Swipe supported on mobile.
-  </figcaption>
-</figure>
+          <figcaption class="sr-only">
+            Use arrows or dots to change product images. Swipe supported on mobile.
+          </figcaption>
+        </figure>
       </section>
 
       <!-- RIGHT: Buybox (same row as hero) -->
-      <form class="buybox" id="buy-form" action="/cart/" method="post" novalidate>
+      <form class="buybox" id="buy-form" data-mode="client" action="/cart/" method="post" novalidate>
         <input type="hidden" name="product_id" value="fp-xxxxx">
 
         <div class="price-wrap">
@@ -137,7 +136,7 @@
         </div>
 
         <div class="buy-actions">
-          <button class="cta" type="submit" aria-label="Add PRODUCT NAME to cart">Add to Cart</button>
+          <button class="cta" type="submit" aria-label="Add PRODUCT NAME to cart">ADD TO CART</button>
         </div>
 
         <label class="variant-wrap">
@@ -148,21 +147,20 @@
           </select>
         </label>
 
-<div class="qty-control" aria-label="Quantity">
-  <button type="button" class="qty-btn down" aria-label="Decrease quantity">−</button>
-  <input 
-    class="input qty" 
-    id="qty" 
-    name="quantity" 
-    type="number" 
-    value="1" 
-    min="1" 
-    inputmode="numeric" 
-    aria-label="Quantity">
-  <button type="button" class="qty-btn up" aria-label="Increase quantity">+</button>
-</div>
+        <div class="qty-control" aria-label="Quantity">
+          <button type="button" class="qty-btn down" aria-label="Decrease quantity">−</button>
+          <input 
+            class="input qty" 
+            id="qty" 
+            name="quantity" 
+            type="number" 
+            value="1" 
+            min="1" 
+            inputmode="numeric" 
+            aria-label="Quantity">
+          <button type="button" class="qty-btn up" aria-label="Increase quantity">+</button>
+        </div>
 
-        <!-- NEW: Policy / assurance info -->
         <div class="buy-info" aria-label="Shipping and policy information">
           <ul>
             <li><strong>Shipping:</strong> Ships in 2–3 business days</li>
@@ -173,16 +171,67 @@
         </div>
       </form>
 
-      <!-- BOTTOM: Reviews -->
+      <!-- BOTTOM: Reviews (cards + lightbox-ready) -->
       <div id="reviews-bottom">
-        <section class="card reviews-panel" id="reviews-panel" aria-labelledby="reviews-h">
-          <h3 id="reviews-h">Reviews <span class="stars" aria-hidden="true">★★★★★</span></h3>
-          <p class="meta">4.9/5 based on 27 reviews</p>
-          <ul class="bullets" aria-label="Top review highlights">
-            <li>“Fitment was perfect.”</li>
-            <li>“Noticeably stronger than stock.”</li>
-            <li>“Fast shipping, great support.”</li>
-          </ul>
+        <section class="reviews-panel card">
+          <div class="reviews-header">
+            <h2 class="reviews-title">
+              Reviews <span class="stars" aria-label="4.9 out of 5">★★★★★</span>
+            </h2>
+            <a href="/review/" class="review-cta" aria-label="Leave a review">LEAVE A REVIEW</a>
+          </div>
+
+          <p class="reviews-meta">4.9/5 based on 27 reviews</p>
+
+          <!-- Cards grid -->
+          <div class="reviews-grid">
+
+            <!-- Review card 1 -->
+            <article class="review-card" itemscope itemtype="https://schema.org/Review">
+              <header class="review-head">
+                <h3 class="reviewer" itemprop="author" itemscope itemtype="https://schema.org/Person">
+                  <span itemprop="name">Alex P.</span>
+                </h3>
+                <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
+              </header>
+
+              <p class="review-text" itemprop="reviewBody">
+                “Fitment was perfect.”
+              </p>
+
+              <div class="review-media" role="list">
+                <button class="thumb" role="listitem"
+                        data-full="/images/favicon-512x512.webp" aria-label="Open image 1">
+                  <img src="/images/favicon-512x512.webp" alt="Installed part close-up" loading="lazy">
+                </button>
+                <button class="thumb" role="listitem"
+                        data-full="/images/favicon-512x512.webp" aria-label="Open image 2">
+                  <img src="/images/favicon-512x512.webp" alt="Angle view" loading="lazy">
+                </button>
+              </div>
+            </article>
+
+            <!-- Review card 2 -->
+            <article class="review-card" itemscope itemtype="https://schema.org/Review">
+              <header class="review-head">
+                <h3 class="reviewer"><span>Jordan S.</span></h3>
+                <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
+              </header>
+              <p class="review-text">“Noticeably stronger than stock.”</p>
+              <div class="review-media"></div>
+            </article>
+
+            <!-- Review card 3 -->
+            <article class="review-card" itemscope itemtype="https://schema.org/Review">
+              <header class="review-head">
+                <h3 class="reviewer"><span>Chris D.</span></h3>
+                <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
+              </header>
+              <p class="review-text">“Fast shipping, great support.”</p>
+              <div class="review-media"></div>
+            </article>
+
+          </div>
         </section>
       </div>
     </div>
@@ -192,13 +241,21 @@
     <!-- ... your socials + footer content ... -->
   </footer>
 
-  <!-- Lightbox -->
+  <!-- Lightbox for product gallery (existing) -->
   <div id="lightbox" aria-hidden="true" role="dialog" aria-label="Fullscreen image viewer">
     <img id="lightbox-img" alt="">
   </div>
 
+  <!-- Lightbox for review images -->
+  <div id="review-lightbox" class="rv-lightbox" aria-hidden="true" role="dialog" aria-label="Review image viewer">
+    <button class="rv-close" aria-label="Close">&times;</button>
+    <img id="rv-image" alt="">
+    <div class="rv-hint">Click / tap to zoom · Esc to close</div>
+  </div>
+
   <!-- Scripts -->
   <script src="/script.js" defer></script>
-  <script src="/product-page.js" defer></script>
+  <script src="/products.js" defer></script>
+
 </body>
 </html>
