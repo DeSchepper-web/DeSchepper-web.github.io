@@ -93,38 +93,44 @@
         </header>
 
         <!-- ===== Product Gallery ===== -->
-        <figure class="hero" aria-label="Product gallery">
-          <div class="hero-frame">
-            <img id="hero-img" 
-                 src="/images/favicon-512x512.webp" 
-                 alt="PRODUCT NAME installed on VEHICLE/USE-CASE"
-                 decoding="async" loading="eager">
+<!-- ===== Product Gallery ===== -->
+<figure class="hero"
+        aria-label="Product gallery"
+        tabindex="0"
+        data-images='[
+          "/images/favicon-512x512.webp",
+          "/images/Carbon-Fiber-Nylon.webp",
+          "/images/favicon-512x512.webp",
+          "/images/Carbon-Fiber-Nylon.webp"
+        ]'>
 
-            <!-- Navigation arrows -->
-            <button class="hero-nav prev" type="button" aria-label="Previous image">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M15.41 16.59 10.83 12 15.41 7.41 14 6l-6 6 6 6z"/>
-              </svg>
-            </button>
-            <button class="hero-nav next" type="button" aria-label="Next image">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
-              </svg>
-            </button>
-          </div>
+  <div class="hero-frame">
+    <img id="hero-img"
+         src="/images/favicon-512x512.webp"
+         alt="PRODUCT NAME installed on VEHICLE/USE-CASE"
+         decoding="async"
+         loading="eager">
 
-          <!-- Dots under image -->
-          <div class="hero-dots" role="tablist" aria-label="Image navigation">
-            <button type="button" role="tab" aria-selected="true" aria-controls="hero-img" tabindex="0"></button>
-            <button type="button" role="tab" aria-selected="false" aria-controls="hero-img" tabindex="-1"></button>
-            <button type="button" role="tab" aria-selected="false" aria-controls="hero-img" tabindex="-1"></button>
-            <button type="button" role="tab" aria-selected="false" aria-controls="hero-img" tabindex="-1"></button>
-          </div>
+    <!-- Navigation arrows -->
+    <button class="hero-nav prev" type="button" aria-label="Previous image">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M15.41 16.59 10.83 12 15.41 7.41 14 6l-6 6 6 6z"/>
+      </svg>
+    </button>
+    <button class="hero-nav next" type="button" aria-label="Next image">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+      </svg>
+    </button>
+  </div>
 
-          <figcaption class="sr-only">
-            Use arrows or dots to change product images. Swipe supported on mobile.
-          </figcaption>
-        </figure>
+  <div class="hero-dots" role="tablist" aria-label="Image navigation"></div>
+
+  <figcaption class="sr-only">
+    Use arrows or dots to change product images. Swipe supported on mobile.
+  </figcaption>
+</figure>
+
       </section>
 
       <!-- RIGHT: Buybox (same row as hero) -->

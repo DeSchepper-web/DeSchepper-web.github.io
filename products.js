@@ -1,9 +1,10 @@
-/* /products.js — v8.6 (client-cart aligned + global toast)
+/* /products.js — v8.7 (client-cart aligned + global toast, cleaned)
    - Adds N unit items (global schema: [{name, price}, ...])
    - Qty buttons wired (.qty-control .qty-btn.down/.up)
-   - Calls window.showCartToast() just like your global JS
+   - Calls window.showCartToast() like your global JS
    - Optionally injects #cart-toast if missing (safe to remove if you include it in HTML)
-   - Gallery + Dots + Lightbox + Duplicate guards
+   - Gallery + Dots + Lightbox (no-DOM-rewrite, robust + Option A swipe fix)
+   - Cleanup: removed redundant assignments and no-op code; behavior unchanged
 */
 (function () {
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -13,14 +14,13 @@
     var root = $('.product-page') || document;
 
     /* ---------------------------------------------
-       Ensure #cart-toast exists (so global showCartToast works everywhere)
+       Ensure #cart-toast exists
     --------------------------------------------- */
     (function ensureCartToast(){
       if (!document.getElementById('cart-toast')) {
         var t = document.createElement('div');
         t.id = 'cart-toast';
         t.textContent = 'Added to cart';
-        // Minimal inline styles; remove if you style #cart-toast in CSS already
         Object.assign(t.style, {
           position: 'fixed', left: '50%', bottom: '24px', transform: 'translateX(-50%)',
           padding: '10px 14px', background: 'rgba(0,0,0,0.85)', color: '#fff',
@@ -213,9 +213,7 @@
         else localStorage.setItem('cart', JSON.stringify(items));
 
         if (haveUpdateCartCount) window.updateCartCount();
-        if (haveShowCartToast)   window.showCartToast();   // <-- same notification as global
-        // Optional redirect:
-        // location.href = '/cart/';
+        if (haveShowCartToast)   window.showCartToast();
       } finally {
         submitting = false;
       }
@@ -229,115 +227,186 @@
     }
 
     /* ---------------------------------------------
-       GALLERY + DOTS + LIGHTBOX
+       GALLERY + DOTS + LIGHTBOX (no-DOM-rewrite, robust)
+       Works with your existing HTML (hero-img, arrows, prebuilt dots)
     --------------------------------------------- */
     var hero        = $('.hero', root);
     var heroImg     = hero ? $('#hero-img', hero) : null;
     var heroFrame   = hero ? $('.hero-frame', hero) : null;
     var prevBtn     = hero ? $('.hero-nav.prev', hero) : null;
     var nextBtn     = hero ? $('.hero-nav.next', hero) : null;
-    var dotsWrap    = hero ? $('#hero-dots', hero) || $('#hero-dots') : null;
+    var dotsWrap    = hero ? $('.hero-dots', hero) : null;
 
     var lightbox    = $('#lightbox');
     var lightboxImg = $('#lightbox-img');
 
-    if (hero) console.log('[products.js v8.6] hero found, building gallery…');
+    if (hero) console.log('[products.js v8.7-clean] binding simple slider…');
 
     if (hero && heroImg && heroFrame && dotsWrap) {
       function parseImagesFromAttr(raw) {
-        try { var arr = JSON.parse(raw); if (Array.isArray(arr) && arr.length) return arr; } catch(e){}
-        try { var arr2 = JSON.parse(raw.replace(/&quot;/g, '"')); if (Array.isArray(arr2) && arr2.length) return arr2; } catch(e){}
-        var out = []; var m; var rx = /"([^"]+)"/g;
-        while ((m = rx.exec(raw))) out.push(m[1]);
-        return out;
+        try { var a = JSON.parse(raw); if (Array.isArray(a) && a.length) return a; } catch(e){}
+        try { var b = JSON.parse((raw||'').replace(/&quot;/g,'"')); if (Array.isArray(b)&&b.length) return b; } catch(e){}
+        var out=[],m,rx=/"([^"]+)"/g; while((m=rx.exec(raw||''))) out.push(m[1]); return out;
       }
-
       function getImages() {
-        if (Array.isArray(window.PRODUCT_IMAGES) && window.PRODUCT_IMAGES.length) {
-          return window.PRODUCT_IMAGES.slice();
-        }
-        var raw = hero.getAttribute('data-images');
-        if (raw) {
-          var list = parseImagesFromAttr(raw);
-          if (list && list.length) return list;
-        }
-        var src = heroImg.getAttribute('src');
-        return src ? [src] : [];
+        if (Array.isArray(window.PRODUCT_IMAGES) && window.PRODUCT_IMAGES.length) return window.PRODUCT_IMAGES.slice();
+        var raw = hero.getAttribute('data-images'); if (raw) { var list = parseImagesFromAttr(raw); if (list.length) return list; }
+        var src = heroImg.getAttribute('src'); return src ? [src] : [];
       }
 
       var images = getImages();
       var i = 0;
 
-      function renderDots() {
-        dotsWrap.innerHTML = '';
-        if (!images || images.length <= 1) {
-          dotsWrap.style.display = 'none';
-          return;
-        }
-        dotsWrap.style.display = '';
-        images.forEach(function (_, idx) {
+      // Make dot count match images, but don't rebuild your DOM
+      function ensureDots() {
+        var dots = $$('.hero-dots > button', hero);
+        if (dots.length === images.length) return dots;
+        while (dots.length < images.length) {
           var b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'dot';
-          b.setAttribute('role', 'tab');
-          b.setAttribute('aria-label', 'Go to image ' + (idx + 1) + ' of ' + images.length);
-          b.setAttribute('aria-selected', idx === i ? 'true' : 'false');
-          b.tabIndex = (idx === i ? 0 : -1);
-          b.addEventListener('click', function () { go(idx); });
+          b.type = 'button'; b.setAttribute('role','tab');
+          b.setAttribute('aria-controls','hero-img'); b.setAttribute('aria-selected','false'); b.tabIndex = -1;
           dotsWrap.appendChild(b);
-        });
+          dots.push(b);
+        }
+        while (dots.length > images.length) {
+          var last = dots.pop(); last.parentNode.removeChild(last);
+        }
+        return $$('.hero-dots > button', hero);
       }
+
+      function preloadAll(arr){ arr.forEach(function(url){ var im=new Image(); im.decoding='async'; im.src=url; }); }
 
       function updateDots() {
-        $$('.dot', dotsWrap).forEach(function (b, idx) {
-          var selected = (idx === i);
-          b.setAttribute('aria-selected', selected ? 'true' : 'false');
-          b.tabIndex = selected ? 0 : -1;
+        $$('.hero-dots > button', hero).forEach(function (b, idx) {
+          var sel = (idx === i);
+          b.setAttribute('aria-selected', sel ? 'true' : 'false');
+          b.tabIndex = sel ? 0 : -1;
+          b.classList.toggle('is-active', sel);
         });
       }
 
-      function show() {
-        if (!images[i]) return;
-        heroImg.src = images[i];
-        if (!heroImg.alt) heroImg.alt = 'Product image';
+      function show(idx) {
+        i = (idx + images.length) % images.length;
+        if (images[i]) heroImg.src = images[i];
+        if (!heroImg.alt) heroImg.alt = 'Product image ' + (i+1);
         updateDots();
+        if (lightbox && lightboxImg && lightbox.getAttribute('aria-hidden') === 'false') {
+          lightboxImg.src = images[i];
+        }
       }
 
-      function go(idx) { i = (idx + images.length) % images.length; show(); }
-      function next()  { go(i + 1); }
-      function prev()  { go(i - 1); }
+      function next(){ show(i + 1); }
+      function prev(){ show(i - 1); }
 
-      renderDots();
-      show();
+      // Init
+      ensureDots();
+      preloadAll(images);
+      if (images[0] && heroImg.src !== images[0]) heroImg.src = images[0];
+      updateDots();
 
-      if (prevBtn) prevBtn.addEventListener('click', prev);
-      if (nextBtn) nextBtn.addEventListener('click', next);
+      // If we only have one image, disable arrows and bail early
+      var hasMany = images.length > 1;
+      if (prevBtn) prevBtn.disabled = !hasMany;
+      if (nextBtn) nextBtn.disabled = !hasMany;
 
+      if (!hasMany) {
+        console.warn('[products.js] Gallery has one image. Add more via data-images or window.PRODUCT_IMAGES.');
+        if (heroImg) heroImg.addEventListener('click', openLightbox);
+        window.__gallery = { images: images.slice(), index: function(){return i;}, set: show };
+        return;
+      }
+
+      // --- Arrow clickability guard (neutralize inner SVG pointer-events) ---
+      (function ensureArrowClickability(){
+        [prevBtn, nextBtn].forEach(function(btn){
+          if (!btn) return;
+          btn.style.pointerEvents = 'auto';
+          btn.style.zIndex = '5';
+          $$('.hero-nav *', btn).forEach(function(n){ n.style.pointerEvents = 'none'; });
+        });
+      })();
+
+      // --- Arrows: capture-phase listeners + delegated fallback on frame ---
+      if (prevBtn) prevBtn.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation(); prev();
+      }, true);
+      if (nextBtn) nextBtn.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation(); next();
+      }, true);
+
+      heroFrame.addEventListener('click', function(e){
+        var btn = e.target.closest && e.target.closest('.hero-nav');
+        if (!btn) return;
+        e.preventDefault(); e.stopPropagation();
+        if (btn.classList.contains('prev')) prev();
+        if (btn.classList.contains('next')) next();
+      }, true);
+
+      // Dots
+      $$('.hero-dots > button', hero).forEach(function(b, idx){
+        b.addEventListener('click', function(){ show(idx); });
+      });
+
+      // Keyboard on hero
       hero.addEventListener('keydown', function (e) {
         if (e.key === 'ArrowRight') { next(); e.preventDefault(); }
         if (e.key === 'ArrowLeft')  { prev(); e.preventDefault(); }
       });
 
-      var touchX = null, touchY = null, swiping = false;
-      function onTouchStart(e) {
-        if (!e.touches || e.touches.length !== 1) return;
-        var t = e.touches[0];
-        touchX = t.clientX; touchY = t.clientY; swiping = true;
-      }
-      function onTouchMove(e) {
-        if (!swiping || touchX == null) return;
-        var dx = e.touches[0].clientX - touchX;
-        var dy = e.touches[0].clientY - touchY;
-        if (Math.abs(dy) > Math.abs(dx)) return;
-        if (Math.abs(dx) > 36) { if (dx > 0) prev(); else next(); swiping = false; }
-      }
-      function onTouchEnd() { swiping = false; touchX = touchY = null; }
-      if (heroFrame) {
-        heroFrame.addEventListener('touchstart', onTouchStart, { passive: true });
-        heroFrame.addEventListener('touchmove',  onTouchMove,  { passive: true });
-        heroFrame.addEventListener('touchend',   onTouchEnd,   { passive: true });
+      /* ---------------------------------------------
+         SWIPE / DRAG — Option A (never start a swipe from controls)
+      --------------------------------------------- */
+      var startX = null, startY = null, dragging = false, activePointerId = null;
+
+      function isInteractiveTarget(t){
+        return !!(t && (t.closest('.hero-nav') || t.closest('.hero-dots button')));
       }
 
+      function onPointerDown(e){
+        if (isInteractiveTarget(e.target)) return; // don't start swipe from controls
+        dragging = true;
+        activePointerId = e.pointerId;
+        startX = e.clientX;
+        startY = e.clientY;
+        if (heroFrame.setPointerCapture && activePointerId != null) {
+          try { heroFrame.setPointerCapture(activePointerId); } catch(_){ }
+        }
+      }
+
+      function onPointerMove(e){
+        if (!dragging) return;
+        var dx = e.clientX - startX, dy = e.clientY - startY;
+        if (Math.abs(dx) < 10 || Math.abs(dy) > Math.abs(dx)) return; // horizontal-intent threshold
+        e.preventDefault(); // prevent page scroll while swiping horizontally
+      }
+
+      function endGesture(e){
+        if (!dragging) return;
+        dragging = false;
+        var dx = e.clientX - startX;
+        if (dx > 40) prev();
+        else if (dx < -40) next();
+        if (heroFrame.releasePointerCapture && activePointerId != null) {
+          try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+        }
+        activePointerId = null;
+      }
+
+      function cancelGesture(){
+        dragging = false;
+        if (heroFrame.releasePointerCapture && activePointerId != null) {
+          try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+        }
+        activePointerId = null;
+      }
+
+      heroFrame.addEventListener('pointerdown', onPointerDown);
+      heroFrame.addEventListener('pointermove', onPointerMove, { passive: false });
+      heroFrame.addEventListener('pointerup',   endGesture);
+      heroFrame.addEventListener('pointercancel', cancelGesture);
+      heroFrame.addEventListener('lostpointercapture', cancelGesture);
+
+      // Lightbox
       function openLightbox() {
         if (!lightbox || !lightboxImg) return;
         lightbox.setAttribute('aria-hidden', 'false');
@@ -345,59 +414,67 @@
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
       }
-      function closeLightbox() {
-        if (!lightbox) return;
-        lightbox.setAttribute('aria-hidden', 'true');
-        document.documentElement.style.overflow = '';
-        document.body.style.overflow = '';
-      }
       if (heroImg) heroImg.addEventListener('click', openLightbox);
+
       if (lightbox) {
-        lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLightbox(); });
-      }
-      document.addEventListener('keydown', function (e) {
-        if (!lightbox || lightbox.getAttribute('aria-hidden') !== 'false') return;
-        if (e.key === 'Escape')     closeLightbox();
-        if (e.key === 'ArrowRight') { next(); if (lightboxImg) lightboxImg.src = images[i]; }
-        if (e.key === 'ArrowLeft')  { prev(); if (lightboxImg) lightboxImg.src = images[i]; }
-      });
-      if (lightboxImg) {
-        lightboxImg.addEventListener('click', function (e) {
-          var rect = lightboxImg.getBoundingClientRect();
-          var mid = rect.left + rect.width / 2;
-          if (e.clientX < mid) prev(); else next();
-          lightboxImg.src = images[i];
-        });
-      }
-
-      var EXT_ALTS = ['.jpg', '.jpeg', '.png', '.webp'];
-      var triedByIndex = new Map();
-      if (heroImg) {
-        heroImg.addEventListener('error', function () {
-          var url = images[i] || '';
-          var m = url.match(/\.(jpe?g|png|webp)(\?.*)?$/i);
-          var curExt = m ? '.' + m[1].toLowerCase() : '';
-          var rest   = m ? (m[2] || '') : '';
-          var tried  = triedByIndex.get(i) || new Set();
-          if (curExt) tried.add(curExt);
-          triedByIndex.set(i, tried);
-
-          var nextExt = m && EXT_ALTS.find(function (ext) { return !tried.has(ext); });
-          if (nextExt) {
-            var candidate = url.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, nextExt + rest);
-            console.warn('Gallery image failed, retrying with', nextExt, candidate);
-            images[i] = candidate;
-            heroImg.src = candidate;
-            return;
+        lightbox.addEventListener('click', function (e) {
+          if (e.target === lightbox) {
+            lightbox.setAttribute('aria-hidden', 'true');
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
           }
-          console.warn('Gallery image missing, skipping:', url);
-          images.splice(i, 1);
-          if (!images.length) return;
-          if (i >= images.length) i = 0;
-          renderDots();
-          heroImg.src = images[i];
         });
+        document.addEventListener('keydown', function (e) {
+          if (lightbox.getAttribute('aria-hidden') !== 'false') return;
+          if (e.key === 'Escape') {
+            lightbox.setAttribute('aria-hidden', 'true');
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+          }
+          if (e.key === 'ArrowRight') { next(); }
+          if (e.key === 'ArrowLeft')  { prev(); }
+        });
+        if (lightboxImg) {
+          lightboxImg.addEventListener('click', function (e) {
+            var rect = lightboxImg.getBoundingClientRect();
+            var mid = rect.left + rect.width / 2;
+            if (e.clientX < mid) prev(); else next();
+          });
+        }
       }
+
+      // Extension fallback + skip broken
+      var EXT_ALTS = ['.webp','.jpg','.jpeg','.png'];
+      var triedByIndex = new Map();
+      heroImg.addEventListener('error', function () {
+        var url = images[i] || '';
+        var m = url.match(/\.(webp|jpe?g|png)(\?.*)?$/i);
+        var curExt = m ? '.' + m[1].toLowerCase() : '';
+        var rest   = m ? (m[2] || '') : '';
+        var tried  = triedByIndex.get(i) || new Set();
+        if (curExt) tried.add(curExt);
+        triedByIndex.set(i, tried);
+
+        var nextExt = m && EXT_ALTS.find(function (ext) { return !tried.has(ext); });
+        if (nextExt) {
+          images[i] = url.replace(/\.(webp|jpe?g|png)(\?.*)?$/i, nextExt + rest);
+          heroImg.src = images[i];
+          return;
+        }
+        images.splice(i, 1);
+        if (!images.length) return;
+        if (i >= images.length) i = 0;
+        ensureDots();
+        updateDots();
+        heroImg.src = images[i];
+      });
+
+      // Small debug surface
+      window.__gallery = {
+        images: images.slice(),
+        index: function(){ return i; },
+        next: next, prev: prev, show: show
+      };
     }
   });
 })();
