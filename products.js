@@ -4,10 +4,10 @@
    - Calls window.showCartToast() like your global JS
    - Optionally injects #cart-toast if missing (safe to remove if you include it in HTML)
    - Gallery + Dots + Lightbox (no-DOM-rewrite, robust + Option A swipe fix)
-   - Cleanup: removed redundant assignments and no-op code; behavior unchanged
+   - Review images lightbox (scoped to #reviews-bottom), closes on backdrop/X/Esc/image
 */
 (function () {
-  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $(sel, root)  { return (root || document).querySelector(sel); }
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -205,7 +205,7 @@
         var items = haveGetCart ? window.getCart() : (function(){ try { return JSON.parse(localStorage.getItem('cart')||'[]'); } catch { return []; } })();
         if (!Array.isArray(items)) items = [];
 
-        for (var i = 0; i < qtyVal; i++) {
+        for (var k = 0; k < qtyVal; k++) {
           items.push({ name: displayName, price: Number(priceVal) || 0 });
         }
 
@@ -255,9 +255,8 @@
       }
 
       var images = getImages();
-      var i = 0;
+      var gi = 0; // gallery index (avoid var-collisions)
 
-      // Make dot count match images, but don't rebuild your DOM
       function ensureDots() {
         var dots = $$('.hero-dots > button', hero);
         if (dots.length === images.length) return dots;
@@ -278,7 +277,7 @@
 
       function updateDots() {
         $$('.hero-dots > button', hero).forEach(function (b, idx) {
-          var sel = (idx === i);
+          var sel = (idx === gi);
           b.setAttribute('aria-selected', sel ? 'true' : 'false');
           b.tabIndex = sel ? 0 : -1;
           b.classList.toggle('is-active', sel);
@@ -286,17 +285,17 @@
       }
 
       function show(idx) {
-        i = (idx + images.length) % images.length;
-        if (images[i]) heroImg.src = images[i];
-        if (!heroImg.alt) heroImg.alt = 'Product image ' + (i+1);
+        gi = (idx + images.length) % images.length;
+        if (images[gi]) heroImg.src = images[gi];
+        if (!heroImg.alt) heroImg.alt = 'Product image ' + (gi+1);
         updateDots();
         if (lightbox && lightboxImg && lightbox.getAttribute('aria-hidden') === 'false') {
-          lightboxImg.src = images[i];
+          lightboxImg.src = images[gi];
         }
       }
 
-      function next(){ show(i + 1); }
-      function prev(){ show(i - 1); }
+      function next(){ show(gi + 1); }
+      function prev(){ show(gi - 1); }
 
       // Init
       ensureDots();
@@ -304,113 +303,111 @@
       if (images[0] && heroImg.src !== images[0]) heroImg.src = images[0];
       updateDots();
 
-      // If we only have one image, disable arrows and bail early
       var hasMany = images.length > 1;
       if (prevBtn) prevBtn.disabled = !hasMany;
       if (nextBtn) nextBtn.disabled = !hasMany;
 
-      if (!hasMany) {
-        console.warn('[products.js] Gallery has one image. Add more via data-images or window.PRODUCT_IMAGES.');
-        if (heroImg) heroImg.addEventListener('click', openLightbox);
-        window.__gallery = { images: images.slice(), index: function(){return i;}, set: show };
-        return;
-      }
+      if (hasMany) {
+        // Arrow clickability guard
+        (function ensureArrowClickability(){
+          [prevBtn, nextBtn].forEach(function(btn){
+            if (!btn) return;
+            btn.style.pointerEvents = 'auto';
+            btn.style.zIndex = '5';
+            $$('.hero-nav *', btn).forEach(function(n){ n.style.pointerEvents = 'none'; });
+          });
+        })();
 
-      // --- Arrow clickability guard (neutralize inner SVG pointer-events) ---
-      (function ensureArrowClickability(){
-        [prevBtn, nextBtn].forEach(function(btn){
+        // Arrows
+        if (prevBtn) prevBtn.addEventListener('click', function(e){
+          e.preventDefault(); e.stopPropagation(); prev();
+        }, true);
+        if (nextBtn) nextBtn.addEventListener('click', function(e){
+          e.preventDefault(); e.stopPropagation(); next();
+        }, true);
+
+        heroFrame.addEventListener('click', function(e){
+          var btn = e.target.closest && e.target.closest('.hero-nav');
           if (!btn) return;
-          btn.style.pointerEvents = 'auto';
-          btn.style.zIndex = '5';
-          $$('.hero-nav *', btn).forEach(function(n){ n.style.pointerEvents = 'none'; });
+          e.preventDefault(); e.stopPropagation();
+          if (btn.classList.contains('prev')) prev();
+          if (btn.classList.contains('next')) next();
+        }, true);
+
+        // Dots
+        $$('.hero-dots > button', hero).forEach(function(b, idx){
+          b.addEventListener('click', function(){ show(idx); });
         });
-      })();
 
-      // --- Arrows: capture-phase listeners + delegated fallback on frame ---
-      if (prevBtn) prevBtn.addEventListener('click', function(e){
-        e.preventDefault(); e.stopPropagation(); prev();
-      }, true);
-      if (nextBtn) nextBtn.addEventListener('click', function(e){
-        e.preventDefault(); e.stopPropagation(); next();
-      }, true);
+        // Keyboard on hero
+        hero.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowRight') { next(); e.preventDefault(); }
+          if (e.key === 'ArrowLeft')  { prev(); e.preventDefault(); }
+        });
 
-      heroFrame.addEventListener('click', function(e){
-        var btn = e.target.closest && e.target.closest('.hero-nav');
-        if (!btn) return;
-        e.preventDefault(); e.stopPropagation();
-        if (btn.classList.contains('prev')) prev();
-        if (btn.classList.contains('next')) next();
-      }, true);
+        /* ---------------------------------------------
+           SWIPE / DRAG — Option A (never start from controls)
+        --------------------------------------------- */
+        var startX = null, startY = null, dragging = false, activePointerId = null;
 
-      // Dots
-      $$('.hero-dots > button', hero).forEach(function(b, idx){
-        b.addEventListener('click', function(){ show(idx); });
-      });
-
-      // Keyboard on hero
-      hero.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowRight') { next(); e.preventDefault(); }
-        if (e.key === 'ArrowLeft')  { prev(); e.preventDefault(); }
-      });
-
-      /* ---------------------------------------------
-         SWIPE / DRAG — Option A (never start a swipe from controls)
-      --------------------------------------------- */
-      var startX = null, startY = null, dragging = false, activePointerId = null;
-
-      function isInteractiveTarget(t){
-        return !!(t && (t.closest('.hero-nav') || t.closest('.hero-dots button')));
-      }
-
-      function onPointerDown(e){
-        if (isInteractiveTarget(e.target)) return; // don't start swipe from controls
-        dragging = true;
-        activePointerId = e.pointerId;
-        startX = e.clientX;
-        startY = e.clientY;
-        if (heroFrame.setPointerCapture && activePointerId != null) {
-          try { heroFrame.setPointerCapture(activePointerId); } catch(_){ }
+        function isInteractiveTarget(t){
+          return !!(t && (t.closest('.hero-nav') || t.closest('.hero-dots button')));
         }
-      }
 
-      function onPointerMove(e){
-        if (!dragging) return;
-        var dx = e.clientX - startX, dy = e.clientY - startY;
-        if (Math.abs(dx) < 10 || Math.abs(dy) > Math.abs(dx)) return; // horizontal-intent threshold
-        e.preventDefault(); // prevent page scroll while swiping horizontally
-      }
-
-      function endGesture(e){
-        if (!dragging) return;
-        dragging = false;
-        var dx = e.clientX - startX;
-        if (dx > 40) prev();
-        else if (dx < -40) next();
-        if (heroFrame.releasePointerCapture && activePointerId != null) {
-          try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+        function onPointerDown(e){
+          if (isInteractiveTarget(e.target)) return;
+          dragging = true;
+          activePointerId = e.pointerId;
+          startX = e.clientX;
+          startY = e.clientY;
+          if (heroFrame.setPointerCapture && activePointerId != null) {
+            try { heroFrame.setPointerCapture(activePointerId); } catch(_){ }
+          }
         }
-        activePointerId = null;
-      }
 
-      function cancelGesture(){
-        dragging = false;
-        if (heroFrame.releasePointerCapture && activePointerId != null) {
-          try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+        function onPointerMove(e){
+          if (!dragging) return;
+          var dx = e.clientX - startX, dy = e.clientY - startY;
+          if (Math.abs(dx) < 10 || Math.abs(dy) > Math.abs(dx)) return;
+          e.preventDefault();
         }
-        activePointerId = null;
+
+        function endGesture(e){
+          if (!dragging) return;
+          dragging = false;
+          var dx = e.clientX - startX;
+          if (dx > 40) prev();
+          else if (dx < -40) next();
+          if (heroFrame.releasePointerCapture && activePointerId != null) {
+            try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+          }
+          activePointerId = null;
+        }
+
+        function cancelGesture(){
+          dragging = false;
+          if (heroFrame.releasePointerCapture && activePointerId != null) {
+            try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+          }
+          activePointerId = null;
+        }
+
+        heroFrame.addEventListener('pointerdown', onPointerDown);
+        heroFrame.addEventListener('pointermove', onPointerMove, { passive: false });
+        heroFrame.addEventListener('pointerup',   endGesture);
+        heroFrame.addEventListener('pointercancel', cancelGesture);
+        heroFrame.addEventListener('lostpointercapture', cancelGesture);
+      } else {
+        // Single-image: still allow click to open hero lightbox
+        if (heroImg) heroImg.addEventListener('click', openLightbox);
+        console.warn('[products.js] Gallery has one image. Add more via data-images or window.PRODUCT_IMAGES.');
       }
 
-      heroFrame.addEventListener('pointerdown', onPointerDown);
-      heroFrame.addEventListener('pointermove', onPointerMove, { passive: false });
-      heroFrame.addEventListener('pointerup',   endGesture);
-      heroFrame.addEventListener('pointercancel', cancelGesture);
-      heroFrame.addEventListener('lostpointercapture', cancelGesture);
-
-      // Lightbox
+      // Hero lightbox
       function openLightbox() {
         if (!lightbox || !lightboxImg) return;
         lightbox.setAttribute('aria-hidden', 'false');
-        lightboxImg.src = images[i];
+        lightboxImg.src = images[gi];
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
       }
@@ -447,34 +444,121 @@
       var EXT_ALTS = ['.webp','.jpg','.jpeg','.png'];
       var triedByIndex = new Map();
       heroImg.addEventListener('error', function () {
-        var url = images[i] || '';
+        var url = images[gi] || '';
         var m = url.match(/\.(webp|jpe?g|png)(\?.*)?$/i);
         var curExt = m ? '.' + m[1].toLowerCase() : '';
         var rest   = m ? (m[2] || '') : '';
-        var tried  = triedByIndex.get(i) || new Set();
+        var tried  = triedByIndex.get(gi) || new Set();
         if (curExt) tried.add(curExt);
-        triedByIndex.set(i, tried);
+        triedByIndex.set(gi, tried);
 
         var nextExt = m && EXT_ALTS.find(function (ext) { return !tried.has(ext); });
         if (nextExt) {
-          images[i] = url.replace(/\.(webp|jpe?g|png)(\?.*)?$/i, nextExt + rest);
-          heroImg.src = images[i];
+          images[gi] = url.replace(/\.(webp|jpe?g|png)(\?.*)?$/i, nextExt + rest);
+          heroImg.src = images[gi];
           return;
         }
-        images.splice(i, 1);
+        images.splice(gi, 1);
         if (!images.length) return;
-        if (i >= images.length) i = 0;
+        if (gi >= images.length) gi = 0;
         ensureDots();
         updateDots();
-        heroImg.src = images[i];
+        heroImg.src = images[gi];
       });
 
-      // Small debug surface
+      // Debug surface
       window.__gallery = {
         images: images.slice(),
-        index: function(){ return i; },
+        index: function(){ return gi; },
         next: next, prev: prev, show: show
       };
-    }
-  });
+    } // end hero block
+
+    /* ---------------------------------------------
+       REVIEWS — Lightbox Zoom (scoped to #reviews-bottom)
+       Works with: <button class="thumb" data-full="..."><img alt=""></button>
+    --------------------------------------------- */
+    (function reviewsZoom(){
+      var lastFocused = null;
+
+      function ensureReviewLightbox() {
+        var lb = document.getElementById('review-lightbox');
+        if (lb) return lb;
+
+        lb = document.createElement('div');
+        lb.id = 'review-lightbox';
+        lb.setAttribute('role', 'dialog');
+        lb.setAttribute('aria-modal', 'true');
+        lb.setAttribute('aria-label', 'Image preview');
+        lb.innerHTML =
+          '<button type="button" class="rlb-close" aria-label="Close">×</button>' +
+          '<img alt="Expanded review image">';
+
+        document.body.appendChild(lb);
+
+        // Backdrop, X button, or IMAGE -> close
+        lb.addEventListener('click', function (e) {
+          var isBackdrop = e.target === lb;
+          var isCloseBtn = !!e.target.closest('.rlb-close');
+          var isImage    = e.target.tagName === 'IMG';
+          if (isBackdrop || isCloseBtn || isImage) closeReviewLightbox();
+        });
+
+        // ESC anywhere -> close (capture)
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && lb.classList.contains('open')) closeReviewLightbox();
+        }, true);
+
+        // Keyboard on the X (Enter/Space)
+        lb.querySelector('.rlb-close').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); closeReviewLightbox(); }
+        });
+
+        return lb;
+      }
+
+      function openReviewLightbox(src, alt) {
+        if (!src) return;
+        var lb  = ensureReviewLightbox();
+        var img = lb.querySelector('img');
+        lastFocused = document.activeElement;
+
+        img.removeAttribute('src'); // force refresh if same src
+        img.alt = alt || 'Expanded review image';
+        requestAnimationFrame(function () {
+          img.src = src;
+          lb.classList.add('open');
+          document.body.classList.add('rlb-open');
+          lb.setAttribute('aria-hidden', 'false');
+          lb.querySelector('.rlb-close').focus({ preventScroll: true });
+        });
+      }
+
+      function closeReviewLightbox() {
+        var lb = document.getElementById('review-lightbox');
+        if (!lb) return;
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('rlb-open');
+        if (lastFocused && document.body.contains(lastFocused)) {
+          try { lastFocused.focus({ preventScroll: true }); } catch(_) {}
+        }
+      }
+
+      var reviewsRoot = document.getElementById('reviews-bottom');
+      if (!reviewsRoot) return;
+
+      // Delegate clicks inside reviews only
+      reviewsRoot.addEventListener('click', function (e) {
+        var btn = e.target.closest('.review-media .thumb');
+        if (!btn) return;
+        var imgEl = btn.querySelector('img');
+        var src = btn.getAttribute('data-full') || (imgEl && (imgEl.currentSrc || imgEl.src));
+        var alt = imgEl ? imgEl.alt : '';
+        e.preventDefault();
+        openReviewLightbox(src, alt);
+      });
+    })();
+
+  }); // DOMContentLoaded
 })();
