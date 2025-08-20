@@ -1,15 +1,10 @@
-
-/* /products.js — v8.9 (client-cart aligned + unified full-screen zoom)
-   - Adds N unit items (global schema: [{name, price}, ...])
-   - Qty buttons wired (.qty-control .qty-btn.down/.up)
-   - Calls window.showCartToast() like your global JS
-   - Optionally injects #cart-toast if missing
-   - Gallery + Dots + Swipe (no DOM rewrite)
-   - ONE overlay (#zoom-overlay) for all zooms (hero + reviews + any img[data-zoomable])
-     • Opaque gray cover, true scroll lock (no white edge)
-     • Close via backdrop / X / Esc / image
-     • ArrowLeft/Right supported when invoked from hero
-   - NEW: ArrowLeft/Right also work when you HOVER or FOCUS the hero
+/* /products.js — v9.0 (hero swipe-only; zoom only for reviews)
+   - Client cart helpers (ensureOrder/getCart/setCart/updateCartCount/showCartToast supported if present)
+   - Mirrors variant/qty between desktop & mobile
+   - Qty controls (.qty-control .qty-btn.down/.up)
+   - Unified #zoom-overlay used ONLY for review images
+   - Hero gallery: arrows, dots, keyboard (on hover/focus), swipe (pointer + touch fallback)
+   - Mobile: prevent double-tap zoom & image drag on hero to keep swipe reliable
 */
 (function () {
   /* Tiny query helpers */
@@ -233,8 +228,8 @@
     }
 
     /* ---------------------------------------------
-       UNIFIED FULL-SCREEN ZOOM OVERLAY (Option B)
-       - Handles: any img[data-zoomable], hero image click
+       UNIFIED FULL-SCREEN ZOOM OVERLAY
+       (used ONLY for review images per click handler below)
     --------------------------------------------- */
     var overlay = (function ensureOverlay(){
       var ov = document.getElementById('zoom-overlay');
@@ -304,7 +299,7 @@
         overlay.classList.remove('open');
         overlay.setAttribute('aria-hidden','true');
         unlockScroll();
-        // remove hero navigation callbacks
+        // unbind arrow callbacks if any
         delete overlay._onArrowLeft;
         delete overlay._onArrowRight;
         if (overlay._lastFocus && document.body.contains(overlay._lastFocus)) {
@@ -323,11 +318,11 @@
       // Image click closes
       img.addEventListener('click', function(e){ e.preventDefault(); closeOverlay(); });
 
-      // Prevent scroll gestures while open
+      // Prevent gestures while open
       overlay.addEventListener('wheel', function(e){ if (overlay.classList.contains('open')) e.preventDefault(); }, { passive:false });
       overlay.addEventListener('touchmove', function(e){ if (overlay.classList.contains('open')) e.preventDefault(); }, { passive:false });
 
-      // Keyboard: Esc closes; block page scroll keys; Arrow nav hooks for hero
+      // Keyboard
       document.addEventListener('keydown', function(e){
         if (!overlay.classList.contains('open')) return;
         var k = e.key;
@@ -347,9 +342,13 @@
         img.src = ''; // force refresh even if same url
         overlay._lastFocus = document.activeElement;
 
-        // bind optional hero arrow handlers
+        // No hero linkage here, but keep options for future
         overlay._onArrowLeft  = opts && opts.onLeft  || null;
         overlay._onArrowRight = opts && opts.onRight || null;
+
+        // Own gestures fully while open
+        overlay.style.touchAction = 'none';
+        img.style.touchAction = 'none';
 
         lockScroll();
         overlay.style.display = 'flex';
@@ -363,20 +362,39 @@
       };
     })();
 
-    // Global click handler: any img[data-zoomable]
-    document.addEventListener('click', function(e){
+    /* ---------------------------------------------
+       ZOOM: Restrict to review images only
+       (Hero will NOT open overlay)
+    --------------------------------------------- */
+    // Optional auto-tag review images as zoomable
+    (function tagReviewImgs(){
+      var reviewSel = '.reviews-panel img, #reviews-bottom img';
+      $$(reviewSel).forEach(function(img){
+        if (!img.hasAttribute('data-zoomable')) img.setAttribute('data-zoomable', '');
+        if (!img.getAttribute('alt')) img.setAttribute('alt', 'Review image');
+      });
+    })();
+
+    // Only react to clicks on zoomable images inside reviews
+    document.addEventListener('click', function (e) {
       var t = e.target;
-      if (!(t && t.matches && t.matches('img[data-zoomable]'))) return;
-      // allow buttons/links to not interfere — we still open overlay
+      var isReviewZoomable =
+        t && t.matches && (
+          t.matches('.reviews-panel img[data-zoomable]') ||
+          t.matches('#reviews-bottom img[data-zoomable]')
+        );
+      if (!isReviewZoomable) return;
+
       e.preventDefault();
       e.stopPropagation();
+
       var src = t.getAttribute('data-zoom-src') || t.currentSrc || t.src;
       overlay.openWith(src, t.alt || '');
-    }, { capture:true });
+    }, { capture: true });
 
     /* ---------------------------------------------
        GALLERY + DOTS + SWIPE (no DOM rewrite)
-       (Hero image click now uses the unified overlay)
+       HERO is swipe-only; click on hero does NOT open overlay
     --------------------------------------------- */
     var hero        = $('.hero', root);
     var heroImg     = hero ? $('#hero-img', hero) : null;
@@ -384,8 +402,6 @@
     var prevBtn     = hero ? $('.hero-nav.prev', hero) : null;
     var nextBtn     = hero ? $('.hero-nav.next', hero) : null;
     var dotsWrap    = hero ? $('.hero-dots', hero) : null;
-
-    if (hero) console.log('[products.js v8.9] binding simple slider…');
 
     if (hero && heroImg && heroFrame && dotsWrap) {
       function parseImagesFromAttr(raw) {
@@ -434,10 +450,6 @@
         if (images[gi]) heroImg.src = images[gi];
         if (!heroImg.alt) heroImg.alt = 'Product image ' + (gi+1);
         updateDots();
-        // if overlay is currently open via hero, update image on arrows
-        if (overlay.classList.contains('open') && overlay._onArrowRight) {
-          overlay.querySelector('img').src = images[gi];
-        }
       }
 
       function next(){ show(gi + 1); }
@@ -487,7 +499,6 @@
 
         /* ---------------------------------------------
            KEYBOARD: Activate ←/→ only while HOVERING or FOCUSED on the hero
-           (replaces element-only keydown so it works on hover, too)
         --------------------------------------------- */
         (function enableHoverKeys(){
           var frame = heroFrame || hero;
@@ -521,70 +532,123 @@
         })();
 
         /* ---------------------------------------------
-           SWIPE / DRAG — Option A (never start from controls)
+           SWIPE / DRAG — Pointer Events + Touch fallback
         --------------------------------------------- */
-        var startX = null, startY = null, dragging = false, activePointerId = null;
+        // Mobile smoothing: disable native zoom/drag on hero to keep swipe reliable
+        try {
+          heroImg.setAttribute('draggable', 'false');
+          heroImg.style.webkitUserDrag = 'none';
+          heroFrame.style.touchAction = 'pan-y';      // vertical scroll ok; we own horizontal
+          heroImg.style.touchAction = 'manipulation'; // disables double-tap zoom on iOS
+        } catch(_) {}
 
-        function isInteractiveTarget(t){
-          return !!(t && (t.closest('.hero-nav') || t.closest('.hero-dots button')));
-        }
+        // Fallback guard against double-tap zoom on older iOS
+        (function preventDoubleTapZoom(){
+          var lastTouchEnd = 0;
+          heroFrame.addEventListener('touchend', function(e){
+            var now = Date.now();
+            if (now - lastTouchEnd < 350) e.preventDefault();
+            lastTouchEnd = now;
+          }, { passive:false });
+        })();
 
-        function onPointerDown(e){
-          if (isInteractiveTarget(e.target)) return;
-          dragging = true;
-          activePointerId = e.pointerId;
-          startX = e.clientX;
-          startY = e.clientY;
-          if (heroFrame.setPointerCapture && activePointerId != null) {
-            try { heroFrame.setPointerCapture(activePointerId); } catch(_){ }
+        // Pointer Events swipe
+        (function pointerSwipe(){
+          var startX = null, startY = null, dragging = false, activePointerId = null;
+
+          function isInteractiveTarget(t){
+            return !!(t && (t.closest('.hero-nav') || t.closest('.hero-dots button')));
           }
-        }
 
-        function onPointerMove(e){
-          if (!dragging) return;
-          var dx = e.clientX - startX, dy = e.clientY - startY;
-          if (Math.abs(dx) < 10 || Math.abs(dy) > Math.abs(dx)) return;
-          e.preventDefault();
-        }
-
-        function endGesture(e){
-          if (!dragging) return;
-          dragging = false;
-          var dx = e.clientX - startX;
-          if (dx > 40) prev();
-          else if (dx < -40) next();
-          if (heroFrame.releasePointerCapture && activePointerId != null) {
-            try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+          function onPointerDown(e){
+            if (isInteractiveTarget(e.target)) return;
+            dragging = true;
+            activePointerId = e.pointerId;
+            startX = e.clientX;
+            startY = e.clientY;
+            if (heroFrame.setPointerCapture && activePointerId != null) {
+              try { heroFrame.setPointerCapture(activePointerId); } catch(_){ }
+            }
           }
-          activePointerId = null;
-        }
 
-        function cancelGesture(){
-          dragging = false;
-          if (heroFrame.releasePointerCapture && activePointerId != null) {
-            try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+          function onPointerMove(e){
+            if (!dragging) return;
+            var dx = e.clientX - startX, dy = e.clientY - startY;
+            if (Math.abs(dx) < 10 || Math.abs(dy) > Math.abs(dx)) return;
+            e.preventDefault();
           }
-          activePointerId = null;
-        }
 
-        heroFrame.addEventListener('pointerdown', onPointerDown);
-        heroFrame.addEventListener('pointermove', onPointerMove, { passive: false });
-        heroFrame.addEventListener('pointerup',   endGesture);
-        heroFrame.addEventListener('pointercancel', cancelGesture);
-        heroFrame.addEventListener('lostpointercapture', cancelGesture);
-      } else {
-        console.warn('[products.js] Gallery has one image. Add more via data-images or window.PRODUCT_IMAGES.');
+          function endGesture(e){
+            if (!dragging) return;
+            dragging = false;
+            var dx = e.clientX - startX;
+            if (dx > 35) prev();
+            else if (dx < -35) next();
+            if (heroFrame.releasePointerCapture && activePointerId != null) {
+              try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+            }
+            activePointerId = null;
+          }
+
+          function cancelGesture(){
+            dragging = false;
+            if (heroFrame.releasePointerCapture && activePointerId != null) {
+              try { heroFrame.releasePointerCapture(activePointerId); } catch(_){ }
+            }
+            activePointerId = null;
+          }
+
+          heroFrame.addEventListener('pointerdown', onPointerDown);
+          heroFrame.addEventListener('pointermove', onPointerMove, { passive: false });
+          heroFrame.addEventListener('pointerup',   endGesture);
+          heroFrame.addEventListener('pointercancel', cancelGesture);
+          heroFrame.addEventListener('lostpointercapture', cancelGesture);
+        })();
+
+        // Touch fallback if Pointer Events aren’t supported
+        (function touchSwipeFallback(){
+          if ('onpointerdown' in window) return;
+
+          var startX = null, startY = null, dragging = false;
+          function isInteractiveTarget(t){
+            return !!(t && (t.closest('.hero-nav') || t.closest('.hero-dots button')));
+          }
+
+          heroFrame.addEventListener('touchstart', function(e){
+            if (isInteractiveTarget(e.target)) return;
+            if (!e.touches || e.touches.length !== 1) return;
+            var t = e.touches[0];
+            startX = t.clientX; startY = t.clientY; dragging = true;
+          }, { passive:true });
+
+          heroFrame.addEventListener('touchmove', function(e){
+            if (!dragging || !e.touches || e.touches.length !== 1) return;
+            var t = e.touches[0];
+            var dx = t.clientX - startX, dy = t.clientY - startY;
+            if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+              e.preventDefault(); // keep the page from grabbing the gesture
+            }
+          }, { passive:false });
+
+          heroFrame.addEventListener('touchend', function(e){
+            if (!dragging) return; dragging = false;
+            var t = (e.changedTouches && e.changedTouches[0]) || null;
+            if (!t) return;
+            var dx = t.clientX - startX;
+            if (dx > 35) prev();
+            else if (dx < -35) next();
+          }, { passive:true });
+
+          heroFrame.addEventListener('touchcancel', function(){ dragging = false; }, { passive:true });
+        })();
       }
 
-      // HERO -> unified overlay (instead of a separate #lightbox)
+      /* Disable overlay on the main hero image explicitly (belt & suspenders) */
       if (heroImg) {
-        heroImg.addEventListener('click', function(e){
+        heroImg.addEventListener('click', function (e) {
           e.preventDefault();
-          overlay.openWith(images[gi], heroImg.alt || ('Product image ' + (gi+1)), {
-            onLeft:  prev,
-            onRight: next
-          });
-        });
+          e.stopImmediatePropagation();
+        }, true);
       }
 
       // Debug surface
@@ -596,10 +660,8 @@
     } // end hero block
 
     /* ---------------------------------------------
-       (No separate review lightbox needed)
-       Review thumbnails should have: <img data-zoomable ...>
-       The global handler above will open them in the same overlay.
+       Reviews use the same overlay via the scoped handler above.
     --------------------------------------------- */
 
-  }); // <-- end DOMContentLoaded
-})(); // <-- end outer IIFE
+  }); // end DOMContentLoaded
+})(); // end IIFE
