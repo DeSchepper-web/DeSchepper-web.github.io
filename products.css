@@ -583,3 +583,50 @@ body.zoom-locked :is([class*="close"], [aria-label*="close" i], [title*="close" 
 }
 /* debug: centerline — remove when done */
 html::before{ content:""; position:fixed; left:50%; top:0; bottom:0; width:1px; background:#f40; opacity:.4; pointer-events:none; z-index:999999; }
+/* ===== Desktop (≥1301px): keep 3-col + centered ===== */
+@media (min-width:1301px){
+  .product-page .grid{
+    --hero-max: 550px; /* restore your desktop cap */
+    grid-template-columns: var(--side) minmax(var(--hero-min,520px), 1fr) var(--side);
+    grid-template-areas:
+      "header header header"
+      "left   hero   buybox"
+      "bottom bottom bottom";
+    max-width: calc(var(--side) * 2 + var(--hero-max) + var(--g) * 2);
+  }
+  .product-page .hero-frame{
+    max-width: min(var(--hero-max,550px), 56vw);
+    margin-inline: auto;
+  }
+}
+
+/* ===== Tablet/Phone (≤1300px): force single column + cap hero only ===== */
+@media (max-width:1300px){
+  .product-page .grid{
+    grid-template-columns: 1fr !important;         /* force stack */
+    grid-template-areas:
+      "header"
+      "hero"
+      "buybox"
+      "left"
+      "bottom" !important;
+    max-width: none; width: 100%;
+    padding-inline: 1rem;
+  }
+
+  /* Only the hero is capped; everything else can grow */
+  .product-page .hero-frame{
+    width: 100%;
+    max-width: 500px;
+    margin-inline: auto;
+  }
+  .product-page .buybox,
+  .product-page .left-col .card,
+  .product-page .reviews-panel{
+    max-width: none; width: 100%;
+    margin-inline: auto;
+  }
+
+  /* Neutralize any side/hero tweaks below this width */
+  .product-page .grid{ --side:auto; }
+}
