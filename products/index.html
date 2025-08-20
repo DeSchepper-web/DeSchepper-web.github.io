@@ -176,69 +176,99 @@
         </div>
       </form>
 
-      <!-- BOTTOM: Reviews (cards + lightbox-ready) -->
-      <div id="reviews-bottom">
-        <section class="reviews-panel card">
-          <div class="reviews-header">
-            <h2 class="reviews-title">
-              Reviews <span class="stars" aria-label="4.9 out of 5">★★★★★</span>
-            </h2>
-            <a href="/review/" class="review-cta" aria-label="Leave a review">LEAVE A REVIEW</a>
-          </div>
+<!-- BOTTOM: Reviews (cards + lightbox-ready) -->
+<div id="reviews-bottom">
+  <section class="reviews-panel card">
+    <div class="reviews-header">
+      <h2 class="reviews-title">
+        Reviews <span class="stars" aria-label="4.9 out of 5">★★★★★</span>
+      </h2>
+      <a href="/review/" class="review-cta" aria-label="Leave a review">LEAVE A REVIEW</a>
+    </div>
 
-          <p class="reviews-meta">4.9/5 based on 27 reviews</p>
+    <p class="reviews-meta">4.9/5 based on 27 reviews</p>
 
-          <!-- Cards grid -->
-          <div class="reviews-grid">
+    <!-- Cards grid -->
+    <div class="reviews-grid">
 
-            <!-- Review card 1 -->
-            <article class="review-card" itemscope itemtype="https://schema.org/Review">
-              <header class="review-head">
-                <h3 class="reviewer" itemprop="author" itemscope itemtype="https://schema.org/Person">
-                  <span itemprop="name">Alex P.</span>
-                </h3>
-                <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
-              </header>
+      <!-- Review card 1 -->
+      <article class="review-card" itemscope itemtype="https://schema.org/Review">
+        <header class="review-head">
+          <h3 class="reviewer" itemprop="author" itemscope itemtype="https://schema.org/Person">
+            <span itemprop="name">Alex P.</span>
+          </h3>
+          <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
+        </header>
 
-              <p class="review-text" itemprop="reviewBody">
-                “Fitment was perfect.”
-              </p>
+        <p class="review-text" itemprop="reviewBody">
+          “Fitment was perfect.”
+        </p>
 
-              <div class="review-media" role="list">
-                <button class="thumb" role="listitem"
-                        data-full="/images/favicon-512x512.webp" aria-label="Open image 1">
-                  <img src="/images/favicon-512x512.webp" alt="Installed part close-up" loading="lazy">
-                </button>
-                <button class="thumb" role="listitem"
-                        data-full="/images/favicon-512x512.webp" aria-label="Open image 2">
-                  <img src="/images/favicon-512x512.webp" alt="Angle view" loading="lazy">
-                </button>
-              </div>
-            </article>
+        <div class="review-media" role="list">
+          <button class="thumb" role="listitem" type="button" aria-label="Open image 1">
+            <img
+              src="/images/favicon-512x512.webp"
+              alt="Installed part close-up"
+              loading="lazy"
+              data-zoomable
+              data-zoom-src="/images/favicon-512x512.webp">
+          </button>
 
-            <!-- Review card 2 -->
-            <article class="review-card" itemscope itemtype="https://schema.org/Review">
-              <header class="review-head">
-                <h3 class="reviewer"><span>Jordan S.</span></h3>
-                <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
-              </header>
-              <p class="review-text">“Noticeably stronger than stock.”</p>
-              <div class="review-media"></div>
-            </article>
+          <button class="thumb" role="listitem" type="button" aria-label="Open image 2">
+            <img
+              src="/images/favicon-512x512.webp"
+              alt="Angle view"
+              loading="lazy"
+              data-zoomable
+              data-zoom-src="/images/favicon-512x512.webp">
+          </button>
+        </div>
+      </article>
 
-            <!-- Review card 3 -->
-            <article class="review-card" itemscope itemtype="https://schema.org/Review">
-              <header class="review-head">
-                <h3 class="reviewer"><span>Chris D.</span></h3>
-                <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
-              </header>
-              <p class="review-text">“Fast shipping, great support.”</p>
-              <div class="review-media"></div>
-            </article>
+      <!-- Review card 2 -->
+      <article class="review-card" itemscope itemtype="https://schema.org/Review">
+        <header class="review-head">
+          <h3 class="reviewer"><span>Jordan S.</span></h3>
+          <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
+        </header>
+        <p class="review-text">“Noticeably stronger than stock.”</p>
+        <div class="review-media"></div>
+                <div class="review-media" role="list">
+          <button class="thumb" role="listitem" type="button" aria-label="Open image 1">
+            <img
+              src="/images/favicon-512x512.webp"
+              alt="Installed part close-up"
+              loading="lazy"
+              data-zoomable
+              data-zoom-src="/images/favicon-512x512.webp">
+          </button>
+          <div>
+      </article>
 
-          </div>
-        </section>
-      </div>
+      <!-- Review card 3 -->
+      <article class="review-card" itemscope itemtype="https://schema.org/Review">
+        <header class="review-head">
+          <h3 class="reviewer"><span>Chris D.</span></h3>
+          <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
+        </header>
+        <p class="review-text">“Fast shipping, great support.”</p>
+        <div class="review-media"></div>
+                <div class="review-media" role="list">
+          <button class="thumb" role="listitem" type="button" aria-label="Open image 1">
+            <img
+              src="/images/favicon-512x512.webp"
+              alt="Installed part close-up"
+              loading="lazy"
+              data-zoomable
+              data-zoom-src="/images/favicon-512x512.webp">
+          </button>
+          <div>
+      </article>
+
+    </div>
+  </section>
+</div>
+
     </div>
   </main>
 

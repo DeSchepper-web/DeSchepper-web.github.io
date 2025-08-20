@@ -1,14 +1,20 @@
-/* /products.js — v8.7 (client-cart aligned + global toast, cleaned)
+
+/* /products.js — v8.9 (client-cart aligned + unified full-screen zoom)
    - Adds N unit items (global schema: [{name, price}, ...])
    - Qty buttons wired (.qty-control .qty-btn.down/.up)
    - Calls window.showCartToast() like your global JS
-   - Optionally injects #cart-toast if missing (safe to remove if you include it in HTML)
-   - Gallery + Dots + Lightbox (no-DOM-rewrite, robust + Option A swipe fix)
-   - Review images lightbox (scoped to #reviews-bottom), closes on backdrop/X/Esc/image
+   - Optionally injects #cart-toast if missing
+   - Gallery + Dots + Swipe (no DOM rewrite)
+   - ONE overlay (#zoom-overlay) for all zooms (hero + reviews + any img[data-zoomable])
+     • Opaque gray cover, true scroll lock (no white edge)
+     • Close via backdrop / X / Esc / image
+     • ArrowLeft/Right supported when invoked from hero
+   - NEW: ArrowLeft/Right also work when you HOVER or FOCUS the hero
 */
 (function () {
-  function $(sel, root)  { return (root || document).querySelector(sel); }
-  function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  /* Tiny query helpers */
+  function $(sel, root){ return (root || document).querySelector(sel); }
+  function $$(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
 
   document.addEventListener('DOMContentLoaded', function () {
     var root = $('.product-page') || document;
@@ -227,8 +233,150 @@
     }
 
     /* ---------------------------------------------
-       GALLERY + DOTS + LIGHTBOX (no-DOM-rewrite, robust)
-       Works with your existing HTML (hero-img, arrows, prebuilt dots)
+       UNIFIED FULL-SCREEN ZOOM OVERLAY (Option B)
+       - Handles: any img[data-zoomable], hero image click
+    --------------------------------------------- */
+    var overlay = (function ensureOverlay(){
+      var ov = document.getElementById('zoom-overlay');
+      if (!ov) {
+        ov = document.createElement('div');
+        ov.id = 'zoom-overlay';
+        ov.setAttribute('role','dialog');
+        ov.setAttribute('aria-modal','true');
+        ov.setAttribute('aria-label','Image viewer');
+        ov.tabIndex = -1;
+        ov.innerHTML = '<button class="close" aria-label="Close">✕</button><img alt="">';
+        document.body.appendChild(ov);
+
+        // Minimal inline styles in case CSS isn’t loaded
+        Object.assign(ov.style, {
+          position:'fixed', inset:'0', display:'none',
+          alignItems:'center', justifyContent:'center',
+          background:'#2b2b2b', padding:'2rem', zIndex:'10050'
+        });
+        var img = ov.querySelector('img');
+        Object.assign(img.style, {
+          maxWidth:'min(96vw, 1800px)', maxHeight:'92vh', objectFit:'contain',
+          boxShadow:'0 20px 60px rgba(0,0,0,.45)', cursor:'zoom-out'
+        });
+        var x = ov.querySelector('.close');
+        Object.assign(x.style, {
+          position:'absolute', top:'12px', right:'16px', fontSize:'32px',
+          background:'transparent', border:'0', color:'#fff', lineHeight:'1', cursor:'pointer'
+        });
+      }
+      return ov;
+    })();
+
+    // Scroll lock helpers (no white edge)
+    function lockScroll(){
+      var y = window.scrollY || document.documentElement.scrollTop || 0;
+      document.body.dataset.scrollY = y;
+      document.body.classList.add('zoom-locked');
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.top = '-' + y + 'px';
+    }
+    function unlockScroll(){
+      var y = parseInt(document.body.dataset.scrollY || '0', 10) || 0;
+      document.body.classList.remove('zoom-locked');
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.top = '';
+      delete document.body.dataset.scrollY;
+      window.scrollTo(0, y);
+    }
+
+    // Wire overlay controls once
+    (function wireOverlay(){
+      if (overlay.dataset.wired === '1') return;
+      overlay.dataset.wired = '1';
+
+      var img   = overlay.querySelector('img');
+      var close = overlay.querySelector('.close');
+
+      function closeOverlay(){
+        overlay.style.display = 'none';
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden','true');
+        unlockScroll();
+        // remove hero navigation callbacks
+        delete overlay._onArrowLeft;
+        delete overlay._onArrowRight;
+        if (overlay._lastFocus && document.body.contains(overlay._lastFocus)) {
+          try { overlay._lastFocus.focus({ preventScroll:true }); } catch(_){}
+        }
+      }
+
+      // Backdrop click (only if backdrop, not image/button)
+      overlay.addEventListener('click', function(e){
+        if (e.target === overlay) closeOverlay();
+      }, true);
+
+      // X button
+      close.addEventListener('click', function(e){ e.preventDefault(); closeOverlay(); });
+
+      // Image click closes
+      img.addEventListener('click', function(e){ e.preventDefault(); closeOverlay(); });
+
+      // Prevent scroll gestures while open
+      overlay.addEventListener('wheel', function(e){ if (overlay.classList.contains('open')) e.preventDefault(); }, { passive:false });
+      overlay.addEventListener('touchmove', function(e){ if (overlay.classList.contains('open')) e.preventDefault(); }, { passive:false });
+
+      // Keyboard: Esc closes; block page scroll keys; Arrow nav hooks for hero
+      document.addEventListener('keydown', function(e){
+        if (!overlay.classList.contains('open')) return;
+        var k = e.key;
+        if (k === 'Escape') { e.preventDefault(); return closeOverlay(); }
+        var scrollKeys = ['PageUp','PageDown','Home','End',' ','Spacebar','ArrowUp','ArrowDown'];
+        if (scrollKeys.indexOf(k) !== -1) { e.preventDefault(); return; }
+        if (k === 'ArrowLeft' && typeof overlay._onArrowLeft === 'function') { e.preventDefault(); overlay._onArrowLeft(); }
+        if (k === 'ArrowRight' && typeof overlay._onArrowRight === 'function') { e.preventDefault(); overlay._onArrowRight(); }
+      }, true);
+
+      overlay.close = closeOverlay;
+
+      overlay.openWith = function(src, alt, opts){
+        var img = overlay.querySelector('img');
+        img.removeAttribute('style'); // purge any external zoom css
+        img.alt = alt || '';
+        img.src = ''; // force refresh even if same url
+        overlay._lastFocus = document.activeElement;
+
+        // bind optional hero arrow handlers
+        overlay._onArrowLeft  = opts && opts.onLeft  || null;
+        overlay._onArrowRight = opts && opts.onRight || null;
+
+        lockScroll();
+        overlay.style.display = 'flex';
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden','false');
+
+        requestAnimationFrame(function(){
+          img.src = src;
+          try { overlay.focus({ preventScroll:true }); } catch(_){}
+        });
+      };
+    })();
+
+    // Global click handler: any img[data-zoomable]
+    document.addEventListener('click', function(e){
+      var t = e.target;
+      if (!(t && t.matches && t.matches('img[data-zoomable]'))) return;
+      // allow buttons/links to not interfere — we still open overlay
+      e.preventDefault();
+      e.stopPropagation();
+      var src = t.getAttribute('data-zoom-src') || t.currentSrc || t.src;
+      overlay.openWith(src, t.alt || '');
+    }, { capture:true });
+
+    /* ---------------------------------------------
+       GALLERY + DOTS + SWIPE (no DOM rewrite)
+       (Hero image click now uses the unified overlay)
     --------------------------------------------- */
     var hero        = $('.hero', root);
     var heroImg     = hero ? $('#hero-img', hero) : null;
@@ -237,10 +385,7 @@
     var nextBtn     = hero ? $('.hero-nav.next', hero) : null;
     var dotsWrap    = hero ? $('.hero-dots', hero) : null;
 
-    var lightbox    = $('#lightbox');
-    var lightboxImg = $('#lightbox-img');
-
-    if (hero) console.log('[products.js v8.7-clean] binding simple slider…');
+    if (hero) console.log('[products.js v8.9] binding simple slider…');
 
     if (hero && heroImg && heroFrame && dotsWrap) {
       function parseImagesFromAttr(raw) {
@@ -255,7 +400,7 @@
       }
 
       var images = getImages();
-      var gi = 0; // gallery index (avoid var-collisions)
+      var gi = 0;
 
       function ensureDots() {
         var dots = $$('.hero-dots > button', hero);
@@ -289,8 +434,9 @@
         if (images[gi]) heroImg.src = images[gi];
         if (!heroImg.alt) heroImg.alt = 'Product image ' + (gi+1);
         updateDots();
-        if (lightbox && lightboxImg && lightbox.getAttribute('aria-hidden') === 'false') {
-          lightboxImg.src = images[gi];
+        // if overlay is currently open via hero, update image on arrows
+        if (overlay.classList.contains('open') && overlay._onArrowRight) {
+          overlay.querySelector('img').src = images[gi];
         }
       }
 
@@ -339,11 +485,40 @@
           b.addEventListener('click', function(){ show(idx); });
         });
 
-        // Keyboard on hero
-        hero.addEventListener('keydown', function (e) {
-          if (e.key === 'ArrowRight') { next(); e.preventDefault(); }
-          if (e.key === 'ArrowLeft')  { prev(); e.preventDefault(); }
-        });
+        /* ---------------------------------------------
+           KEYBOARD: Activate ←/→ only while HOVERING or FOCUSED on the hero
+           (replaces element-only keydown so it works on hover, too)
+        --------------------------------------------- */
+        (function enableHoverKeys(){
+          var frame = heroFrame || hero;
+          var hot = false; // true when mouse over hero OR hero has focus
+
+          function isTypingTarget(el){
+            return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' ||
+                          el.tagName === 'SELECT' || el.isContentEditable);
+          }
+
+          // Hover tracking
+          frame.addEventListener('mouseenter', function(){ hot = true; });
+          frame.addEventListener('mouseleave', function(){ hot = false; });
+
+          // Make frame focusable for keyboard users; track focus state
+          if (!frame.hasAttribute('tabindex')) frame.setAttribute('tabindex','0');
+          frame.addEventListener('focusin',  function(){ hot = true; });
+          frame.addEventListener('focusout', function(e){
+            if (!frame.contains(e.relatedTarget)) hot = false;
+          });
+
+          // Global key handler (only fires when "hot")
+          document.addEventListener('keydown', function(e){
+            if (!hot) return;
+            if (isTypingTarget(e.target)) return;
+            if (e.altKey || e.ctrlKey || e.metaKey) return;
+
+            if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+          }, { passive:false });
+        })();
 
         /* ---------------------------------------------
            SWIPE / DRAG — Option A (never start from controls)
@@ -398,73 +573,19 @@
         heroFrame.addEventListener('pointercancel', cancelGesture);
         heroFrame.addEventListener('lostpointercapture', cancelGesture);
       } else {
-        // Single-image: still allow click to open hero lightbox
-        if (heroImg) heroImg.addEventListener('click', openLightbox);
         console.warn('[products.js] Gallery has one image. Add more via data-images or window.PRODUCT_IMAGES.');
       }
 
-      // Hero lightbox
-      function openLightbox() {
-        if (!lightbox || !lightboxImg) return;
-        lightbox.setAttribute('aria-hidden', 'false');
-        lightboxImg.src = images[gi];
-        document.documentElement.style.overflow = 'hidden';
-        document.body.style.overflow = 'hidden';
-      }
-      if (heroImg) heroImg.addEventListener('click', openLightbox);
-
-      if (lightbox) {
-        lightbox.addEventListener('click', function (e) {
-          if (e.target === lightbox) {
-            lightbox.setAttribute('aria-hidden', 'true');
-            document.documentElement.style.overflow = '';
-            document.body.style.overflow = '';
-          }
-        });
-        document.addEventListener('keydown', function (e) {
-          if (lightbox.getAttribute('aria-hidden') !== 'false') return;
-          if (e.key === 'Escape') {
-            lightbox.setAttribute('aria-hidden', 'true');
-            document.documentElement.style.overflow = '';
-            document.body.style.overflow = '';
-          }
-          if (e.key === 'ArrowRight') { next(); }
-          if (e.key === 'ArrowLeft')  { prev(); }
-        });
-        if (lightboxImg) {
-          lightboxImg.addEventListener('click', function (e) {
-            var rect = lightboxImg.getBoundingClientRect();
-            var mid = rect.left + rect.width / 2;
-            if (e.clientX < mid) prev(); else next();
+      // HERO -> unified overlay (instead of a separate #lightbox)
+      if (heroImg) {
+        heroImg.addEventListener('click', function(e){
+          e.preventDefault();
+          overlay.openWith(images[gi], heroImg.alt || ('Product image ' + (gi+1)), {
+            onLeft:  prev,
+            onRight: next
           });
-        }
+        });
       }
-
-      // Extension fallback + skip broken
-      var EXT_ALTS = ['.webp','.jpg','.jpeg','.png'];
-      var triedByIndex = new Map();
-      heroImg.addEventListener('error', function () {
-        var url = images[gi] || '';
-        var m = url.match(/\.(webp|jpe?g|png)(\?.*)?$/i);
-        var curExt = m ? '.' + m[1].toLowerCase() : '';
-        var rest   = m ? (m[2] || '') : '';
-        var tried  = triedByIndex.get(gi) || new Set();
-        if (curExt) tried.add(curExt);
-        triedByIndex.set(gi, tried);
-
-        var nextExt = m && EXT_ALTS.find(function (ext) { return !tried.has(ext); });
-        if (nextExt) {
-          images[gi] = url.replace(/\.(webp|jpe?g|png)(\?.*)?$/i, nextExt + rest);
-          heroImg.src = images[gi];
-          return;
-        }
-        images.splice(gi, 1);
-        if (!images.length) return;
-        if (gi >= images.length) gi = 0;
-        ensureDots();
-        updateDots();
-        heroImg.src = images[gi];
-      });
 
       // Debug surface
       window.__gallery = {
@@ -475,90 +596,10 @@
     } // end hero block
 
     /* ---------------------------------------------
-       REVIEWS — Lightbox Zoom (scoped to #reviews-bottom)
-       Works with: <button class="thumb" data-full="..."><img alt=""></button>
+       (No separate review lightbox needed)
+       Review thumbnails should have: <img data-zoomable ...>
+       The global handler above will open them in the same overlay.
     --------------------------------------------- */
-    (function reviewsZoom(){
-      var lastFocused = null;
 
-      function ensureReviewLightbox() {
-        var lb = document.getElementById('review-lightbox');
-        if (lb) return lb;
-
-        lb = document.createElement('div');
-        lb.id = 'review-lightbox';
-        lb.setAttribute('role', 'dialog');
-        lb.setAttribute('aria-modal', 'true');
-        lb.setAttribute('aria-label', 'Image preview');
-        lb.innerHTML =
-          '<button type="button" class="rlb-close" aria-label="Close">×</button>' +
-          '<img alt="Expanded review image">';
-
-        document.body.appendChild(lb);
-
-        // Backdrop, X button, or IMAGE -> close
-        lb.addEventListener('click', function (e) {
-          var isBackdrop = e.target === lb;
-          var isCloseBtn = !!e.target.closest('.rlb-close');
-          var isImage    = e.target.tagName === 'IMG';
-          if (isBackdrop || isCloseBtn || isImage) closeReviewLightbox();
-        });
-
-        // ESC anywhere -> close (capture)
-        document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape' && lb.classList.contains('open')) closeReviewLightbox();
-        }, true);
-
-        // Keyboard on the X (Enter/Space)
-        lb.querySelector('.rlb-close').addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); closeReviewLightbox(); }
-        });
-
-        return lb;
-      }
-
-      function openReviewLightbox(src, alt) {
-        if (!src) return;
-        var lb  = ensureReviewLightbox();
-        var img = lb.querySelector('img');
-        lastFocused = document.activeElement;
-
-        img.removeAttribute('src'); // force refresh if same src
-        img.alt = alt || 'Expanded review image';
-        requestAnimationFrame(function () {
-          img.src = src;
-          lb.classList.add('open');
-          document.body.classList.add('rlb-open');
-          lb.setAttribute('aria-hidden', 'false');
-          lb.querySelector('.rlb-close').focus({ preventScroll: true });
-        });
-      }
-
-      function closeReviewLightbox() {
-        var lb = document.getElementById('review-lightbox');
-        if (!lb) return;
-        lb.classList.remove('open');
-        lb.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('rlb-open');
-        if (lastFocused && document.body.contains(lastFocused)) {
-          try { lastFocused.focus({ preventScroll: true }); } catch(_) {}
-        }
-      }
-
-      var reviewsRoot = document.getElementById('reviews-bottom');
-      if (!reviewsRoot) return;
-
-      // Delegate clicks inside reviews only
-      reviewsRoot.addEventListener('click', function (e) {
-        var btn = e.target.closest('.review-media .thumb');
-        if (!btn) return;
-        var imgEl = btn.querySelector('img');
-        var src = btn.getAttribute('data-full') || (imgEl && (imgEl.currentSrc || imgEl.src));
-        var alt = imgEl ? imgEl.alt : '';
-        e.preventDefault();
-        openReviewLightbox(src, alt);
-      });
-    })();
-
-  }); // DOMContentLoaded
-})();
+  }); // <-- end DOMContentLoaded
+})(); // <-- end outer IIFE

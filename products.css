@@ -9,33 +9,81 @@
 }
 
 /* ---- Layout grid with areas ---- */
+
 .product-page .grid{
+  --g: 2rem;                           /* base gap */
+  --side: clamp(240px, 20vw, 320px);   /* symmetric side cols */
+  --hero-min: 520px;                   /* min hero track */
+  --hero-max: 550px;                   /* cap hero size */
+
   display:grid;
-  grid-template-columns:
-    clamp(240px, 20vw, 320px)      /* left details */
-    minmax(520px, 1fr)             /* hero */
-    clamp(280px, 22vw, 380px);     /* buy box */
-  row-gap:2rem; column-gap:2rem;
-  max-width:1200px;
-  margin:calc(var(--nav-h,64px) + 1.5rem) auto 2.5rem;
-  padding:0 1rem;
+  grid-template-columns: var(--side) minmax(var(--hero-min), 1fr) var(--side);
+  column-gap: var(--g);
+  row-gap: 2rem;
+
+  /* total width = 2*side + hero cap + gaps */
+  max-width: calc(var(--side) * 2 + var(--hero-max) + var(--g) * 2);
+  margin: calc(var(--nav-h,64px) + 1.5rem) auto 2.5rem;
+  padding: 0 1rem;
+
   grid-template-areas:
-    ". header ."
-    "left hero buybox"
+    "header header header"
+    "left   hero   buybox"
     "bottom bottom bottom";
   align-items:start;
 }
+
+/* keep side content aligned with side columns */
+.product-page .left-col{ grid-area:left; align-self:start; min-width:0; }
+.product-page .buybox{ grid-area:buybox; min-width:0; }
+.product-page .left-col .card,
+.product-page .buybox{
+  width:100%;
+  max-width: var(--side);
+  margin:0;
+  justify-self:center;
+}
+
+/* hero sizing — cap to viewport too */
+.product-page .hero{ grid-area:hero; }
+.product-page .hero-frame{
+  max-width: min(var(--hero-max), 56vw);  /* shrink slightly on narrower screens */
+  margin: 0 auto;
+}
+
+/* header + bottom areas */
 .product-page .center-col{ display:contents; }
 .product-page .product-header{ grid-area:header; text-align:center; margin-bottom:.75rem; }
-.product-page .left-col{ grid-area:left; align-self:start; }
-.product-page .hero{ grid-area:hero; margin-top:0; }
-.product-page .buybox{ grid-area:buybox; }
 .product-page #reviews-bottom{ grid-area:bottom; }
 
+/* --- tighten things between 1200px and 1025px --- */
+@media (max-width:1200px){
+  .product-page .grid{
+    --g: 1.5rem;
+    --side: clamp(210px, 18vw, 300px);
+    --hero-max: 600px;
+  }
+  .product-page .hero-frame{ max-width: min(var(--hero-max), 60vw); }
+  .product-page .hero-nav{ width:38px; height:38px; } /* smaller arrows */
+}
+
+/* slightly smaller again before stack */
+@media (max-width:1100px){
+  .product-page .grid{
+    --g: 1.25rem;
+    --side: clamp(190px, 17vw, 280px);
+    --hero-max: 500px;
+  }
+  .product-page .hero-frame{ max-width: min(var(--hero-max), 62vw); }
+}
+
+/* --- stacked layout on tablets/phones --- */
 @media (max-width:1024px){
   .product-page .grid{
     grid-template-columns:1fr;
+    column-gap:0;
     row-gap:1.25rem;
+    max-width:none;
     grid-template-areas:
       "header"
       "hero"
@@ -43,6 +91,9 @@
       "left"
       "bottom";
   }
+  .product-page .left-col .card,
+  .product-page .buybox{ max-width:100%; }
+  .product-page .hero-frame{ max-width:100%; }  /* full-width hero when stacked */
 }
 
 /* ---- Side cards (details) ---- */
@@ -69,28 +120,35 @@
 .product-page .hero{
   position:relative;
   margin:0 0 1rem;
-  background:transparent;
-  border-radius:0;           /* radius lives on frame */
   line-height:0;
   min-width:0;
-  display:block !important;  /* ensure figure isn't a row */
+  display:block !important;        /* ensure figure isn't a row */
   overflow:visible !important;
+  border-radius:0;
+  background:transparent !important;
+  align-self:start !important;
+  padding-top:0 !important;
+  min-height:0 !important;
+}
+.product-page .hero::before{
+  content:none !important;
+  pointer-events:none !important;
 }
 .product-page .hero-frame{
   position:relative;
   aspect-ratio:1/1;
   width:100%;
-  overflow:hidden;           /* mask image + arrows */
+  overflow:hidden;                 /* mask image + arrows */
   border-radius:12px;
   transform:translateZ(0);
   box-shadow:0 12px 28px rgba(0,0,0,.10);
   background:transparent;
 }
 .product-page #hero-img{
-  position:absolute; inset:-0.5px;       /* 1px bleed to avoid seams */
+  position:absolute; inset:-0.5px; /* 1px bleed to avoid seams */
   width:calc(100% + 1px); height:calc(100% + 1px);
   object-fit:cover; display:block; border:0; background:transparent;
-  pointer-events:auto; /* keep lightbox clicks working */
+  pointer-events:auto;             /* keep lightbox clicks working */
 }
 
 /* Arrows */
@@ -101,8 +159,8 @@
   background:rgba(0,0,0,.55); color:#fff; cursor:pointer;
   box-shadow:0 8px 18px rgba(0,0,0,.28);
   transition:background .2s, transform .08s;
-  z-index:5;                 /* above img/shadows */
-  pointer-events:auto;       /* explicitly clickable */
+  z-index:5;                       /* above img/shadows */
+  pointer-events:auto;             /* explicitly clickable */
 }
 .product-page .hero-nav:hover{ background:rgba(0,0,0,.75); }
 .product-page .hero-nav:active{ transform:translateY(-50%) scale(.98); }
@@ -253,8 +311,6 @@
 /* Mobile tweaks */
 @media (max-width:768px){
   .product-page .buybox{
-    grid-template-columns:1fr 1fr;
-    grid-template-areas:"price cta" "variant qty";
     max-width:100%; margin:0 auto 1.25rem;
   }
   .product-page .variant-wrap .select,
@@ -275,7 +331,7 @@
 .product-page .buybox .buy-info li:last-child{ margin-bottom:0; }
 
 /* ==========================
-   REVIEWS (final single source of truth)
+   REVIEWS
 ========================== */
 .reviews-panel{
   background:#fff;
@@ -354,35 +410,25 @@
 .reviewer{ margin:0; font-size:1.05rem; }
 .review-stars{ color:#F7931A; letter-spacing:.05em; font-size:1.05rem; }
 .review-text{ margin:.25rem 0 .75rem; color:#222; line-height:1.55; }
+
+/* Thumbnails */
 .review-media{ display:flex; gap:.5rem; flex-wrap:wrap; }
 .review-media .thumb{
-  padding:0; margin:0; background:#f7f7f7; border:1px solid #e6e6e6; border-radius:8px;
-  width:72px; height:72px; overflow:hidden; cursor:pointer; line-height:0;
+  padding:0; margin:0;
+  background:#f7f7f7;               /* grey card look */
+  border:1px solid #e6e6e6;
+  border-radius:8px;
+  width:72px; height:72px;
+  overflow:hidden; cursor:pointer; line-height:0;
 }
-.review-media .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.review-media .thumb img{
+  width:100%; height:100%;
+  object-fit:cover; display:block;
+  cursor:zoom-in;                    /* show zoom intent */
+}
 .review-media .thumb:hover{ outline:2px solid #F7931A; }
 
-/* Lightbox for review images */
-.rv-lightbox{
-  position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.86);
-  z-index:9999; padding:2rem;
-}
-.rv-lightbox.open{ display:grid; }
-.rv-close{
-  position:absolute; top:12px; right:12px; width:40px; height:40px; border-radius:50%;
-  border:0; background:rgba(255,255,255,.9); font-size:26px; line-height:0; cursor:pointer;
-}
-#rv-image{
-  max-width:min(92vw,1200px); max-height:82vh; object-fit:contain; cursor:zoom-in;
-  transition: transform .2s ease;
-}
-#rv-image.zoomed{ cursor:zoom-out; transform:scale(1.6); }
-.rv-hint{
-  position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
-  color:#fff; font-size:.9rem; opacity:.85;
-}
-
-/* --- Mobile: Reviews title, rating line, then CTA (no HTML changes) --- */
+/* --- Mobile reviews header order --- */
 @media (max-width:560px){
   .reviews-panel{
     display:grid;
@@ -393,14 +439,15 @@
       "cta";
     grid-row-gap:.5rem;
   }
-  .reviews-header{ display:contents !important; } /* flatten wrapper */
+  .reviews-header{ display:contents !important; }
   .reviews-title{ grid-area:title; }
   .reviews-meta { grid-area:meta;  margin:.15rem 0 .25rem; }
   .review-cta  { grid-area:cta;   width:100%; }
 }
 
 /* ==========================
-   FULLSCREEN LIGHTBOX (gallery)
+   FULLSCREEN LIGHTBOX (hero)
+   (kept so you can enable hero zoom later)
 ========================== */
 #lightbox{
   position:fixed; inset:0; background:rgba(0,0,0,.92);
@@ -416,17 +463,6 @@
 
 /* ===== Minimal theme overrides ===== */
 .product-page .buybar{ display:none !important; }
-.product-page .hero{
-  align-self:start !important;
-  margin-top:0 !important;
-  padding-top:0 !important;
-  min-height:0 !important;
-  background:transparent !important;
-}
-.product-page .hero::before{
-  content:none !important;
-  pointer-events:none !important;
-}
 
 /* ===== Optional: keep details + buybox same width ===== */
 @media (min-width:1025px){
@@ -448,70 +484,102 @@
   content:""; display:block; height:3px; background:var(--theme-a);
   margin:.4rem auto 0; width:100%; border-radius:2px;
 }
-/* --- Review Zoom (scoped) --- */
-.review-media .thumb {
-  background: none; border: 0; padding: 0; margin: 0;
-  display: inline-block; line-height: 0;
-}
-.review-media .thumb img { cursor: zoom-in; border-radius: 8px; display: block; }
 
-/* Lightbox */
-#review-lightbox {
-  position: fixed; inset: 0; display: none;
-  align-items: center; justify-content: center;
-  background: rgba(0,0,0,.92); z-index: 9999; padding: 2rem;
-}
-#review-lightbox.open { display: flex; }
-#review-lightbox img {
-  max-width: min(96vw, 1600px); max-height: 92vh;
-  width: auto; height: auto; border-radius: 8px;
-  box-shadow: 0 10px 40px rgba(0,0,0,.6); cursor: zoom-out;
-}
-#review-lightbox .rlb-close {
-  position: absolute; top: 12px; right: 12px;
-  background: rgba(0,0,0,.5); color: #fff; border: 0; border-radius: 8px;
-  font-size: 20px; line-height: 1; padding: 10px 12px; cursor: pointer;
-}
-body.rlb-open { overflow: hidden; overscroll-behavior: contain; }
-/* --- Reviews thumbnails (single source of truth) --- */
-.review-media .thumb{
-  padding:0; margin:0;
-  background:#f7f7f7;               /* keep the grey card look */
-  border:1px solid #e6e6e6;
-  border-radius:8px;
-  width:72px; height:72px;
-  overflow:hidden; cursor:pointer; line-height:0;
-}
-.review-media .thumb img{
-  width:100%; height:100%;
-  object-fit:cover; display:block;
-  cursor:zoom-in;                    /* show zoom intent */
-}
-.review-media .thumb:hover{ outline:2px solid #F7931A; }
+/* ==========================
+   REVIEW LIGHTBOX — stable center
+========================== */
 
-/* --- Review Lightbox --- */
 #review-lightbox{
-  position:fixed; inset:0;
-  display:none;
-  align-items:center; justify-content:center;
-  background:rgba(0,0,0,.92);
-  z-index:10001;                     /* > #lightbox (10000) */
-  padding:2rem;
+  position: fixed;
+  inset: 0;
+  display: none;                 /* hidden by default */
+  background: rgba(0,0,0,.92);
+  z-index: 200000;
+  padding: 24px;                 /* <-- fixed, no vw */
+  box-sizing: border-box;
 }
-#review-lightbox.open{ display:flex !important; }
+#review-lightbox.open{
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
 #review-lightbox img{
-  max-width:min(96vw,1600px);
-  max-height:92vh;
-  width:auto; height:auto;
-  border-radius:8px;
-  box-shadow:0 10px 40px rgba(0,0,0,.6);
-  cursor:zoom-out;                   /* click to close */
+  position: static !important;
+  transform: none !important;
+  inset: auto !important;
+  margin: 0 !important;
+  display: block;
+
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+
+  border-radius: 8px;
+  box-shadow: 0 0 36px rgba(0,0,0,.5);
+  cursor: zoom-out;
 }
-#review-lightbox .rlb-close{
-  position:absolute; top:12px; right:12px;
-  background:rgba(0,0,0,.5); color:#fff;
-  border:0; border-radius:8px;
-  font-size:20px; line-height:1;
-  padding:10px 12px; cursor:pointer;
-}
+
+/* close via img/backdrop/Esc only */
+#review-lightbox .rlb-close{ display:none !important; }
+
+/* lock page + hide any other lightbox/hints while open */
 body.rlb-open{ overflow:hidden; overscroll-behavior:contain; }
+body.rlb-open #lightbox,
+body.rlb-open #lightbox *,
+body.rlb-open .lightbox-close,
+body.rlb-open .lightbox__close,
+body.rlb-open .mfp-wrap,
+body.rlb-open .mfp-bg,
+body.rlb-open .mfp-container,
+body.rlb-open .pswp,
+body.rlb-open .lg-backdrop,
+body.rlb-open .lg-outer,
+body.rlb-open .glightbox-container,
+body.rlb-open .lightbox-hint,
+body.rlb-open .zoom-hint,
+body.rlb-open .hero-hint,
+body.rlb-open .image-hint,
+body.rlb-open .review-hint,
+body.rlb-open :is([aria-label*="close" i],[title*="close" i],[data-testid*="close" i],[class*="close"],[id*="close"],[class*="hint"]){
+  display:none !important;
+}
+
+/* ==========================
+   ZOOM OVERLAY (hero alt)
+========================== */
+#zoom-overlay{
+  position:fixed; inset:0;
+  background:#171515;
+  background-image: linear-gradient(180deg, #2c2828 0%, #171515 100%);
+  display:none; align-items:center; justify-content:center;
+  padding:0;                       /* final (no gutter) */
+  z-index:10050; overscroll-behavior:contain;
+}
+#zoom-overlay.open{ display:flex; }
+#zoom-overlay img{
+  max-width:min(96vw, 1800px);
+  max-height:92vh; object-fit:contain;
+  box-shadow:none; background:transparent; border:0; border-radius:0;
+}
+
+/* Lock the page completely while open (no white edge) */
+body.zoom-locked{ position:fixed; width:100%; left:0; right:0; }
+/* Nukes any “close” UI when zoom is active */
+/* Hide any leftover close control just in case */
+#zoom-overlay .close{ display:none !important; }
+
+/* Show a magnifying-glass cursor on the zoomed image (minus = “zoom out”) */
+#zoom-overlay img{ cursor: zoom-out; }
+
+/* If you use the hero lightbox too, keep the same behavior there */
+#lightbox-img{ cursor: zoom-out; }
+
+body.zoom-locked :is([class*="close"], [aria-label*="close" i], [title*="close" i]){
+  display:none !important;
+}
+/* debug: centerline — remove when done */
+html::before{ content:""; position:fixed; left:50%; top:0; bottom:0; width:1px; background:#f40; opacity:.4; pointer-events:none; z-index:999999; }
