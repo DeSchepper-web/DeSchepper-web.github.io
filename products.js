@@ -1,46 +1,58 @@
-/* /products.js — v9.0 (hero swipe-only; zoom only for reviews)
-   - Client cart helpers (ensureOrder/getCart/setCart/updateCartCount/showCartToast supported if present)
-   - Mirrors variant/qty between desktop & mobile
-   - Qty controls (.qty-control .qty-btn.down/.up)
-   - Unified #zoom-overlay used ONLY for review images
-   - Hero gallery: arrows, dots, keyboard (on hover/focus), swipe (pointer + touch fallback)
-   - Mobile: prevent double-tap zoom & image drag on hero to keep swipe reliable
-*/
 (function () {
-  /* Tiny query helpers */
   function $(sel, root){ return (root || document).querySelector(sel); }
   function $$(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
-
   document.addEventListener('DOMContentLoaded', function () {
     var root = $('.product-page') || document;
-
-    /* ---------------------------------------------
-       Ensure #cart-toast exists
-    --------------------------------------------- */
-    (function ensureCartToast(){
-      if (!document.getElementById('cart-toast')) {
-        var t = document.createElement('div');
+    (function ensureAnchoredToast(){
+      var buybox = $('.buybox', root);
+      var addBtn = $('.buy-actions .cta', root);
+      if (!buybox || !addBtn) return;
+      var t = $('#cart-toast', buybox);
+      if (!t){
+        t = document.createElement('div');
         t.id = 'cart-toast';
-        t.textContent = 'Added to cart';
-        Object.assign(t.style, {
-          position: 'fixed', left: '50%', bottom: '24px', transform: 'translateX(-50%)',
-          padding: '10px 14px', background: 'rgba(0,0,0,0.85)', color: '#fff',
-          borderRadius: '10px', fontSize: '14px', zIndex: 9999, opacity: '0',
-          transition: 'opacity .25s'
-        });
-        document.body.appendChild(t);
+        t.setAttribute('role','status');
+        t.setAttribute('aria-live','polite');
+        t.innerHTML = '<span class="msg">Added to cart</span>';
+        buybox.appendChild(t);
+        t.style.position = 'absolute';
+        t.style.opacity = '0';
+        t.style.pointerEvents = 'none';
+        t.style.transition = 'opacity .18s ease, transform .18s ease';
+        t.style.transform = 'translateY(6px)';
       }
+      function placeToast(){
+        var bb = buybox.getBoundingClientRect();
+        var ct = addBtn.getBoundingClientRect();
+        var left = ct.left - bb.left;
+        t.style.left  = left + 'px';
+        t.style.width = ct.width + 'px';
+        var h = t.offsetHeight || 32;
+        t.style.top   = (-h - 10) + 'px';
+      }
+      var ro = new ResizeObserver(placeToast);
+      ro.observe(buybox); ro.observe(addBtn);
+      window.addEventListener('resize', placeToast);
+      requestAnimationFrame(placeToast);
+      window.showCartToast = function(text){
+        var msg = t.querySelector('.msg');
+        if (msg) msg.textContent = text || 'Added to cart';
+        placeToast();
+        t.classList.remove('is-showing');
+        void t.offsetWidth;
+        t.classList.add('is-showing');
+        t.style.opacity = '1';
+        t.style.transform = 'none';
+        clearTimeout(t._timer);
+        t._timer = setTimeout(function(){
+          t.classList.remove('is-showing');
+          t.style.opacity = '0';
+          t.style.transform = 'translateY(6px)';
+        }, 2000);
+      };
     })();
-
-    /* ---------------------------------------------
-       Footer year
-    --------------------------------------------- */
     var yearEl = $('#year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-    /* ---------------------------------------------
-       DEDUPE: reviews, buybox, buybar
-    --------------------------------------------- */
     function dedupe(selector) {
       var els = $$(selector, root);
       if (els.length <= 1) return;
@@ -56,23 +68,15 @@
     if (grid && 'MutationObserver' in window) {
       new MutationObserver(runDedupe).observe(grid, { childList: true, subtree: true });
     }
-
-    /* ---------------------------------------------
-       BUY UI — CLIENT-SIDE CART (global schema)
-    --------------------------------------------- */
     var buyForm        = $('#buy-form', root);
     var priceDesktop   = $('#price', root);
     var variantDesktop = $('#variant', root);
     var qtyDesktop     = $('#qty', root);
-
-    // Optional mobile hooks
     var buybar         = $('.buybar', root);
     var priceMobile    = $('#price-mobile', buybar || root);
     var variantMobile  = $('#variant-mobile', buybar || root);
     var qtyMobile      = $('#qty-mobile', buybar || root);
-
     var titleEl        = $('#product-title', root) || $('.product-title', root) || $('h1', root);
-
     function formatPrice(num) { return '$' + Number(num).toFixed(2); }
     function getVariantPrice(selectEl) {
       if (!selectEl) return null;
@@ -88,8 +92,6 @@
         if (priceMobile)  priceMobile.textContent  = formatPrice(p);
       }
     }
-
-    // Mirror helpers
     function mirrorSelect(from, to) {
       if (!from || !to) return;
       if (to.value !== from.value) {
@@ -104,8 +106,6 @@
         to.dispatchEvent(new Event('input', { bubbles: true }));
       }
     }
-
-    // Wire mirrors
     if (variantDesktop) variantDesktop.addEventListener('change', function () {
       mirrorSelect(variantDesktop, variantMobile); updatePrices();
     });
@@ -119,8 +119,6 @@
       mirrorInput(qtyMobile, qtyDesktop);
     });
     updatePrices();
-
-    // ---- Quantity controls (.qty-btn.down/.up)
     (function attachQtyControls(){
       function toInt(v, d){ var n = parseInt(String(v||'').trim(), 10); return Number.isFinite(n) ? n : d; }
       function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
@@ -129,31 +127,23 @@
         input.dispatchEvent(new Event('input',  { bubbles:true }));
         input.dispatchEvent(new Event('change', { bubbles:true }));
       }
-
       document.addEventListener('click', function(e){
         var btn = e.target.closest('.qty-control .qty-btn');
         if(!btn) return;
-
         var wrap  = btn.closest('.qty-control');
         var input = wrap && wrap.querySelector('input[type="number"]');
         if(!input) return;
-
         e.preventDefault();
-
         var step = toInt(input.step, 1) || 1;
         var min  = toInt(input.min, 1) || 1;
         var max  = Number.isFinite(parseFloat(input.max)) ? parseInt(input.max,10) : Infinity;
-
         var val = toInt(input.value, min);
         if (btn.classList.contains('up'))   val += step;
         if (btn.classList.contains('down')) val -= step;
-
         setQty(input, clamp(val, min, max));
-
         if (input === qtyDesktop) mirrorInput(qtyDesktop, qtyMobile);
         if (input === qtyMobile)  mirrorInput(qtyMobile,  qtyDesktop);
       });
-
       var q = qtyDesktop;
       if (q){
         var min = toInt(q.min, 1), step = toInt(q.step, 1) || 1;
@@ -167,16 +157,12 @@
         });
       }
     })();
-
-    // ---- Submit: add N unit items to match global cart schema ----
     var submitting = false;
     function submitBuy(e) {
       if (e) e.preventDefault();
       if (submitting) return;
-
       mirrorSelect(variantMobile, variantDesktop);
       mirrorInput(qtyMobile, qtyDesktop);
-
       var productName = (titleEl && titleEl.textContent.trim()) || 'Product';
       var vSel = variantDesktop || variantMobile;
       var variantText = '';
@@ -185,20 +171,16 @@
         variantText = opt ? (opt.text || opt.label || '') : '';
       }
       var displayName = variantText ? (productName + ' — ' + variantText) : productName;
-
       var priceVal = getVariantPrice(variantDesktop) ?? getVariantPrice(variantMobile) ?? 0;
       var qtyInput = buyForm && buyForm.querySelector('.qty-control input[type="number"]');
       if (!qtyInput) qtyInput = qtyDesktop || qtyMobile;
       var qtyVal = Math.max(1, parseInt(String(qtyInput ? qtyInput.value : '1').trim(), 10) || 1);
-
       var key = displayName + '|' + Number(priceVal || 0);
-
       var haveEnsureOrder     = (typeof window.ensureOrder === 'function');
       var haveGetCart         = (typeof window.getCart === 'function');
       var haveSetCart         = (typeof window.setCart === 'function');
       var haveUpdateCartCount = (typeof window.updateCartCount === 'function');
       var haveShowCartToast   = (typeof window.showCartToast === 'function');
-
       submitting = true;
       try {
         if (haveEnsureOrder) window.ensureOrder(key);
@@ -219,18 +201,12 @@
         submitting = false;
       }
     }
-
     if (buyForm) {
       buyForm.addEventListener('submit', function (e) {
         var clientMode = (buyForm.dataset.mode || '').toLowerCase() === 'client';
         if (clientMode) submitBuy(e);
       });
     }
-
-    /* ---------------------------------------------
-       UNIFIED FULL-SCREEN ZOOM OVERLAY
-       (used ONLY for review images per click handler below)
-    --------------------------------------------- */
     var overlay = (function ensureOverlay(){
       var ov = document.getElementById('zoom-overlay');
       if (!ov) {
@@ -242,8 +218,6 @@
         ov.tabIndex = -1;
         ov.innerHTML = '<button class="close" aria-label="Close">✕</button><img alt="">';
         document.body.appendChild(ov);
-
-        // Minimal inline styles in case CSS isn’t loaded
         Object.assign(ov.style, {
           position:'fixed', inset:'0', display:'none',
           alignItems:'center', justifyContent:'center',
@@ -262,8 +236,6 @@
       }
       return ov;
     })();
-
-    // Scroll lock helpers (no white edge)
     function lockScroll(){
       var y = window.scrollY || document.documentElement.scrollTop || 0;
       document.body.dataset.scrollY = y;
@@ -285,44 +257,29 @@
       delete document.body.dataset.scrollY;
       window.scrollTo(0, y);
     }
-
-    // Wire overlay controls once
     (function wireOverlay(){
       if (overlay.dataset.wired === '1') return;
       overlay.dataset.wired = '1';
-
       var img   = overlay.querySelector('img');
       var close = overlay.querySelector('.close');
-
       function closeOverlay(){
         overlay.style.display = 'none';
         overlay.classList.remove('open');
         overlay.setAttribute('aria-hidden','true');
         unlockScroll();
-        // unbind arrow callbacks if any
         delete overlay._onArrowLeft;
         delete overlay._onArrowRight;
         if (overlay._lastFocus && document.body.contains(overlay._lastFocus)) {
           try { overlay._lastFocus.focus({ preventScroll:true }); } catch(_){}
         }
       }
-
-      // Backdrop click (only if backdrop, not image/button)
       overlay.addEventListener('click', function(e){
         if (e.target === overlay) closeOverlay();
       }, true);
-
-      // X button
       close.addEventListener('click', function(e){ e.preventDefault(); closeOverlay(); });
-
-      // Image click closes
       img.addEventListener('click', function(e){ e.preventDefault(); closeOverlay(); });
-
-      // Prevent gestures while open
       overlay.addEventListener('wheel', function(e){ if (overlay.classList.contains('open')) e.preventDefault(); }, { passive:false });
       overlay.addEventListener('touchmove', function(e){ if (overlay.classList.contains('open')) e.preventDefault(); }, { passive:false });
-
-      // Keyboard
       document.addEventListener('keydown', function(e){
         if (!overlay.classList.contains('open')) return;
         var k = e.key;
@@ -332,41 +289,27 @@
         if (k === 'ArrowLeft' && typeof overlay._onArrowLeft === 'function') { e.preventDefault(); overlay._onArrowLeft(); }
         if (k === 'ArrowRight' && typeof overlay._onArrowRight === 'function') { e.preventDefault(); overlay._onArrowRight(); }
       }, true);
-
       overlay.close = closeOverlay;
-
       overlay.openWith = function(src, alt, opts){
         var img = overlay.querySelector('img');
-        img.removeAttribute('style'); // purge any external zoom css
+        img.removeAttribute('style');
         img.alt = alt || '';
-        img.src = ''; // force refresh even if same url
+        img.src = '';
         overlay._lastFocus = document.activeElement;
-
-        // No hero linkage here, but keep options for future
-        overlay._onArrowLeft  = opts && opts.onLeft  || null;
-        overlay._onArrowRight = opts && opts.onRight || null;
-
-        // Own gestures fully while open
+        overlay._onArrowLeft  = (opts && opts.onLeft)  || null;
+        overlay._onArrowRight = (opts && opts.onRight) || null;
         overlay.style.touchAction = 'none';
         img.style.touchAction = 'none';
-
         lockScroll();
         overlay.style.display = 'flex';
         overlay.classList.add('open');
         overlay.setAttribute('aria-hidden','false');
-
         requestAnimationFrame(function(){
           img.src = src;
           try { overlay.focus({ preventScroll:true }); } catch(_){}
         });
       };
     })();
-
-    /* ---------------------------------------------
-       ZOOM: Restrict to review images only
-       (Hero will NOT open overlay)
-    --------------------------------------------- */
-    // Optional auto-tag review images as zoomable
     (function tagReviewImgs(){
       var reviewSel = '.reviews-panel img, #reviews-bottom img';
       $$(reviewSel).forEach(function(img){
@@ -374,8 +317,6 @@
         if (!img.getAttribute('alt')) img.setAttribute('alt', 'Review image');
       });
     })();
-
-    // Only react to clicks on zoomable images inside reviews
     document.addEventListener('click', function (e) {
       var t = e.target;
       var isReviewZoomable =
@@ -384,25 +325,17 @@
           t.matches('#reviews-bottom img[data-zoomable]')
         );
       if (!isReviewZoomable) return;
-
       e.preventDefault();
       e.stopPropagation();
-
       var src = t.getAttribute('data-zoom-src') || t.currentSrc || t.src;
       overlay.openWith(src, t.alt || '');
     }, { capture: true });
-
-    /* ---------------------------------------------
-       GALLERY + DOTS + SWIPE (no DOM rewrite)
-       HERO is swipe-only; click on hero does NOT open overlay
-    --------------------------------------------- */
     var hero        = $('.hero', root);
     var heroImg     = hero ? $('#hero-img', hero) : null;
     var heroFrame   = hero ? $('.hero-frame', hero) : null;
     var prevBtn     = hero ? $('.hero-nav.prev', hero) : null;
     var nextBtn     = hero ? $('.hero-nav.next', hero) : null;
     var dotsWrap    = hero ? $('.hero-dots', hero) : null;
-
     if (hero && heroImg && heroFrame && dotsWrap) {
       function parseImagesFromAttr(raw) {
         try { var a = JSON.parse(raw); if (Array.isArray(a) && a.length) return a; } catch(e){}
@@ -414,10 +347,8 @@
         var raw = hero.getAttribute('data-images'); if (raw) { var list = parseImagesFromAttr(raw); if (list.length) return list; }
         var src = heroImg.getAttribute('src'); return src ? [src] : [];
       }
-
       var images = getImages();
       var gi = 0;
-
       function ensureDots() {
         var dots = $$('.hero-dots > button', hero);
         if (dots.length === images.length) return dots;
@@ -433,9 +364,7 @@
         }
         return $$('.hero-dots > button', hero);
       }
-
       function preloadAll(arr){ arr.forEach(function(url){ var im=new Image(); im.decoding='async'; im.src=url; }); }
-
       function updateDots() {
         $$('.hero-dots > button', hero).forEach(function (b, idx) {
           var sel = (idx === gi);
@@ -444,29 +373,22 @@
           b.classList.toggle('is-active', sel);
         });
       }
-
       function show(idx) {
         gi = (idx + images.length) % images.length;
         if (images[gi]) heroImg.src = images[gi];
         if (!heroImg.alt) heroImg.alt = 'Product image ' + (gi+1);
         updateDots();
       }
-
       function next(){ show(gi + 1); }
       function prev(){ show(gi - 1); }
-
-      // Init
       ensureDots();
       preloadAll(images);
       if (images[0] && heroImg.src !== images[0]) heroImg.src = images[0];
       updateDots();
-
       var hasMany = images.length > 1;
       if (prevBtn) prevBtn.disabled = !hasMany;
       if (nextBtn) nextBtn.disabled = !hasMany;
-
       if (hasMany) {
-        // Arrow clickability guard
         (function ensureArrowClickability(){
           [prevBtn, nextBtn].forEach(function(btn){
             if (!btn) return;
@@ -475,15 +397,12 @@
             $$('.hero-nav *', btn).forEach(function(n){ n.style.pointerEvents = 'none'; });
           });
         })();
-
-        // Arrows
         if (prevBtn) prevBtn.addEventListener('click', function(e){
           e.preventDefault(); e.stopPropagation(); prev();
         }, true);
         if (nextBtn) nextBtn.addEventListener('click', function(e){
           e.preventDefault(); e.stopPropagation(); next();
         }, true);
-
         heroFrame.addEventListener('click', function(e){
           var btn = e.target.closest && e.target.closest('.hero-nav');
           if (!btn) return;
@@ -491,36 +410,24 @@
           if (btn.classList.contains('prev')) prev();
           if (btn.classList.contains('next')) next();
         }, true);
-
-        // Dots
         $$('.hero-dots > button', hero).forEach(function(b, idx){
           b.addEventListener('click', function(){ show(idx); });
         });
-
-        /* ---------------------------------------------
-           KEYBOARD: Activate ←/→ only while HOVERING or FOCUSED on the hero
-        --------------------------------------------- */
         (function enableHoverKeys(){
           var frame = heroFrame || hero;
-          var hot = false; // true when mouse over hero OR hero has focus
+          var hot = false;
 
           function isTypingTarget(el){
             return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' ||
                           el.tagName === 'SELECT' || el.isContentEditable);
           }
-
-          // Hover tracking
           frame.addEventListener('mouseenter', function(){ hot = true; });
           frame.addEventListener('mouseleave', function(){ hot = false; });
-
-          // Make frame focusable for keyboard users; track focus state
           if (!frame.hasAttribute('tabindex')) frame.setAttribute('tabindex','0');
           frame.addEventListener('focusin',  function(){ hot = true; });
           frame.addEventListener('focusout', function(e){
             if (!frame.contains(e.relatedTarget)) hot = false;
           });
-
-          // Global key handler (only fires when "hot")
           document.addEventListener('keydown', function(e){
             if (!hot) return;
             if (isTypingTarget(e.target)) return;
@@ -530,19 +437,12 @@
             else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
           }, { passive:false });
         })();
-
-        /* ---------------------------------------------
-           SWIPE / DRAG — Pointer Events + Touch fallback
-        --------------------------------------------- */
-        // Mobile smoothing: disable native zoom/drag on hero to keep swipe reliable
         try {
           heroImg.setAttribute('draggable', 'false');
           heroImg.style.webkitUserDrag = 'none';
-          heroFrame.style.touchAction = 'pan-y';      // vertical scroll ok; we own horizontal
-          heroImg.style.touchAction = 'manipulation'; // disables double-tap zoom on iOS
+          heroFrame.style.touchAction = 'pan-y';
+          heroImg.style.touchAction = 'manipulation';
         } catch(_) {}
-
-        // Fallback guard against double-tap zoom on older iOS
         (function preventDoubleTapZoom(){
           var lastTouchEnd = 0;
           heroFrame.addEventListener('touchend', function(e){
@@ -551,15 +451,11 @@
             lastTouchEnd = now;
           }, { passive:false });
         })();
-
-        // Pointer Events swipe
         (function pointerSwipe(){
           var startX = null, startY = null, dragging = false, activePointerId = null;
-
           function isInteractiveTarget(t){
             return !!(t && (t.closest('.hero-nav') || t.closest('.hero-dots button')));
           }
-
           function onPointerDown(e){
             if (isInteractiveTarget(e.target)) return;
             dragging = true;
@@ -570,14 +466,12 @@
               try { heroFrame.setPointerCapture(activePointerId); } catch(_){ }
             }
           }
-
           function onPointerMove(e){
             if (!dragging) return;
             var dx = e.clientX - startX, dy = e.clientY - startY;
             if (Math.abs(dx) < 10 || Math.abs(dy) > Math.abs(dx)) return;
             e.preventDefault();
           }
-
           function endGesture(e){
             if (!dragging) return;
             dragging = false;
@@ -589,7 +483,6 @@
             }
             activePointerId = null;
           }
-
           function cancelGesture(){
             dragging = false;
             if (heroFrame.releasePointerCapture && activePointerId != null) {
@@ -597,39 +490,32 @@
             }
             activePointerId = null;
           }
-
           heroFrame.addEventListener('pointerdown', onPointerDown);
           heroFrame.addEventListener('pointermove', onPointerMove, { passive: false });
           heroFrame.addEventListener('pointerup',   endGesture);
           heroFrame.addEventListener('pointercancel', cancelGesture);
           heroFrame.addEventListener('lostpointercapture', cancelGesture);
         })();
-
-        // Touch fallback if Pointer Events aren’t supported
         (function touchSwipeFallback(){
           if ('onpointerdown' in window) return;
-
           var startX = null, startY = null, dragging = false;
           function isInteractiveTarget(t){
             return !!(t && (t.closest('.hero-nav') || t.closest('.hero-dots button')));
           }
-
           heroFrame.addEventListener('touchstart', function(e){
             if (isInteractiveTarget(e.target)) return;
             if (!e.touches || e.touches.length !== 1) return;
             var t = e.touches[0];
             startX = t.clientX; startY = t.clientY; dragging = true;
           }, { passive:true });
-
           heroFrame.addEventListener('touchmove', function(e){
             if (!dragging || !e.touches || e.touches.length !== 1) return;
             var t = e.touches[0];
             var dx = t.clientX - startX, dy = t.clientY - startY;
             if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
-              e.preventDefault(); // keep the page from grabbing the gesture
+              e.preventDefault();
             }
           }, { passive:false });
-
           heroFrame.addEventListener('touchend', function(e){
             if (!dragging) return; dragging = false;
             var t = (e.changedTouches && e.changedTouches[0]) || null;
@@ -638,30 +524,20 @@
             if (dx > 35) prev();
             else if (dx < -35) next();
           }, { passive:true });
-
           heroFrame.addEventListener('touchcancel', function(){ dragging = false; }, { passive:true });
         })();
       }
-
-      /* Disable overlay on the main hero image explicitly (belt & suspenders) */
       if (heroImg) {
         heroImg.addEventListener('click', function (e) {
           e.preventDefault();
           e.stopImmediatePropagation();
         }, true);
       }
-
-      // Debug surface
       window.__gallery = {
         images: images.slice(),
         index: function(){ return gi; },
         next: next, prev: prev, show: show
       };
-    } // end hero block
-
-    /* ---------------------------------------------
-       Reviews use the same overlay via the scoped handler above.
-    --------------------------------------------- */
-
-  }); // end DOMContentLoaded
-})(); // end IIFE
+    }
+  });
+})();

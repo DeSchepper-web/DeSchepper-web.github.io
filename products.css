@@ -1,20 +1,14 @@
-/* ==========================
-   PRODUCT PAGE — SCOPED (clean)
-========================== */
-
-/* A11y hide */
 .product-page .sr-only{
   position:absolute; left:-9999px; top:auto; width:1px; height:1px;
   overflow:hidden; white-space:nowrap;
 }
 
 /* ---- Layout grid with areas ---- */
-
 .product-page .grid{
-  --g: 2rem;                           /* base gap */
-  --side: clamp(240px, 20vw, 320px);   /* symmetric side cols */
-  --hero-min: 520px;                   /* min hero track */
-  --hero-max: 550px;                   /* cap hero size */
+  --g: 2rem;
+  --side: clamp(240px, 20vw, 320px);
+  --hero-min: 520px;
+  --hero-max: 550px;
 
   display:grid;
   grid-template-columns: var(--side) minmax(var(--hero-min), 1fr) var(--side);
@@ -47,7 +41,7 @@
 /* hero sizing — cap to viewport too */
 .product-page .hero{ grid-area:hero; }
 .product-page .hero-frame{
-  max-width: min(var(--hero-max), 56vw);  /* shrink slightly on narrower screens */
+  max-width: min(var(--hero-max), 56vw);
   margin: 0 auto;
 }
 
@@ -64,10 +58,8 @@
     --hero-max: 600px;
   }
   .product-page .hero-frame{ max-width: min(var(--hero-max), 60vw); }
-  .product-page .hero-nav{ width:38px; height:38px; } /* smaller arrows */
+  .product-page .hero-nav{ width:38px; height:38px; }
 }
-
-/* slightly smaller again before stack */
 @media (max-width:1100px){
   .product-page .grid{
     --g: 1.25rem;
@@ -93,7 +85,7 @@
   }
   .product-page .left-col .card,
   .product-page .buybox{ max-width:100%; }
-  .product-page .hero-frame{ max-width:100%; }  /* full-width hero when stacked */
+  .product-page .hero-frame{ max-width:100%; }
 }
 
 /* ---- Side cards (details) ---- */
@@ -122,7 +114,7 @@
   margin:0 0 1rem;
   line-height:0;
   min-width:0;
-  display:block !important;        /* ensure figure isn't a row */
+  display:block !important;
   overflow:visible !important;
   border-radius:0;
   background:transparent !important;
@@ -130,15 +122,12 @@
   padding-top:0 !important;
   min-height:0 !important;
 }
-.product-page .hero::before{
-  content:none !important;
-  pointer-events:none !important;
-}
+.product-page .hero::before{ content:none !important; pointer-events:none !important; }
 .product-page .hero-frame{
   position:relative;
   aspect-ratio:1/1;
   width:100%;
-  overflow:hidden;                 /* mask image + arrows */
+  overflow:hidden;
   border-radius:12px;
   transform:translateZ(0);
   box-shadow:0 12px 28px rgba(0,0,0,.10);
@@ -148,7 +137,7 @@
   position:absolute; inset:-0.5px; /* 1px bleed to avoid seams */
   width:calc(100% + 1px); height:calc(100% + 1px);
   object-fit:cover; display:block; border:0; background:transparent;
-  pointer-events:auto;             /* keep lightbox clicks working */
+  pointer-events:auto;
 }
 
 /* Arrows */
@@ -159,15 +148,15 @@
   background:rgba(0,0,0,.55); color:#fff; cursor:pointer;
   box-shadow:0 8px 18px rgba(0,0,0,.28);
   transition:background .2s, transform .08s;
-  z-index:5;                       /* above img/shadows */
-  pointer-events:auto;             /* explicitly clickable */
+  z-index:5;
+  pointer-events:auto;
 }
 .product-page .hero-nav:hover{ background:rgba(0,0,0,.75); }
 .product-page .hero-nav:active{ transform:translateY(-50%) scale(.98); }
 .product-page .hero-nav.prev{ left:.65rem; }
 .product-page .hero-nav.next{ right:.65rem; }
 .product-page .hero-nav svg{ width:22px; height:22px; fill:currentColor; }
-.product-page .hero-nav *{ pointer-events:none; } /* button gets the click */
+.product-page .hero-nav *{ pointer-events:none; }
 
 @media (max-width:768px){
   .product-page .hero-nav{ width:48px; height:48px; }
@@ -310,9 +299,7 @@
 
 /* Mobile tweaks */
 @media (max-width:768px){
-  .product-page .buybox{
-    max-width:100%; margin:0 auto 1.25rem;
-  }
+  .product-page .buybox{ max-width:100%; margin:0 auto 1.25rem; }
   .product-page .variant-wrap .select,
   .product-page .buy-actions .cta,
   .product-page .qty-control{ height:48px; }
@@ -341,41 +328,25 @@
   width:100%; max-width:100%; margin:0 auto;
 }
 .reviews-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:1rem;
-  margin-bottom:.25rem;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; margin-bottom:.25rem;
 }
 .reviews-title{
-  font-size:1.25rem;
-  line-height:1.2;
-  margin:0;
-  display:flex;
-  align-items:center;
-  gap:.5rem;
+  font-size:1.25rem; line-height:1.2; margin:0;
+  display:flex; align-items:center; gap:.5rem;
 }
-.reviews-title .stars{
-  font-size:1.05em;
-  letter-spacing:.05em;
-  color:#F7931A;
+/* merged star styles */
+.reviews-title .stars,
+.review-stars{
+  color:#F7931A; letter-spacing:.05em; font-size:1.05rem;
 }
 .review-cta{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  height:44px;
-  padding:.65rem 1rem;
+  display:inline-flex; align-items:center; justify-content:center;
+  height:44px; padding:.65rem 1rem;
   border:1px solid var(--btn-border, #2c2828);
-  border-radius:6px;
-  background:var(--theme-a, #F7931A);
-  color:#fff;
-  font-weight:700;
-  font-size:1rem;
-  text-decoration:none;
-  line-height:1;
-  white-space:nowrap;
-  box-shadow:none;
+  border-radius:6px; background:var(--theme-a, #F7931A);
+  color:#fff; font-weight:700; font-size:1rem; text-decoration:none; line-height:1;
+  white-space:nowrap; box-shadow:none;
   transition:background .2s ease, border-color .2s ease, transform .06s ease;
 }
 .review-cta:hover,
@@ -385,14 +356,9 @@
 }
 .review-cta:active{ transform:translateY(1px); }
 .review-cta:focus-visible{
-  outline:2px solid var(--theme-a, #F7931A);
-  outline-offset:2px;
+  outline:2px solid var(--theme-a, #F7931A); outline-offset:2px;
 }
-.reviews-meta{
-  margin:.25rem 0 .75rem;
-  color:#555;
-  font-size:.95rem;
-}
+.reviews-meta{ margin:.25rem 0 .75rem; color:#555; font-size:.95rem; }
 
 /* Cards grid */
 .reviews-grid{ display:grid; grid-template-columns:repeat(12,1fr); gap:1rem; }
@@ -400,49 +366,35 @@
   grid-column:span 12; background:#fff; border:1px solid #e6e6e6; border-radius:10px;
   padding:1rem; box-shadow:0 1px 0 rgba(0,0,0,.03);
 }
-@media (min-width:720px){
-  .review-card{ grid-column:span 6; }
-}
-@media (min-width:1040px){
-  .review-card{ grid-column:span 4; }
-}
+@media (min-width:720px){ .review-card{ grid-column:span 6; } }
+@media (min-width:1040px){ .review-card{ grid-column:span 4; } }
+
 .review-head{ display:flex; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:.5rem; }
 .reviewer{ margin:0; font-size:1.05rem; }
-.review-stars{ color:#F7931A; letter-spacing:.05em; font-size:1.05rem; }
 .review-text{ margin:.25rem 0 .75rem; color:#222; line-height:1.55; }
 
 /* Thumbnails */
 .review-media{ display:flex; gap:.5rem; flex-wrap:wrap; }
 .review-media .thumb{
-  padding:0; margin:0;
-  background:#f7f7f7;               /* grey card look */
-  border:1px solid #e6e6e6;
-  border-radius:8px;
-  width:72px; height:72px;
-  overflow:hidden; cursor:pointer; line-height:0;
+  padding:0; margin:0; background:#f7f7f7; border:1px solid #e6e6e6; border-radius:8px;
+  width:72px; height:72px; overflow:hidden; cursor:pointer; line-height:0;
 }
 .review-media .thumb img{
-  width:100%; height:100%;
-  object-fit:cover; display:block;
-  cursor:zoom-in;                    /* show zoom intent */
+  width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in;
 }
 .review-media .thumb:hover{ outline:2px solid #F7931A; }
 
 /* --- Mobile reviews header order --- */
 @media (max-width:560px){
   .reviews-panel{
-    display:grid;
-    grid-template-columns:1fr;
-    grid-template-areas:
-      "title"
-      "meta"
-      "cta";
+    display:grid; grid-template-columns:1fr;
+    grid-template-areas:"title" "meta" "cta";
     grid-row-gap:.5rem;
   }
   .reviews-header{ display:contents !important; }
   .reviews-title{ grid-area:title; }
-  .reviews-meta { grid-area:meta;  margin:.15rem 0 .25rem; }
-  .review-cta  { grid-area:cta;   width:100%; }
+  .reviews-meta { grid-area:meta; margin:.15rem 0 .25rem; }
+  .review-cta  { grid-area:cta; width:100%; }
 }
 
 /* ==========================
@@ -464,14 +416,10 @@
 /* ===== Minimal theme overrides ===== */
 .product-page .buybar{ display:none !important; }
 
-/* ===== Optional: keep details + buybox same width ===== */
+/* ===== Optional: keep details + buybox same width (desktop only) ===== */
 @media (min-width:1025px){
   .product-page .left-col .card,
   .product-page .buybox{ width:100%; max-width:380px; }
-}
-@media (max-width:1024px){
-  .product-page .left-col .card,
-  .product-page .buybox{ max-width:100%; }
 }
 
 /* Product header subtitle underline */
@@ -488,41 +436,20 @@
 /* ==========================
    REVIEW LIGHTBOX — stable center
 ========================== */
-
 #review-lightbox{
-  position: fixed;
-  inset: 0;
-  display: none;                 /* hidden by default */
-  background: rgba(0,0,0,.92);
-  z-index: 200000;
-  padding: 24px;                 /* <-- fixed, no vw */
-  box-sizing: border-box;
+  position:fixed; inset:0; display:none;
+  background:rgba(0,0,0,.92); z-index:200000;
+  padding:24px; box-sizing:border-box;
 }
 #review-lightbox.open{
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
+  display:flex !important; align-items:center; justify-content:center;
 }
-
 #review-lightbox img{
-  position: static !important;
-  transform: none !important;
-  inset: auto !important;
-  margin: 0 !important;
-  display: block;
-
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  object-position: center;
-
-  border-radius: 8px;
-  box-shadow: 0 0 36px rgba(0,0,0,.5);
-  cursor: zoom-out;
+  position:static !important; transform:none !important; inset:auto !important; margin:0 !important;
+  display:block; max-width:100%; max-height:100%; width:auto; height:auto;
+  object-fit:contain; object-position:center;
+  border-radius:8px; box-shadow:0 0 36px rgba(0,0,0,.5); cursor:zoom-out;
 }
-
 /* close via img/backdrop/Esc only */
 #review-lightbox .rlb-close{ display:none !important; }
 
@@ -554,10 +481,9 @@ body.rlb-open :is([aria-label*="close" i],[title*="close" i],[data-testid*="clos
 #zoom-overlay{
   position:fixed; inset:0;
   background:#171515;
-  background-image: linear-gradient(180deg, #2c2828 0%, #171515 100%);
+  background-image:linear-gradient(180deg,#2c2828 0%,#171515 100%);
   display:none; align-items:center; justify-content:center;
-  padding:0;                       /* final (no gutter) */
-  z-index:10050; overscroll-behavior:contain;
+  padding:0; z-index:10050; overscroll-behavior:contain;
 }
 #zoom-overlay.open{ display:flex; }
 #zoom-overlay img{
@@ -565,28 +491,21 @@ body.rlb-open :is([aria-label*="close" i],[title*="close" i],[data-testid*="clos
   max-height:92vh; object-fit:contain;
   box-shadow:none; background:transparent; border:0; border-radius:0;
 }
-
-/* Lock the page completely while open (no white edge) */
+/* Lock page completely while open (no white edge) */
 body.zoom-locked{ position:fixed; width:100%; left:0; right:0; }
-/* Nukes any “close” UI when zoom is active */
 /* Hide any leftover close control just in case */
 #zoom-overlay .close{ display:none !important; }
-
-/* Show a magnifying-glass cursor on the zoomed image (minus = “zoom out”) */
-#zoom-overlay img{ cursor: zoom-out; }
-
-/* If you use the hero lightbox too, keep the same behavior there */
-#lightbox-img{ cursor: zoom-out; }
+/* shared cursor */
+#zoom-overlay img, #lightbox-img{ cursor:zoom-out; }
 
 body.zoom-locked :is([class*="close"], [aria-label*="close" i], [title*="close" i]){
   display:none !important;
 }
-/* debug: centerline — remove when done */
-html::before{ content:""; position:fixed; left:50%; top:0; bottom:0; width:1px; background:#f40; opacity:.4; pointer-events:none; z-index:999999; }
+
 /* ===== Desktop (≥1301px): keep 3-col + centered ===== */
 @media (min-width:1301px){
   .product-page .grid{
-    --hero-max: 550px; /* restore your desktop cap */
+    --hero-max: 550px;
     grid-template-columns: var(--side) minmax(var(--hero-min,520px), 1fr) var(--side);
     grid-template-areas:
       "header header header"
@@ -603,30 +522,43 @@ html::before{ content:""; position:fixed; left:50%; top:0; bottom:0; width:1px; 
 /* ===== Tablet/Phone (≤1300px): force single column + cap hero only ===== */
 @media (max-width:1300px){
   .product-page .grid{
-    grid-template-columns: 1fr !important;         /* force stack */
+    grid-template-columns:1fr !important;
     grid-template-areas:
       "header"
       "hero"
       "buybox"
       "left"
       "bottom" !important;
-    max-width: none; width: 100%;
-    padding-inline: 1rem;
+    max-width:none; width:100%;
+    padding-inline:1rem;
   }
-
-  /* Only the hero is capped; everything else can grow */
   .product-page .hero-frame{
-    width: 100%;
-    max-width: 500px;
-    margin-inline: auto;
+    width:100%; max-width:500px; margin-inline:auto;
   }
   .product-page .buybox,
   .product-page .left-col .card,
   .product-page .reviews-panel{
-    max-width: none; width: 100%;
-    margin-inline: auto;
+    max-width:none; width:100%; margin-inline:auto;
   }
-
-  /* Neutralize any side/hero tweaks below this width */
   .product-page .grid{ --side:auto; }
+}
+
+/* ===== Toast anchored above CTA ===== */
+.product-page .buybox{ position:relative; overflow:visible; }
+.product-page #cart-toast{
+  position:absolute !important; top:-9999px; left:0; width:auto;
+  padding:.6rem .8rem;
+  background:var(--theme-a,#F7931A); color:#fff;
+  border:1px solid var(--btn-border,#2c2828);
+  border-radius:8px; box-shadow:0 8px 18px rgba(0,0,0,.18);
+  font-size:.95rem; line-height:1.2; text-align:center;
+  pointer-events:none; z-index:120;
+  opacity:0; transform:translateY(6px);
+  transition:opacity .18s ease, transform .18s ease;
+}
+.product-page #cart-toast.is-showing{ opacity:1; transform:none; }
+.product-page #cart-toast::after{
+  content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  border:6px solid transparent; border-top-color:var(--theme-a,#F7931A);
+  filter:drop-shadow(0 2px 0 var(--btn-border,#2c2828));
 }
