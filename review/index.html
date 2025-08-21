@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Services – Form Precision</title>
-  <meta name="description" content="Request custom design, additive manufacturing, or materials consulting. Send your project details and files to the Form Precision team." />
-  <!-- Preload fonts for faster rendering -->
+
+  <title>Reviews – Form Precision</title>
+  <meta name="description" content="Leave a review for Form Precision. Rate your purchase, share photos, and tell us how everything performed." />
+
+  <!-- Preload fonts -->
   <link rel="preload" href="/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/RecklessNeue-Regular.woff2" as="font" type="font/woff2" crossorigin> 
+  <link rel="preload" href="/fonts/RecklessNeue-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/style.css" />
-  <link rel="canonical" href="https://formprecision.com/contact/" />
+  <link rel="canonical" href="https://formprecision.com/reviews/" />
 
   <!-- Favicons -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
@@ -22,9 +24,9 @@
 
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Custom Services – Form Precision">
-  <meta property="og:description" content="Request custom design, additive manufacturing, or materials consulting. Send your project details and files to the Form Precision team.">
-  <meta property="og:url" content="https://formprecision.com/contact/">
+  <meta property="og:title" content="Reviews – Form Precision">
+  <meta property="og:description" content="Leave a review for Form Precision. Rate your purchase, share photos, and tell us how everything performed.">
+  <meta property="og:url" content="https://formprecision.com/reviews/">
   <meta property="og:image" content="https://formprecision.com/images/formprecision-3d.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -70,7 +72,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://formprecision.com/" },
-      { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://formprecision.com/contact/" }
+      { "@type": "ListItem", "position": 2, "name": "Reviews", "item": "https://formprecision.com/reviews/" }
     ]
   }
   </script>
@@ -118,35 +120,82 @@
 <!-- Overlay background -->
 <div class="overlay" id="overlay" aria-hidden="true"></div>
 
-<!-- Banner/Header -->
+<!-- Banner/Header (keeps .contact-banner styles) -->
 <header class="contact-banner">
-  <h1 class="visually-hidden">Contact Form Precision</h1>
-  <p>Looking for a custom design or request? Send us your project details below!</p>
+  <h1 class="visually-hidden">Reviews</h1>
+  <p>Tell us how we did. Rate your purchase and share your experience below.</p>
 </header>
 
-<!-- Custom Services Section -->
+<!-- Reviews Submission Section (keeps .contact styles) -->
 <section class="contact">
-  <h2>Request Custom Services</h2>
+  <h2>Leave A Review</h2>
+
   <form action="https://formspree.io/f/xgvyzklv" method="POST" enctype="multipart/form-data" class="contact-form">
     <!-- Hidden redirect after submission -->
     <input type="hidden" name="_next" value="https://formprecision.com/thank-you/" />
+    <!-- Optional email subject to help inbox triage -->
+    <input type="hidden" name="subject" value="New Review Submission - formprecision.com" />
+    <!-- Honeypot (bots fill this; humans won't) -->
+    <div style="position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;">
+      <label for="company">Company</label>
+      <input type="text" id="company" name="company">
+    </div>
 
-    <!-- Visible form fields -->
-    <input type="text" name="name" placeholder="Your Name" required />
-    <input type="email" name="_replyto" placeholder="Your Email" required />
-    <textarea name="message" placeholder="Describe your project or service request" required></textarea>
+    <!-- Reviewer info -->
+    <label for="name">Name/Alias/Nickname</label>
+    <input type="text" id="name" name="name" placeholder="Your Name" required />
 
-    <!-- File Upload -->
-    <label for="file">Upload File(s):</label>
-    <input type="file" name="attachment" id="file" multiple />
+    <label for="email">Email (not published)</label>
+    <input type="email" id="email" name="_replyto" placeholder="you@example.com" required />
 
-    <button type="submit">Send Request</button>
+    <label for="order">Order #</label>
+    <input type="text" id="order" name="order_number" required />
+
+    <!-- Rating -->
+    <label id="rating-label">Your Rating</label>
+    <fieldset class="rating" aria-labelledby="rating-label">
+      <legend class="visually-hidden">Your Rating</legend>
+
+      <div class="rating-input" role="radiogroup" aria-labelledby="rating-label">
+        <!-- Order is 5→1 so CSS can “fill left” -->
+        <input type="radio" id="rating-5" name="rating" value="5" required>
+        <label for="rating-5" title="5 stars">★</label>
+
+        <input type="radio" id="rating-4" name="rating" value="4">
+        <label for="rating-4" title="4 stars">★</label>
+
+        <input type="radio" id="rating-3" name="rating" value="3">
+        <label for="rating-3" title="3 stars">★</label>
+
+        <input type="radio" id="rating-2" name="rating" value="2">
+        <label for="rating-2" title="2 stars">★</label>
+
+        <input type="radio" id="rating-1" name="rating" value="1">
+        <label for="rating-1" title="1 star">★</label>
+      </div>
+    </fieldset>
+
+    <!-- Review text -->
+    <label for="review">Your Review</label>
+    <textarea id="review" name="review" placeholder="Share your experience: fit, finish, performance, shipping, etc." required></textarea>
+
+    <!-- Photo Upload -->
+    <label for="photos">Add photos (optional)</label>
+    <input type="file" name="attachment" id="photos" multiple />
+
+    <!-- Publish consent -->
+    <label class="checkbox">
+      <input type="checkbox" name="consent_publish" value="yes" required>
+      I agree that my review (and optional photos) may be published on the site. Additionally, I agree that for any reason Form Precision reserves the right to not publish reviews. These reasons include but are not limited to, usage of profanity, promotion of foreign products, or usage of graphic imagery.
+    </label>
+
+    <button type="submit">Submit Review</button>
   </form>
 </section>
 
 <!-- Back Link -->
 <div class="back-link">
-  <a href="/contact/">Contact Us</a>
+  <a href="/">Back to Home</a>
 </div>
 
 <!-- Footer -->
@@ -173,5 +222,72 @@
 
 <!-- Unified external script -->
 <script src="/script.js" defer></script>
+<style>
+  /* Rating field styled like other inputs */
+  .contact-form .rating{
+    margin-top:.5rem;
+    padding:0;
+    border:0;
+  }
+
+  /* Stars live in this input-like box */
+  .contact-form .rating-input{
+    display:flex;
+    flex-direction:row-reverse;      /* lets :checked fill leftward */
+    align-items:center;
+    gap:.25rem;
+    width:100%;
+    min-height:44px;
+    padding:.65rem .75rem;
+    border:1px solid var(--input-border, #D0D5DD);
+    border-radius:.5rem;
+    background:var(--input-bg, #fff);
+  }
+
+  /* Hide radios accessibly */
+  .contact-form .rating-input input[type="radio"]{
+    position:absolute;
+    left:-9999px;
+  }
+
+  /* Star labels */
+  .contact-form .rating-input label{
+    cursor:pointer;
+    display:inline-block;
+    margin:0;
+    font-size:1.25rem;
+    line-height:1;
+    color:#C7CCD1;                   /* unfilled */
+    user-select:none;
+  }
+
+  /* Hover fill */
+  .contact-form .rating-input label:hover,
+  .contact-form .rating-input label:hover ~ label{
+    color:#C46D13;
+  }
+
+  /* Selected fill */
+  .contact-form .rating-input input:checked ~ label{
+    color:#F7931A;
+  }
+
+  /* Keyboard focus ring on current star */
+  .contact-form .rating-input input:focus + label{
+    outline:2px solid #4B5563;
+    outline-offset:2px;
+    border-radius:.25rem;
+  }
+
+  /* Keep your general form label rule */
+  .contact-form label{ display:block; margin-top:.75rem; }
+
+  /* Screen-reader-only helper */
+  .visually-hidden{
+    position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0 0 0 0);white-space:nowrap;border:0;
+  }
+  .contact-form .rating-input{ justify-content:center; }
+</style>
 </body>
 </html>
