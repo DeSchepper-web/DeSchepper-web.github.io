@@ -346,7 +346,19 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   font-size: 1rem;
   margin-bottom: 2rem;
 }
+/* Stop accidental zoom/drag on the home hero */
+.hero-img{
+  touch-action: pan-y;          /* allow vertical scrolling; blocks double-tap/pinch on the element */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
+}
 
+/* On touch screens, ignore taps on the image itself (taps go to overlay/buttons instead) */
+@media (pointer: coarse){
+  .hero-img{ pointer-events: none; }
+}
 /* CTA BUTTON */
 .cta-button {
   background-color: var(--theme-a);
