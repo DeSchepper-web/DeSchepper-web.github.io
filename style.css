@@ -148,7 +148,7 @@ body {
   cursor: pointer;
   z-index: 1001;
   transition: all 0.3s ease;
-  transform: translateY(1.0px); /* optical nudge upward */
+  transform: translateY(1.2px); /* optical nudge upward */
 }
 
 .menu-toggle .bar {
