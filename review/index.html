@@ -224,142 +224,91 @@
 <!-- Unified external script -->
 <script src="/script.js" defer></script>
 <style>
-  /* Rating field styled like other inputs */
-  .contact-form .rating{
-    margin-top:.5rem;
-    padding:0;
-    border:0;
-  }
+/* ---------- General ---------- */
+.contact-form label{ display:block; margin-top:.75rem; }
 
-  /* Stars live in this input-like box */
-  .contact-form .rating-input{
-    display:flex;
-    flex-direction:row-reverse;      /* lets :checked fill leftward */
-    align-items:center;
-    gap:.25rem;
-    width:100%;
-    min-height:44px;
-    padding:.65rem .75rem;
-    border:1px solid var(--input-border, #D0D5DD);
-    border-radius:.5rem;
-    background:var(--input-bg, #fff);
-  }
-
-  /* Hide radios accessibly */
-  .contact-form .rating-input input[type="radio"]{
-    position:absolute;
-    left:-9999px;
-  }
-
-  /* Star labels */
-  .contact-form .rating-input label{
-    cursor:pointer;
-    display:inline-block;
-    margin:0;
-    font-size:1.25rem;
-    line-height:1;
-    color:#C7CCD1;                   /* unfilled */
-    user-select:none;
-  }
-
-  /* Hover fill */
-  .contact-form .rating-input label:hover,
-  .contact-form .rating-input label:hover ~ label{
-    color:#C46D13;
-  }
-
-  /* Selected fill */
-  .contact-form .rating-input input:checked ~ label{
-    color:#F7931A;
-  }
-
-  /* Keyboard focus ring on current star */
-  .contact-form .rating-input input:focus + label{
-    outline:2px solid #4B5563;
-    outline-offset:2px;
-    border-radius:.25rem;
-  }
-
-  /* Keep your general form label rule */
-  .contact-form label{ display:block; margin-top:.75rem; }
-
-  /* Screen-reader-only helper */
-  .visually-hidden{
-    position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
-    clip:rect(0 0 0 0);white-space:nowrap;border:0;
-  }
-  .contact-form .rating-input{ justify-content:center; }
-  /* Consent checkbox: keep inline with text and left-aligned */
-.contact-form label.checkbox{
-  display: grid;
-  grid-template-columns: 1.2rem 1fr;
-  gap: .6rem;
-  align-items: start;
-  text-align: left;           /* override any centered form styles */
-  line-height: 1.45;
+.visually-hidden{
+  position:absolute!important; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
 }
 
-/* Keep native checkbox size/behavior but align with first line */
-.contact-form label.checkbox input[type="checkbox"]{
-  width: 1.1rem;
-  height: 1.1rem;
-  margin: .2rem 0 0 0;
+/* ---------- Rating (stars) ---------- */
+.contact-form .rating{
+  margin-top:.5rem;
+  padding:0;
+  border:0;
 }
 
-/* Make sure the long text wraps nicely */
-.contact-form label.checkbox > span{
-  display: block;
+.contact-form .rating-input{
+  position:relative;                         /* anchor for native bubble */
+  display:flex;
+  justify-content:center;
+  flex-direction:row-reverse;                /* lets :checked fill leftward */
+  align-items:center;
+  gap:.25rem;
+  width:100%;
+  min-height:44px;
+  padding:.65rem .75rem;
+  border:1px solid var(--input-border,#D0D5DD);
+  border-radius:.5rem;
+  background:var(--input-bg,#fff);
 }
-/* Let the rating box be a positioning context */
-.contact-form .rating-input { position: relative; }
 
-/* Move ONLY the required radio into the box (invisible but in-flow) */
-.contact-form .rating-input input[type="radio"][required]{
-  position: absolute;
-  left: .75rem;       /* somewhere inside the bordered box */
-  top:  .6rem;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none; /* clicks still go to labels */
+/* add a little room when invalid so bubble doesn't crowd next field */
+.contact-form .rating-input:has(input[required]:invalid){ margin-bottom:.75rem; }
+
+/* Radios: hide all off-screen … */
+.contact-form .rating-input input[type="radio"]{
+  position:absolute;
+  left:-9999px;
 }
-/* 1) Center the native validation bubble anchor */
-.contact-form .rating-input { position: relative; }
+/* … except the one with [required], which anchors the bubble */
 .contact-form .rating-input input[type="radio"][required]{
   position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%, -50%);
+  left:50%; top:70%;                         /* center; adjust % if needed */
+  transform:translate(-50%,-50%);
   width:1px; height:1px;
-  opacity:0;
-  pointer-events:none;
+  opacity:0; pointer-events:none;
 }
 
-/* 2) Don't draw the focus outline on programmatic focus */
+/* Stars */
+.contact-form .rating-input label{
+  cursor:pointer;
+  display:inline-block;
+  margin:0;
+  font-size:1.25rem;
+  line-height:1;
+  color:#C7CCD1;                             /* unfilled */
+  user-select:none;
+}
+.contact-form .rating-input label:hover,
+.contact-form .rating-input label:hover ~ label{ color:#C46D13; }
+.contact-form .rating-input input:checked ~ label{ color:#F7931A; }
+
+/* Focus: no ring on programmatic focus; keep for keyboard users */
 .contact-form .rating-input input:focus + label{ outline:none; }
-/* Keep an accessible ring only for keyboard focus */
 .contact-form .rating-input input:focus-visible + label{
   outline:2px solid #4B5563;
   outline-offset:2px;
   border-radius:.25rem;
 }
-/* Move the validation bubble further down */
-.contact-form .rating-input { position: relative; }
 
-.contact-form .rating-input input[type="radio"][required]{
-  position:absolute;
-  left:50%;
-  top:70%;                     /* was 50% — lower = bubble appears lower */
-  transform:translate(-50%, -50%);
-  width:1px; height:1px;
-  opacity:0;
-  pointer-events:none;
+/* ---------- Consent checkbox layout ---------- */
+.contact-form label.checkbox{
+  display:grid;
+  grid-template-columns:1.2rem 1fr;
+  gap:.6rem;
+  align-items:start;
+  text-align:left;
+  line-height:1.45;
 }
+.contact-form label.checkbox input[type="checkbox"]{
+  width:1.1rem;
+  height:1.1rem;
+  margin:.2rem 0 0 0;                        /* aligns with first text line */
+}
+.contact-form label.checkbox > span{ display:block; }
 
-/* (optional) add a little space below when invalid so it doesn't crowd the next field */
-.contact-form .rating-input:has(input[required]:invalid){
-  margin-bottom: .75rem;
-}
 </style>
 </body>
 </html>
