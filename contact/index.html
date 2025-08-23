@@ -100,7 +100,6 @@
     <li><a href="/defense/">Defense</a></li>
     <li><a href="/automotive/">Automotive</a></li>
     <li><a href="/industrial/">Industrial</a></li>
-    <li><a href="/gallery/">Gallery</a></li>
     <li><a href="/articles/">Articles</a></li>
     <li><a href="/contact/">Contact</a></li>
   </ul>
@@ -127,18 +126,30 @@
 <!-- Custom Services Section -->
 <section class="contact">
   <h2>Request Custom Services</h2>
-  <form action="https://formspree.io/f/xgvyzklv" method="POST" enctype="multipart/form-data" class="contact-form">
-    <!-- Hidden redirect after submission -->
-    <input type="hidden" name="_next" value="https://formprecision.com/thank-you/" />
+  <form action="https://formspree.io/f/xgvyzklv"
+        method="POST"
+        enctype="multipart/form-data"
+        class="contact-form"
+        novalidate>
 
-    <!-- Visible form fields -->
-    <input type="text" name="name" placeholder="Your Name" required />
-    <input type="email" name="_replyto" placeholder="Your Email" required />
-    <textarea name="message" placeholder="Describe your project or service request" required></textarea>
+    <!-- Redirect after submission -->
+    <input type="hidden" name="_next" value="https://formprecision.com/thank-you/">
 
-    <!-- File Upload -->
-    <label for="file">Upload File(s):</label>
-    <input type="file" name="attachment" id="file" multiple />
+    <!-- Name -->
+    <label class="visually-hidden" for="cs-name">Your Name</label>
+    <input id="cs-name" name="name" type="text" placeholder="Your Name" required>
+
+    <!-- Email (Formspree accepts _replyto) -->
+    <label class="visually-hidden" for="cs-email">Your Email</label>
+    <input id="cs-email" name="_replyto" type="email" placeholder="Your Email" required>
+
+    <!-- Message -->
+    <label class="visually-hidden" for="cs-msg">Describe your project or service request</label>
+    <textarea id="cs-msg" name="message" placeholder="Describe your project or service request" required></textarea>
+
+    <!-- File Upload (optional) -->
+    <label for="cs-file">Upload File(s):</label>
+    <input id="cs-file" name="attachment" type="file" multiple>
 
     <button type="submit">Send Request</button>
   </form>
