@@ -186,8 +186,9 @@
     <!-- Publish consent -->
     <label class="checkbox">
       <input type="checkbox" name="consent_publish" value="yes" required>
-      I agree that my review (and optional photos) may be published on the site. Additionally, I agree that for any reason Form Precision reserves the right to not publish reviews. These reasons include but are not limited to, usage of profanity, promotion of foreign products, or usage of graphic imagery.
-   </span>
+      <span>
+        I agree that my review (and optional photos) may be published on the site. Additionally, I agree that for any reason Form Precision reserves the right to not publish reviews. These reasons include but are not limited to, usage of profanity, promotion of foreign products, or usage of graphic imagery.
+      </span>
     </label>
 
     <button type="submit">Submit Review</button>
@@ -223,6 +224,7 @@
 
 <!-- Unified external script -->
 <script src="/script.js" defer></script>
+
 <style>
 /* ---------- General ---------- */
 .contact-form label{ display:block; margin-top:.75rem; }
@@ -293,22 +295,190 @@
   border-radius:.25rem;
 }
 
-/* ---------- Consent checkbox layout ---------- */
+/* Stack consent vertically: checkbox centered above the text */
 .contact-form label.checkbox{
-  display:grid;
-  grid-template-columns:1.2rem 1fr;
-  gap:.6rem;
-  align-items:start;
-  text-align:left;
+  display:flex;              /* override grid */
+  flex-direction:column;
+  align-items:center;        /* center the box horizontally */
+  gap:.45rem;
+  text-align:left;           /* keep copy left-aligned */
   line-height:1.45;
 }
 .contact-form label.checkbox input[type="checkbox"]{
   width:1.1rem;
   height:1.1rem;
-  margin:.2rem 0 0 0;                        /* aligns with first text line */
+  margin:0;                  /* remove previous top nudge */
 }
-.contact-form label.checkbox > span{ display:block; }
+.contact-form label.checkbox > span{
+  width:100%;                /* let the text take full width */
+  display:block;
+}
+
+.fp-field{ position:relative; }              /* wrapper inserted by JS */
+
+.fp-hint{
+  position:absolute;
+  left:50%;
+  top:calc(100% + .5rem);
+  transform:translateX(-50%);
+  display:none;
+  background:#fff;
+  border:1px solid #D0D5DD;
+  border-radius:.5rem;
+  padding:.55rem .8rem;
+  box-shadow:0 2px 12px rgba(16,24,40,.12);
+  font-size:.95rem;
+  color:#111827;
+  z-index:5;
+  white-space:nowrap;
+}
+.fp-hint::before{
+  content:"";
+  position:absolute;
+  top:-7px;
+  left:50%;
+  transform:translateX(-50%) rotate(45deg);
+  width:14px; height:14px;
+  background:#fff;
+  border-left:1px solid #D0D5DD;
+  border-top:1px solid #D0D5DD;
+}
+.fp-hint.show{ display:block; }
+/* Stack consent vertically with centered text and box */
+.contact-form label.checkbox{
+  display:flex;              /* override grid */
+  flex-direction:column;
+  align-items:center;        /* centers the checkbox */
+  gap:.45rem;
+  text-align:center;         /* centers the paragraph text */
+  line-height:1.45;
+}
+.contact-form label.checkbox input[type="checkbox"]{
+  width:1.1rem;
+  height:1.1rem;
+  margin:0;
+}
+/* (optional) if you want a readable max line length: */
+/* .contact-form label.checkbox > span{ max-width:70ch; } */
 
 </style>
+
+<script>
+/* Consistent custom reminders for all required fields */
+(function () {
+  var form = document.querySelector('.contact-form');
+  if (!form) return;
+
+  function labelTextFor(el){
+    if (el.id) {
+      var lbl = form.querySelector('label[for="'+ el.id +'"]');
+      if (lbl) return lbl.textContent.trim();
+    }
+    return '';
+  }
+
+  function messageFor(el){
+    if (el.type === 'email' && el.validity.typeMismatch) return 'Please enter a valid email address.';
+    var txt = labelTextFor(el);
+    return txt ? 'Please fill out “' + txt + '”.' : 'Please fill out this field.';
+  }
+
+  function wrapWithField(el){
+    if (el.parentElement.classList.contains('fp-field')) return el.parentElement;
+    var w = document.createElement('div');
+    w.className = 'fp-field';
+    el.parentNode.insertBefore(w, el);
+    w.appendChild(el);
+    return w;
+  }
+
+  function getHint(container){
+    var hint = container.querySelector('.fp-hint');
+    if (!hint) {
+      hint = document.createElement('div');
+      hint.className = 'fp-hint';
+      hint.setAttribute('role','alert');
+      hint.setAttribute('aria-live','polite');
+      container.appendChild(hint);
+    }
+    return hint;
+  }
+
+  function showHint(container, text){
+    var h = getHint(container);
+    h.textContent = text;
+    h.classList.add('show');
+  }
+
+  function hideHint(container){
+    var h = container.querySelector('.fp-hint');
+    if (h) h.classList.remove('show');
+  }
+
+  /* Text/Email/Textarea required fields */
+  var requiredFields = form.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"]), textarea[required]');
+  requiredFields.forEach(function(el){
+    var container = wrapWithField(el);
+
+    el.addEventListener('invalid', function(e){
+      e.preventDefault(); // block native bubble
+      showHint(container, messageFor(el));
+    });
+
+    el.addEventListener('input', function(){
+      hideHint(container);
+    });
+  });
+
+  /* Rating group (radios) */
+  var ratingBox = form.querySelector('.rating-input');
+  var ratingRadios = form.querySelectorAll('input[name="rating"]');
+  if (ratingBox && ratingRadios.length) {
+    ratingRadios.forEach(function(r){
+      r.addEventListener('invalid', function(e){ e.preventDefault(); }); // suppress native
+      r.addEventListener('change', function(){ hideHint(ratingBox); });
+    });
+  }
+
+  /* Consent checkbox */
+  var consent = form.querySelector('input[name="consent_publish"][type="checkbox"]');
+  if (consent) {
+    var consentWrap = wrapWithField(consent.closest('label.checkbox'));
+    consent.addEventListener('invalid', function(e){ e.preventDefault(); showHint(consentWrap, 'Please check the consent box.'); });
+    consent.addEventListener('change', function(){ hideHint(consentWrap); });
+  }
+
+  /* Intercept submit: show first invalid custom hint */
+  form.addEventListener('submit', function(e){
+    // Check standard fields
+    for (var i=0; i<requiredFields.length; i++){
+      var f = requiredFields[i];
+      if (!f.checkValidity()){
+        e.preventDefault();
+        f.dispatchEvent(new Event('invalid', {cancelable:true}));
+        f.focus({preventScroll:true});
+        f.scrollIntoView({block:'center', behavior:'smooth'});
+        return;
+      }
+    }
+    // Check rating
+    var anyChecked = form.querySelector('input[name="rating"]:checked');
+    if (!anyChecked){
+      e.preventDefault();
+      showHint(ratingBox, 'Please select a star rating.');
+      ratingBox.scrollIntoView({block:'center', behavior:'smooth'});
+      return;
+    }
+    // Check consent
+    if (consent && !consent.checked){
+      e.preventDefault();
+      var consentWrap = wrapWithField(consent.closest('label.checkbox'));
+      showHint(consentWrap, 'Please check the consent box.');
+      consentWrap.scrollIntoView({block:'center', behavior:'smooth'});
+      return;
+    }
+  });
+})();
+</script>
 </body>
 </html>
