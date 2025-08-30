@@ -1283,4 +1283,18 @@ button:focus-visible,
     font-size: 1rem;
   }
 }
+/* --- Cart icon: fix cropping + vertical centering --- */
+.cart-link { line-height: 1; } /* remove baseline weirdness */
+.cart-link .cart-icon{
+  display: block;          /* treat as flex item, not inline */
+  width: 24px;
+  height: 24px;            /* explicit box prevents wheel clip */
+  flex: 0 0 24px;          /* no squish */
+  margin-top: 1px;         /* tiny optical lift; tweak -1..2px */
+}
 
+/* If the icon is inline <svg>, make sure strokes beyond viewBox aren't clipped */
+.cart-link svg.cart-icon{ overflow: visible; }
+
+/* Keep label from adding extra vertical slack */
+.cart-link .cart-label{ line-height: 1; }
