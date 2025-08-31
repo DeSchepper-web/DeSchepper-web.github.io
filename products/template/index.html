@@ -14,6 +14,8 @@
   <!-- Universal: local font preloads -->
   <link rel="preload" href="/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/RecklessNeue-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Preload above-the-fold hero image for faster LCP -->
+  <link rel="preload" as="image" href="/images/favicon-512x512.webp" fetchpriority="high">
 
   <!-- CSS -->
   <link rel="stylesheet" href="/style.css" />
@@ -38,6 +40,7 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="PRODUCT NAME on VEHICLE/USE-CASE">
   <meta property="og:site_name" content="Form Precision">
+  <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
 
   <!-- JSON-LD: Organization (universal, same as home) -->
@@ -294,10 +297,12 @@
               <div class="review-media" role="list">
                 <button class="thumb" role="listitem" type="button" aria-label="Open image 1">
                   <img src="/images/favicon-512x512.webp" alt="Installed part close-up" loading="lazy"
+                       width="256" height="256"
                        data-zoomable data-zoom-src="/images/favicon-512x512.webp">
                 </button>
                 <button class="thumb" role="listitem" type="button" aria-label="Open image 2">
                   <img src="/images/favicon-512x512.webp" alt="Angle view" loading="lazy"
+                       width="256" height="256"
                        data-zoomable data-zoom-src="/images/favicon-512x512.webp">
                 </button>
               </div>
@@ -313,6 +318,7 @@
               <div class="review-media" role="list">
                 <button class="thumb" role="listitem" type="button" aria-label="Open image 1">
                   <img src="/images/favicon-512x512.webp" alt="Installed part close-up" loading="lazy"
+                       width="256" height="256"
                        data-zoomable data-zoom-src="/images/favicon-512x512.webp">
                 </button>
               </div>
@@ -328,6 +334,7 @@
               <div class="review-media" role="list">
                 <button class="thumb" role="listitem" type="button" aria-label="Open image 1">
                   <img src="/images/favicon-512x512.webp" alt="Installed part close-up" loading="lazy"
+                       width="256" height="256"
                        data-zoomable data-zoom-src="/images/favicon-512x512.webp">
                 </button>
               </div>

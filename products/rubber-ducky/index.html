@@ -7,19 +7,19 @@
   <!-- Page-specific -->
   <title>PRODUCT NAME | Form Precision</title>
   <meta name="description" content="Benefit-led one-liner for PRODUCT NAME: material, compatibility, key value." />
-  <!-- NOTE: remove noindex when live -->
-  <meta name="robots" content="noindex,follow">
   <link rel="canonical" href="https://formprecision.com/products/PRODUCT-SLUG/" />
 
   <!-- Universal: local font preloads -->
   <link rel="preload" href="/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/RecklessNeue-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Preload above-the-fold hero image for faster LCP -->
+  <link rel="preload" as="image" href="/images/products/rubber_ducky1.webp" fetchpriority="high">
 
   <!-- CSS -->
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/products.css" />
 
-  <!-- Universal: Favicons / PWA -->
+  <!-- Favicons / PWA -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/images/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96"  href="/images/favicon-96x96.png">
@@ -38,9 +38,10 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="PRODUCT NAME on VEHICLE/USE-CASE">
   <meta property="og:site_name" content="Form Precision">
+  <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- JSON-LD: Organization (universal, same as home) -->
+  <!-- JSON-LD: Organization -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -68,7 +69,7 @@
   }
   </script>
 
-  <!-- JSON-LD: WebSite (universal) -->
+  <!-- JSON-LD: WebSite -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -78,7 +79,7 @@
   }
   </script>
 
-  <!-- JSON-LD: Breadcrumb (universal pattern, page-specific items) -->
+  <!-- JSON-LD: Breadcrumb -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -90,59 +91,50 @@
   }
   </script>
 
-  <!-- JSON-LD: Product (page-specific; keep in template for SEO completeness) -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "PRODUCT NAME",
-  "description": "Benefit-led one-liner for PRODUCT NAME: material, compatibility, key value.",
-  "image": [
-    "https://formprecision.com/images/product-hero-1200.webp"
-  ],
-  "sku": "fp-xxxxx",
-  "brand": { "@type": "Brand", "name": "Form Precision" },
-  "url": "https://formprecision.com/products/PRODUCT-SLUG/",
-  "itemCondition": "https://schema.org/NewCondition",
-
-  "offers": {
-    "@type": "AggregateOffer",
-    "priceCurrency": "USD",
-    "lowPrice": "79.00",
-    "highPrice": "99.00",
-    "offerCount": 2,
-    "offers": [
-      {
-        "@type": "Offer",
-        "sku": "fp-xxxxx-S",
-        "price": "79.00",
-        "availability": "https://schema.org/InStock",
-        "url": "https://formprecision.com/products/PRODUCT-SLUG/#standard"
-      },
-      {
-        "@type": "Offer",
-        "sku": "fp-xxxxx-R",
-        "price": "99.00",
-        "availability": "https://schema.org/InStock",
-        "url": "https://formprecision.com/products/PRODUCT-SLUG/#reinforced"
-      }
-    ]
-  },
-
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "reviewCount": "27"
+  <!-- JSON-LD: Product (no aggregateRating since there are 0 reviews) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "PRODUCT NAME",
+    "description": "Benefit-led one-liner for PRODUCT NAME: material, compatibility, key value.",
+    "image": [
+      "https://formprecision.com/images/products/rubber_ducky1.webp"
+    ],
+    "sku": "fp-xxxxx",
+    "brand": { "@type": "Brand", "name": "Form Precision" },
+    "url": "https://formprecision.com/products/PRODUCT-SLUG/",
+    "itemCondition": "https://schema.org/NewCondition",
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "USD",
+      "lowPrice": "79.00",
+      "highPrice": "99.00",
+      "offerCount": 2,
+      "offers": [
+        {
+          "@type": "Offer",
+          "sku": "fp-xxxxx-S",
+          "price": "79.00",
+          "availability": "https://schema.org/InStock",
+          "url": "https://formprecision.com/products/PRODUCT-SLUG/#standard"
+        },
+        {
+          "@type": "Offer",
+          "sku": "fp-xxxxx-R",
+          "price": "99.00",
+          "availability": "https://schema.org/InStock",
+          "url": "https://formprecision.com/products/PRODUCT-SLUG/#reinforced"
+        }
+      ]
+    }
   }
-}
-</script>
+  </script>
 </head>
 
 <body class="product-page">
-  <!-- Skip link (universal a11y) -->
   <a class="skip-link" href="#main">Skip to main content</a>
 
-  <!-- Navbar (universal) -->
   <nav class="navbar" aria-label="Primary Navigation">
     <div class="navbar-left">
       <button class="menu-toggle" type="button"
@@ -176,7 +168,6 @@
     </div>
   </nav>
 
-  <!-- Off-canvas backdrop -->
   <div class="overlay" id="overlay" aria-hidden="true"></div>
 
   <main id="main" tabindex="-1">
@@ -204,18 +195,20 @@
         <figure class="hero"
                 aria-label="Product gallery"
                 data-images='[
-                  "/images/favicon-512x512.webp",
-                  "/images/Carbon-Fiber-Nylon.webp",
-                  "/images/favicon-512x512.webp",
-                  "/images/Carbon-Fiber-Nylon.webp"
+                  "/images/products/rubber_ducky1.webp",
+                  "/images/products/rubber_ducky2.webp",
+                  "/images/products/rubber_ducky3.webp",
+                  "/images/products/rubber_ducky5.webp",
+                  "/images/products/rubber_ducky4.webp",
+                  "/images/products/rubber_ducky6.webp"
                 ]'>
           <div class="hero-frame">
             <img id="hero-img"
-                 src="/images/favicon-512x512.webp"
+                 src="/images/products/rubber_ducky1.webp"
                  alt="PRODUCT NAME installed on VEHICLE/USE-CASE"
                  decoding="async"
                  loading="eager"
-                 width="1024" height="1024">
+                 width="2048" height="2048">
 
             <!-- Navigation arrows -->
             <button class="hero-nav prev" type="button" aria-label="Previous image">
@@ -249,8 +242,7 @@
         <label class="variant-wrap">
           <span class="sr-only">Options</span>
           <select class="select" id="variant" name="variant">
-            <option value="standard" data-price="79.00" selected>Standard</option>
-            <option value="reinforced" data-price="99.00">Reinforced</option>
+            <option value="standard" data-price="79.00" selected>PA6-GF</option>
           </select>
         </label>
 
@@ -270,75 +262,19 @@
         </div>
       </form>
 
-      <!-- BOTTOM: Reviews -->
+      <!-- Reviews (empty state) -->
       <div id="reviews-bottom">
-        <section class="reviews-panel card">
+        <section class="reviews-panel card" aria-labelledby="reviews-title">
           <div class="reviews-header">
-            <h2 class="reviews-title">Reviews <span class="stars" aria-label="4.9 out of 5">★★★★★</span></h2>
-            <a href="/review/" class="review-cta" aria-label="Leave a review">LEAVE A REVIEW</a>
+            <h2 id="reviews-title" class="reviews-title">Reviews</h2>
+            <a href="/review/" class="review-cta" aria-label="Leave a review">BE THE FIRST TO REVIEW</a>
           </div>
-
-          <p class="reviews-meta">4.9/5 based on 27 reviews</p>
-
-          <div class="reviews-grid">
-            <!-- Review card 1 -->
-            <article class="review-card" itemscope itemtype="https://schema.org/Review">
-              <header class="review-head">
-                <h3 class="reviewer" itemprop="author" itemscope itemtype="https://schema.org/Person">
-                  <span itemprop="name">Alex P.</span>
-                </h3>
-                <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
-              </header>
-              <p class="review-text" itemprop="reviewBody">“Fitment was perfect.”</p>
-
-              <div class="review-media" role="list">
-                <button class="thumb" role="listitem" type="button" aria-label="Open image 1">
-                  <img src="/images/favicon-512x512.webp" alt="Installed part close-up" loading="lazy"
-                       data-zoomable data-zoom-src="/images/favicon-512x512.webp">
-                </button>
-                <button class="thumb" role="listitem" type="button" aria-label="Open image 2">
-                  <img src="/images/favicon-512x512.webp" alt="Angle view" loading="lazy"
-                       data-zoomable data-zoom-src="/images/favicon-512x512.webp">
-                </button>
-              </div>
-            </article>
-
-            <!-- Review card 2 -->
-            <article class="review-card" itemscope itemtype="https://schema.org/Review">
-              <header class="review-head">
-                <h3 class="reviewer"><span>Jordan S.</span></h3>
-                <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
-              </header>
-              <p class="review-text">“Noticeably stronger than stock.”</p>
-              <div class="review-media" role="list">
-                <button class="thumb" role="listitem" type="button" aria-label="Open image 1">
-                  <img src="/images/favicon-512x512.webp" alt="Installed part close-up" loading="lazy"
-                       data-zoomable data-zoom-src="/images/favicon-512x512.webp">
-                </button>
-              </div>
-            </article>
-
-            <!-- Review card 3 -->
-            <article class="review-card" itemscope itemtype="https://schema.org/Review">
-              <header class="review-head">
-                <h3 class="reviewer"><span>Chris D.</span></h3>
-                <div class="review-stars" aria-label="5 out of 5">★★★★★</div>
-              </header>
-              <p class="review-text">“Fast shipping, great support.”</p>
-              <div class="review-media" role="list">
-                <button class="thumb" role="listitem" type="button" aria-label="Open image 1">
-                  <img src="/images/favicon-512x512.webp" alt="Installed part close-up" loading="lazy"
-                       data-zoomable data-zoom-src="/images/favicon-512x512.webp">
-                </button>
-              </div>
-            </article>
-          </div>
+          <p class="reviews-meta">No reviews yet.</p>
         </section>
       </div>
     </div>
   </main>
 
-  <!-- Footer (universal) -->
   <footer class="site-footer">
     <div class="social-icons">
       <a href="https://www.instagram.com/formprecision/" target="_blank" rel="noopener" aria-label="Instagram">
@@ -360,18 +296,11 @@
     <p>© 2025 Form Precision — All Rights Reserved</p>
   </footer>
 
-  <!-- Lightboxes (product + reviews) -->
+  <!-- Lightbox (product images only) -->
   <div id="lightbox" aria-hidden="true" role="dialog" aria-label="Fullscreen image viewer">
     <img id="lightbox-img" alt="">
   </div>
 
-  <div id="review-lightbox" class="rv-lightbox" aria-hidden="true" role="dialog" aria-label="Review image viewer">
-    <button class="rv-close" aria-label="Close">&times;</button>
-    <img id="rv-image" alt="">
-    <div class="rv-hint">Click / tap to zoom · Esc to close</div>
-  </div>
-
-  <!-- Scripts -->
   <script src="/script.js" defer></script>
   <script src="/products.js" defer></script>
 </body>
