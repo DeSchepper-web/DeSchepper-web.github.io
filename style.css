@@ -299,11 +299,23 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
 /* ==========================
   HERO SECTION
 ========================== */
-.hero {
+.hero{
   position: relative;
-  min-height: calc(100vh - var(--nav-h));
-  min-height: calc(100dvh - var(--nav-h));
-  margin-top: var(--nav-h);
+
+  /* Fallback for older browsers */
+  min-height: max(420px, calc(100vh - var(--nav-h)));
+
+  /* Prefer stable small-viewport height on mobile (prevents tiny hero) */
+  @supports (height: 100svh){
+    min-height: max(420px, calc(100svh - var(--nav-h)));
+  }
+
+  /* If supported, track dynamic viewport (address bar show/hide) */
+  @supports (height: 100dvh){
+    min-height: max(420px, calc(100dvh - var(--nav-h)));
+  }
+
+  margin-top: var(--nav-h);          /* keep if your nav is fixed */
   display: flex;
   align-items: center;
   justify-content: center;
