@@ -321,11 +321,28 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   justify-content: center;
   text-align: center;
 }
-/* Kill parallax on touch devices */
-@media (hover: none) and (pointer: coarse) {
-  .hero {
-    background-attachment: scroll !important;
-  }
+/* 1) Use stable viewport height on mobile (prevents resize/zoom feeling) */
+.hero {
+  min-height: 100svh; /* use small viewport height instead of 100vh */
+}
+
+/* 2) Kill parallax/fixed backgrounds everywhere on touch devices.
+   Increase specificity + cover pseudo-elements and any parent usage. */
+@media (hover: none), (any-pointer: coarse) {
+  /* if the bg is on hero */
+  .hero { background-attachment: scroll !important; background-position: center !important; background-size: cover !important; }
+
+  /* if the bg is on a pseudo-element */
+  .hero::before, .hero::after { background-attachment: scroll !important; }
+
+  /* if you (or a lib) set it on body/html */
+  html, body { background-attachment: scroll !important; }
+
+  /* prevent any transform-based parallax */
+  .hero, .hero::before, .hero::after { transform: none !important; will-change: auto !important; }
+
+  /* make vertical scroll the only gesture */
+  .hero { touch-action: pan-y; }
 }
 .hero-img {
   position: absolute;
