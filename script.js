@@ -63,6 +63,7 @@
     nav.dataset.bound = '1';
   }
 })();
+
 const TRASH_SVG = `
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -309,99 +310,85 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCart();
   });
 
-  // ==== Stripe Checkout (client-side redirect, mapping-free) ====
+  // --- Stripe client-side checkout (works on all pages, including /cart) ---
   const STRIPE_PK = 'pk_live_51RbV04GRkBmBYPEqyPW6PZ1uZNUVWubIxGwuXxpTMzN1Oph1BEuRjWols3PUjcj3IWucWBUwC6qAPyZyZyj8MShT005IZUwOFE';
-  const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/';
+  const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/success/';
   const STRIPE_CANCEL_URL  = 'https://formprecision.com/cart/';
 
   function resolvePriceIdFrom(key){
-    // we store real Stripe price IDs in the cart
-    return /^price_/.test(key) ? key : null;
+    return /^price_/.test(key) ? key : null; // we store real price IDs in the cart
   }
 
-  // Use already-loaded Stripe.js if present; otherwise inject or wait briefly
-let stripePromise;
-function getStripe(){
-  if (stripePromise) return stripePromise;
-  stripePromise = new Promise((resolve, reject) => {
-    // Already available?
-    if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
+  let stripePromise;
+  function getStripe(){
+    if (stripePromise) return stripePromise;
+    stripePromise = new Promise((resolve, reject) => {
+      if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
 
-    // Do we already have a <script src="https://js.stripe.com/v3"> on the page?
-    const existing = document.querySelector('script[src^="https://js.stripe.com/v3"]');
+      const existing = document.querySelector('script[src^="https://js.stripe.com/v3"]');
 
-    // When the script finishes, window.Stripe will exist.
-    function waitUntilReady(deadlineMs){
-      const start = Date.now();
-      (function poll(){
-        if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
-        if (Date.now() - start > deadlineMs) return reject(new Error('Stripe.js failed to load'));
-        setTimeout(poll, 100);
-      })();
-    }
+      function waitUntilReady(deadlineMs){
+        const start = Date.now();
+        (function poll(){
+          if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
+          if (Date.now() - start > deadlineMs) return reject(new Error('Stripe.js failed to load'));
+          setTimeout(poll, 100);
+        })();
+      }
 
-    if (existing) {
-      // Cloudflare/Rocket Loader may defer it; just wait longer.
-      waitUntilReady(15000); // 15s window
+      if (existing) { waitUntilReady(15000); return; }
+
+      const s = document.createElement('script');
+      s.src = 'https://js.stripe.com/v3';
+      s.async = true;
+      s.setAttribute('data-cfasync','false');
+      s.onload  = () => resolve(window.Stripe(STRIPE_PK));
+      s.onerror = () => reject(new Error('Stripe.js failed to load'));
+      document.head.appendChild(s);
+
+      waitUntilReady(15000);
+    });
+    return stripePromise;
+  }
+
+  document.body.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-proceed-checkout]'); if (!btn) return;
+    e.preventDefault();
+
+    const cart = getCartFP();
+    const lineItems = (cart.items || []).map(it => {
+      const priceId = resolvePriceIdFrom(it.variantKey);
+      if (!priceId || !it.qty) return null;
+      return { price: priceId, quantity: Math.max(1, parseInt(it.qty, 10) || 1) };
+    }).filter(Boolean);
+
+    if (!lineItems.length) {
+      alert('Cart is empty or items are missing Stripe price IDs.');
       return;
     }
 
-    // Otherwise, inject it now.
-    const s = document.createElement('script');
-    s.src = 'https://js.stripe.com/v3';
-    s.async = true;
-    s.setAttribute('data-cfasync','false');
-    s.onload  = () => resolve(window.Stripe(STRIPE_PK));
-    s.onerror = () => reject(new Error('Stripe.js failed to load'));
-    document.head.appendChild(s);
-
-    // Safety net in case onload is swallowed by an optimizer
-    waitUntilReady(15000);
+    btn.disabled = true;
+    try {
+      const stripe = await getStripe();
+      const { error } = await stripe.redirectToCheckout({
+        mode: 'payment',
+        lineItems,
+        successUrl: STRIPE_SUCCESS_URL,
+        cancelUrl: STRIPE_CANCEL_URL
+      });
+      if (error) throw error;
+    } catch (err) {
+      console.error(err);
+      const msg = String((err && err.message) || '');
+      const isLoadErr = msg.toLowerCase().includes('failed to load') || msg.toLowerCase().includes('stripe is not defined');
+      alert(isLoadErr
+        ? 'Stripe could not load. Please disable ad/script blockers and try again.'
+        : msg || 'Unable to start checkout.'
+      );
+      btn.disabled = false;
+    }
   });
-  return stripePromise;
-}
-
-  // Skip global handler on the cart page (cart page has its own /api/checkout flow)
-  const isCartPage = location.pathname.replace(/\/+$/, '') === '/cart';
-  if (!isCartPage) {
-    document.body.addEventListener('click', async (e) => {
-      const btn = e.target.closest('[data-proceed-checkout]'); if (!btn) return;
-      e.preventDefault();
-
-      const cart = getCartFP();
-      const lineItems = (cart.items || []).map(it => {
-        const priceId = resolvePriceIdFrom(it.variantKey);
-        if (!priceId || !it.qty) return null;
-        return { price: priceId, quantity: Math.max(1, parseInt(it.qty, 10) || 1) };
-      }).filter(Boolean);
-
-      if (!lineItems.length) {
-        alert('Cart is empty or items are missing Stripe price IDs.');
-        return;
-      }
-
-      btn.disabled = true;
-      try {
-        const stripe = await getStripe();
-        const { error } = await stripe.redirectToCheckout({
-          mode: 'payment',
-          lineItems,
-          successUrl: STRIPE_SUCCESS_URL,
-          cancelUrl: STRIPE_CANCEL_URL
-        });
-        if (error) {
-          console.error(error);
-          alert(error.message || 'Unable to start checkout.');
-          btn.disabled = false;
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Stripe failed to load. Please try again.');
-        btn.disabled = false;
-      }
-    });
-  }
-});
+}); // end DOMContentLoaded
 
 // Keep pages in sync across tabs/windows
 window.addEventListener('storage', (e) => {
@@ -411,6 +398,7 @@ window.addEventListener('storage', (e) => {
     renderCart();
   }
 });
+
 (function () {
   function init(form){
     if (!form || form.dataset.fpInit) return;
@@ -423,87 +411,87 @@ window.addEventListener('storage', (e) => {
       }
       return '';
     }
-function messageFor(el){
-  if(el.type==="email"&&el.validity.typeMismatch)return"Please enter a valid email address.";
-  var lbl=el.id&&el.form&&el.form.querySelector('label[for="'+el.id+'"]');
-  var txt=(lbl?lbl.textContent:"")||(el.getAttribute("aria-label")||el.placeholder||el.name||"");
-  txt=txt.trim();
-  return txt?'Please fill out “'+txt+'”.':'Please fill out this field.';
-}
-function wrapWithField(el){
-  if(el&&el.parentElement&&el.parentElement.classList&&el.parentElement.classList.contains("fp-field"))return el.parentElement;
-  var w=document.createElement("div");
-  w.className="fp-field";
-  el.parentNode.insertBefore(w,el);
-  w.appendChild(el);
-  return w;
-}
-function getHint(container){
-  var hint=container.querySelector(".fp-hint");
-  if(!hint){
-    hint=document.createElement("div");
-    hint.className="fp-hint";
-    hint.setAttribute("role","alert");
-    hint.setAttribute("aria-live","polite");
-    container.appendChild(hint);
-  }
-  return hint;
-}
-function showHint(container,text){
-  var h=getHint(container);
-  h.textContent=text;
-  h.classList.add("show");
-}
-function hideHint(container){
-  var h=container.querySelector(".fp-hint");
-  if(h)h.classList.remove("show");
-}
-var requiredFields=form.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"]), textarea[required]');
-requiredFields.forEach(function(el){
-  var container=wrapWithField(el);
-  el.addEventListener("invalid",function(e){
-    e.preventDefault();
-    showHint(container,messageFor(el));
-  });
-  el.addEventListener("input",function(){hideHint(container);});
-});
-var ratingBox=form.querySelector(".rating-input");
-var ratingRadios=ratingBox?ratingBox.querySelectorAll('input[name="rating"]'):[];
-ratingRadios.forEach(function(r){
-  r.addEventListener("invalid",function(e){e.preventDefault();});
-  r.addEventListener("change",function(){hideHint(ratingBox);});
-});
-var consent=form.querySelector('input[name="consent_publish"][type="checkbox"]');
-var consentWrap=consent?wrapWithField(consent.closest("label.checkbox")||consent):null;
-if(consent){
-  consent.addEventListener("invalid",function(e){e.preventDefault();showHint(consentWrap,"Please check the consent box.");});
-  consent.addEventListener("change",function(){hideHint(consentWrap);});
-}
-form.addEventListener("submit",function(e){
-  var firstTarget=null,hasInvalid=false;
-  requiredFields.forEach(function(f){
-    if(!f.checkValidity()){
-      hasInvalid=true;
-      f.dispatchEvent(new Event("invalid",{cancelable:true}));
-      if(!firstTarget)firstTarget=f;
+    function messageFor(el){
+      if(el.type==="email"&&el.validity.typeMismatch)return"Please enter a valid email address.";
+      var lbl=el.id&&el.form&&el.form.querySelector('label[for="'+el.id+'"]');
+      var txt=(lbl?lbl.textContent:"")||(el.getAttribute("aria-label")||el.placeholder||el.name||"");
+      txt=txt.trim();
+      return txt?'Please fill out “'+txt+'”.':'Please fill out this field.';
     }
-  });
-  if(ratingBox&&!form.querySelector('input[name="rating"]:checked')){
-    hasInvalid=true;
-    showHint(ratingBox,"Please select a star rating.");
-    if(!firstTarget)firstTarget=(ratingRadios[0]||ratingBox);
-  }
-  if(consent&&!consent.checked){
-    hasInvalid=true;
-    showHint(consentWrap,"Please check the consent box.");
-    if(!firstTarget)firstTarget=consent;
-  }
-  if(hasInvalid){
-    e.preventDefault();
-    try{firstTarget.focus({preventScroll:true});}catch(_){}
-    (firstTarget.closest(".fp-field")||firstTarget).scrollIntoView({block:"center",behavior:"smooth"});
-  }
-});
+    function wrapWithField(el){
+      if(el&&el.parentElement&&el.parentElement.classList&&el.parentElement.classList.contains("fp-field"))return el.parentElement;
+      var w=document.createElement("div");
+      w.className="fp-field";
+      el.parentNode.insertBefore(w,el);
+      w.appendChild(el);
+      return w;
+    }
+    function getHint(container){
+      var hint=container.querySelector(".fp-hint");
+      if(!hint){
+        hint=document.createElement("div");
+        hint.className="fp-hint";
+        hint.setAttribute("role","alert");
+        hint.setAttribute("aria-live","polite");
+        container.appendChild(hint);
+      }
+      return hint;
+    }
+    function showHint(container,text){
+      var h=getHint(container);
+      h.textContent=text;
+      h.classList.add("show");
+    }
+    function hideHint(container){
+      var h=container.querySelector(".fp-hint");
+      if(h)h.classList.remove("show");
+    }
+    var requiredFields=form.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"]), textarea[required]');
+    requiredFields.forEach(function(el){
+      var container=wrapWithField(el);
+      el.addEventListener("invalid",function(e){
+        e.preventDefault();
+        showHint(container,messageFor(el));
+      });
+      el.addEventListener("input",function(){hideHint(container);});
+    });
+    var ratingBox=form.querySelector(".rating-input");
+    var ratingRadios=ratingBox?ratingBox.querySelectorAll('input[name="rating"]'):[];
+    ratingRadios.forEach(function(r){
+      r.addEventListener("invalid",function(e){e.preventDefault();});
+      r.addEventListener("change",function(){hideHint(ratingBox);});
+    });
+    var consent=form.querySelector('input[name="consent_publish"][type="checkbox"]');
+    var consentWrap=consent?wrapWithField(consent.closest("label.checkbox")||consent):null;
+    if(consent){
+      consent.addEventListener("invalid",function(e){e.preventDefault();showHint(consentWrap,"Please check the consent box.");});
+      consent.addEventListener("change",function(){hideHint(consentWrap);});
+    }
+    form.addEventListener("submit",function(e){
+      var firstTarget=null,hasInvalid=false;
+      requiredFields.forEach(function(f){
+        if(!f.checkValidity()){
+          hasInvalid=true;
+          f.dispatchEvent(new Event("invalid",{cancelable:true}));
+          if(!firstTarget)firstTarget=f;
+        }
+      });
+      if(ratingBox&&!form.querySelector('input[name="rating"]:checked')){
+        hasInvalid=true;
+        showHint(ratingBox,"Please select a star rating.");
+        if(!firstTarget)firstTarget=(ratingRadios[0]||ratingBox);
+      }
+      if(consent&&!consent.checked){
+        hasInvalid=true;
+        showHint(consentWrap,"Please check the consent box.");
+        if(!firstTarget)firstTarget=consent;
+      }
+      if(hasInvalid){
+        e.preventDefault();
+        try{firstTarget.focus({preventScroll:true});}catch(_){}
+        (firstTarget.closest(".fp-field")||firstTarget).scrollIntoView({block:"center",behavior:"smooth"});
+      }
+    });
     form.addEventListener('submit', function(e){
       for (var i=0; i<requiredFields.length; i++){
         var f = requiredFields[i];
