@@ -5,6 +5,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     var root = $('.product-page') || document;
 
+    // Anchored toast above the Add to Cart button
     (function ensureAnchoredToast(){
       var buybox = $('.buybox', root);
       var addBtn = $('.buy-actions .cta', root);
@@ -57,6 +58,7 @@
     var yearEl = $('#year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
+    // De-dupe product blocks if something re-renders
     function dedupe(selector) {
       var els = $$(selector, root);
       if (els.length <= 1) return;
@@ -73,6 +75,7 @@
       new MutationObserver(runDedupe).observe(grid, { childList: true, subtree: true });
     }
 
+    // Elements
     var buyForm        = $('#buy-form', root);
     var priceDesktop   = $('#price', root);
     var variantDesktop = $('#variant', root);
@@ -83,14 +86,19 @@
     var qtyMobile      = $('#qty-mobile', buybar || root);
     var titleEl        = $('#product-title', root) || $('.product-title', root) || $('h1', root);
 
-    function formatPrice(num) { return '$' + Number(num).toFixed(2); }
-    function getVariantPrice(selectEl) {
+    // Helpers
+    function formatPrice(num){ return '$' + Number(num).toFixed(2); }
+    function getVariantPrice(selectEl){
       if (!selectEl) return null;
       var opt = selectEl.selectedOptions ? selectEl.selectedOptions[0] : null;
       var n = parseFloat(opt && opt.dataset ? opt.dataset.price || '' : '');
       return Number.isFinite(n) ? n : null;
     }
-    function updatePrices() {
+    function getVariantPriceId(selectEl){
+      var opt = selectEl && selectEl.selectedOptions ? selectEl.selectedOptions[0] : null;
+      return (opt && opt.dataset && opt.dataset.priceId) ? opt.dataset.priceId : '';
+    }
+    function updatePrices(){
       var p = getVariantPrice(variantDesktop);
       if (p == null) p = getVariantPrice(variantMobile);
       if (p != null) {
@@ -98,34 +106,35 @@
         if (priceMobile)  priceMobile.textContent  = formatPrice(p);
       }
     }
-    function mirrorSelect(from, to) {
+    function mirrorSelect(from, to){
       if (!from || !to) return;
-      if (to.value !== from.value) {
+      if (to.value !== from.value){
         to.value = from.value;
-        to.dispatchEvent(new Event('change', { bubbles: true }));
+        to.dispatchEvent(new Event('change', { bubbles:true }));
       }
     }
-    function mirrorInput(from, to) {
+    function mirrorInput(from, to){
       if (!from || !to) return;
-      if (to.value !== from.value) {
+      if (to.value !== from.value){
         to.value = from.value;
-        to.dispatchEvent(new Event('input', { bubbles: true }));
+        to.dispatchEvent(new Event('input',  { bubbles:true }));
       }
     }
-    if (variantDesktop) variantDesktop.addEventListener('change', function () {
+    if (variantDesktop) variantDesktop.addEventListener('change', function(){
       mirrorSelect(variantDesktop, variantMobile); updatePrices();
     });
-    if (variantMobile) variantMobile.addEventListener('change', function () {
+    if (variantMobile) variantMobile.addEventListener('change', function(){
       mirrorSelect(variantMobile, variantDesktop); updatePrices();
     });
-    if (qtyDesktop) qtyDesktop.addEventListener('input', function () {
+    if (qtyDesktop) qtyDesktop.addEventListener('input', function(){
       mirrorInput(qtyDesktop, qtyMobile);
     });
-    if (qtyMobile) qtyMobile.addEventListener('input', function () {
+    if (qtyMobile) qtyMobile.addEventListener('input', function(){
       mirrorInput(qtyMobile, qtyDesktop);
     });
     updatePrices();
 
+    // Qty +/- controls
     (function attachQtyControls(){
       function toInt(v, d){ var n = parseInt(String(v||'').trim(), 10); return Number.isFinite(n) ? n : d; }
       function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
@@ -165,14 +174,10 @@
       }
     })();
 
-    /* FUTURE PRODUCTS:
-       - For each new product page, set LOOKUP_KEY to that product’s Stripe Price lookup_key exactly.
-         Example: var LOOKUP_KEY = 'rmr_mount_30mm_black';
-       - For a product with variants (size/color), build the key from selections so it matches your Stripe lookup_key scheme.
-         Example: var LOOKUP_KEY = sku + '_' + size + '_' + color;
-    */
+    // NOTE: We store Stripe price_id when available; LOOKUP_KEY is only a fallback.
     var LOOKUP_KEY = '5.56_Safety_Block';
 
+    // Cart persistence (fp-cart)
     function getCartFP(){
       try { return JSON.parse(localStorage.getItem('fp-cart') || '{"items":[]}'); }
       catch(_) { return { items: [] }; }
@@ -186,11 +191,13 @@
       if (cc) cc.textContent = String(count);
     }
 
+    // Add to cart
     var submitting = false;
     function submitBuy(e) {
       if (e) e.preventDefault();
       if (submitting) return;
 
+      // Normalize UI -> desktop fields
       mirrorSelect(variantMobile, variantDesktop);
       mirrorInput(qtyMobile, qtyDesktop);
 
@@ -211,26 +218,28 @@
       try {
         var cart = getCartFP();
 
-        // Determine price for the selected variant (fallbacks included)
+        // Price number for display/totaling
         var priceVal = getVariantPrice(variantDesktop);
         if (priceVal == null) priceVal = getVariantPrice(variantMobile);
         if (priceVal == null) {
-          // last resort: parse from visible price text
           var txt = (priceDesktop && priceDesktop.textContent) || (priceMobile && priceMobile.textContent) || '';
           var m = String(txt).match(/[\d,.]+/);
           priceVal = m ? parseFloat(m[0].replace(/,/g, '')) : 0;
         }
 
-        // Merge/increment by variantKey
-        var it = (cart.items || []).find(function(x){ return x.variantKey === LOOKUP_KEY; });
+        // Prefer real Stripe price_id; fallback to LOOKUP_KEY if no data-price-id was provided
+        var priceId    = getVariantPriceId(variantDesktop) || getVariantPriceId(variantMobile) || '';
+        var keyToStore = priceId || LOOKUP_KEY;
+
+        // Merge or insert line item
+        var it = (cart.items || []).find(function(x){ return x.variantKey === keyToStore; });
         if (it) {
           it.qty += qtyVal;
-          // keep freshest name/price if needed
           it.name  = displayName || it.name;
           it.price = Number.isFinite(priceVal) ? priceVal : (it.price || 0);
         } else {
           cart.items.push({
-            variantKey: LOOKUP_KEY,
+            variantKey: keyToStore,   // e.g., "price_..." (best) or fallback lookup key
             qty:  qtyVal,
             name: displayName,
             price: Number.isFinite(priceVal) ? priceVal : 0
@@ -244,6 +253,7 @@
         submitting = false;
       }
     }
+
     if (buyForm) {
       buyForm.addEventListener('submit', function (e) {
         var clientMode = (buyForm.dataset.mode || '').toLowerCase() === 'client';
@@ -251,6 +261,7 @@
       });
     }
 
+    // ------- Image zoom overlay -------
     var overlay = (function ensureOverlay(){
       var ov = document.getElementById('zoom-overlay');
       if (!ov) {
@@ -356,6 +367,7 @@
       };
     })();
 
+    // Make review images zoomable
     (function tagReviewImgs(){
       var reviewSel = '.reviews-panel img, #reviews-bottom img';
       $$(reviewSel).forEach(function(img){
@@ -378,6 +390,7 @@
       overlay.openWith(src, t.alt || '');
     }, { capture: true });
 
+    // Gallery / hero
     var hero        = $('.hero', root);
     var heroImg     = hero ? $('#hero-img', hero) : null;
     var heroFrame   = hero ? $('.hero-frame', hero) : null;
@@ -565,9 +578,7 @@
             if (!dragging || !e.touches || e.touches.length !== 1) return;
             var t = e.touches[0];
             var dx = t.clientX - startX, dy = t.clientY - startY;
-            if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
-              e.preventDefault();
-            }
+            if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) e.preventDefault();
           }, { passive:false });
           heroFrame.addEventListener('touchend', function(e){
             if (!dragging) return; dragging = false;

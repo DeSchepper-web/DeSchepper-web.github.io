@@ -303,25 +303,14 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCart();
   });
 
-  // Proceed to checkout (unchanged)
-  // ==== Stripe Checkout (client-side redirect) ====
-  // 1) Fill these with your details:
-  const STRIPE_PK = 'pk_test_or_live_xxx';                              // <- your publishable key
+  // ==== Stripe Checkout (client-side redirect, mapping-free) ====
+  const STRIPE_PK = 'pk_test_or_live_xxx'; // <- your publishable key
   const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/success/';
   const STRIPE_CANCEL_URL  = 'https://formprecision.com/cart/';
 
-  // 2) Map your cart variantKey (usually your Stripe Price lookup_key) -> Stripe Price ID.
-  //    Add each product here. If you store real price IDs as variantKey, this map can be empty.
-  const STRIPE_PRICE_BY_LOOKUP = {
-    '5.56_Safety_Block': 'price_xxx', // <-- put the real Stripe price_... ID
-    // 'rmr_mount_30mm_black': 'price_yyy',
-    // 'corner_bracket_black': 'price_zzz',
-  };
-
   function resolvePriceIdFrom(key){
-    if (!key) return null;
-    if (/^price_/.test(key)) return key;        // supports using the real price ID as the variantKey
-    return STRIPE_PRICE_BY_LOOKUP[key] || null; // otherwise use the lookup map
+    // cart now stores real Stripe price IDs (price_...)
+    return /^price_/.test(key) ? key : null;
   }
 
   let stripePromise;
