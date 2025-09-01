@@ -128,122 +128,18 @@
     <strong>Total:</strong> $<span id="cart-total">0.00</span>
   </p>
 
-<!-- replace your buttons wrapper line with this -->
-<div style="margin-top:2rem;display:flex;flex-direction:column;gap:.75rem;align-items:center;">
-  <button id="checkout-btn" data-proceed-checkout class="cta-button" type="button">
-    Proceed to Checkout
-  </button>
-  <button id="clear-cart-btn" data-clear-cart class="cta-button" type="button">
-    Clear Cart
-  </button>
-</div>
+  <div style="margin-top:2rem;display:flex;flex-direction:column;gap:.75rem;align-items:center;">
+    <button id="checkout-btn" data-proceed-checkout class="cta-button" type="button">
+      Proceed to Checkout
+    </button>
+    <button id="clear-cart-btn" data-clear-cart class="cta-button" type="button">
+      Clear Cart
+    </button>
+  </div>
 
   <p id="cart-error" class="form-error" aria-live="polite" hidden
      style="margin-top:1rem;color:#B42318;"></p>
 </section>
-
-<script type="module">
-  // TODO: replace with your Worker endpoint:
-  // e.g. 'https://checkout.formprecision.workers.dev/create-checkout-session'
-  const WORKER_ENDPOINT = 'https://formprecision.com/api/checkout';
-
-  const $ = (sel) => document.querySelector(sel);
-  const checkoutBtn = $('#checkout-btn');
-  const clearBtn    = $('#clear-cart-btn');
-  const itemsEl     = $('#cart-items');
-  const totalEl     = $('#cart-total');
-  const errEl       = $('#cart-error');
-
-  const hasFn = (name) => typeof window[name] === 'function';
-
-  // --- Read your existing cart (tries common patterns; adjust if you have a custom getter) ---
-  function readCart(){
-    if (hasFn('getCart')) return window.getCart();                           // preferred
-    if (window.cart && Array.isArray(window.cart.items)) return window.cart; // global
-    try {
-      const raw = localStorage.getItem('fp-cart') || localStorage.getItem('cart');
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return { items: [] };
-  }
-
-  // Build the variant lookup_key your Worker expects (must match Stripe Price lookup_key)
-  function variantKeyFromItem(i){
-    if (i.variantKey)  return String(i.variantKey);
-    if (i.key)         return String(i.key);
-    if (i.lookup_key)  return String(i.lookup_key);
-    // If you store options, e.g. { sku:'rmr_mount', options:{ size:'30mm', color:'black'} }
-    if (i.sku && i.options && typeof i.options === 'object'){
-      const parts = [i.sku, ...Object.values(i.options)];
-      return parts.join(':').toLowerCase(); // e.g. "rmr_mount:30mm:black"
-    }
-    if (i.sku) return String(i.sku); // last resort (not ideal)
-    return null;
-  }
-
-  function buildStripePayload(){
-    const cart = readCart();
-    const missing = [];
-    const items = (cart.items || []).map(i => {
-      const key = variantKeyFromItem(i);
-      const qty = Number(i.qty ?? i.quantity ?? 1);
-      if (!key) missing.push(i);
-      return { key, qty };
-    }).filter(x => x.key && x.qty > 0);
-    return { items, missing };
-  }
-
-  async function goCheckout(){
-    errEl.hidden = true;
-    const { items, missing } = buildStripePayload();
-
-    if (missing.length){
-      errEl.textContent = 'Some items are missing a variant key (lookup_key). Reselect options and try again.';
-      errEl.hidden = false;
-      return;
-    }
-    if (!items.length){
-      errEl.textContent = 'Your cart is empty.';
-      errEl.hidden = false;
-      return;
-    }
-
-    const original = checkoutBtn.textContent;
-    checkoutBtn.disabled = true;
-    checkoutBtn.textContent = 'Redirecting…';
-
-    try {
-      const res  = await fetch(WORKER_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items }) // [{ key:'rmr_mount:30mm:black', qty:1 }, ...]
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location = data.url; // Stripe Checkout
-      } else {
-        throw new Error(data.error || 'Unknown error');
-      }
-    } catch (e) {
-      errEl.textContent = 'Checkout failed: ' + e.message;
-      errEl.hidden = false;
-      checkoutBtn.disabled = false;
-      checkoutBtn.textContent = original;
-    }
-  }
-
-  checkoutBtn?.addEventListener('click', goCheckout);
-
-  clearBtn?.addEventListener('click', () => {
-    if (hasFn('clearCart')) { window.clearCart(); } // your site’s clear method
-    else {
-      localStorage.removeItem('fp-cart');
-      localStorage.removeItem('cart');
-    }
-    itemsEl && (itemsEl.innerHTML = '');
-    totalEl && (totalEl.textContent = '0.00');
-  });
-</script>
 
 <!-- Footer -->
 <footer class="site-footer">
@@ -268,7 +164,7 @@
 </footer>
 
 <!-- Unified external script -->
- <script src="https://js.stripe.com/v3" defer></script>
+<script src="https://js.stripe.com/v3" defer></script>
 <script src="/script.js" defer></script>
 </body>
 </html>
