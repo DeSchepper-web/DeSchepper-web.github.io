@@ -346,9 +346,6 @@ const { error } = await stripe.redirectToCheckout({
   // ✅ collect full billing address (improves AVS / fraud checks)
   billingAddressCollection: 'required',
 
-  // (optional) collect phone number on Checkout
-  phoneNumberCollection: { enabled: true },
-
   successUrl: STRIPE_SUCCESS_URL,
   cancelUrl: STRIPE_CANCEL_URL
 });
