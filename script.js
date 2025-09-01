@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==== Stripe Checkout (client-side redirect, mapping-free) ====
   const STRIPE_PK = 'pk_live_51RbV04GRkBmBYPEqyPW6PZ1uZNUVWubIxGwuXxpTMzN1Oph1BEuRjWols3PUjcj3IWucWBUwC6qAPyZyZyj8MShT005IZUwOFE';
-  const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/success/';
+  const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/';
   const STRIPE_CANCEL_URL  = 'https://formprecision.com/cart/';
 
   function resolvePriceIdFrom(key){
@@ -320,33 +320,46 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Use already-loaded Stripe.js if present; otherwise inject or wait briefly
-  let stripePromise;
-  function getStripe(){
-    if (stripePromise) return stripePromise;
-    stripePromise = new Promise((resolve, reject) => {
-      if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
+let stripePromise;
+function getStripe(){
+  if (stripePromise) return stripePromise;
+  stripePromise = new Promise((resolve, reject) => {
+    // Already available?
+    if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
 
-      // If the <script src="https://js.stripe.com/v3"> tag exists, wait for it
-      const existing = document.querySelector('script[src^="https://js.stripe.com/v3"]');
-      if (existing){
-        let tries = 0;
-        const t = setInterval(() => {
-          tries++;
-          if (window.Stripe){ clearInterval(t); resolve(window.Stripe(STRIPE_PK)); }
-          else if (tries > 50){ clearInterval(t); reject(new Error('Stripe.js failed to load')); } // ~5s
-        }, 100);
-        return;
-      }
+    // Do we already have a <script src="https://js.stripe.com/v3"> on the page?
+    const existing = document.querySelector('script[src^="https://js.stripe.com/v3"]');
 
-      // Otherwise inject it
-      const s = document.createElement('script');
-      s.src = 'https://js.stripe.com/v3';
-      s.onload = () => resolve(window.Stripe(STRIPE_PK));
-      s.onerror = () => reject(new Error('Stripe.js failed to load'));
-      document.head.appendChild(s);
-    });
-    return stripePromise;
-  }
+    // When the script finishes, window.Stripe will exist.
+    function waitUntilReady(deadlineMs){
+      const start = Date.now();
+      (function poll(){
+        if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
+        if (Date.now() - start > deadlineMs) return reject(new Error('Stripe.js failed to load'));
+        setTimeout(poll, 100);
+      })();
+    }
+
+    if (existing) {
+      // Cloudflare/Rocket Loader may defer it; just wait longer.
+      waitUntilReady(15000); // 15s window
+      return;
+    }
+
+    // Otherwise, inject it now.
+    const s = document.createElement('script');
+    s.src = 'https://js.stripe.com/v3';
+    s.async = true;
+    s.setAttribute('data-cfasync','false');
+    s.onload  = () => resolve(window.Stripe(STRIPE_PK));
+    s.onerror = () => reject(new Error('Stripe.js failed to load'));
+    document.head.appendChild(s);
+
+    // Safety net in case onload is swallowed by an optimizer
+    waitUntilReady(15000);
+  });
+  return stripePromise;
+}
 
   // Skip global handler on the cart page (cart page has its own /api/checkout flow)
   const isCartPage = location.pathname.replace(/\/+$/, '') === '/cart';
