@@ -304,27 +304,40 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==== Stripe Checkout (client-side redirect, mapping-free) ====
-  const STRIPE_PK = 'pk_live_51RbV04GRkBmBYPEqyPW6PZ1uZNUVWubIxGwuXxpTMzN1Oph1BEuRjWols3PUjcj3IWucWBUwC6qAPyZyZyj8MShT005IZUwOFE'; // <- your publishable key
+  const STRIPE_PK = 'pk_live_51RbV04GRkBmBYPEqyPW6PZ1uZNUVWubIxGwuXxpTMzN1Oph1BEuRjWols3PUjcj3IWucWBUwC6qAPyZyZyj8MShT005IZUwOFE';
   const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/success/';
   const STRIPE_CANCEL_URL  = 'https://formprecision.com/cart/';
 
   function resolvePriceIdFrom(key){
-    // cart now stores real Stripe price IDs (price_...)
-    return /^price_/.test(key) ? key : null;
+    return /^price_/.test(key) ? key : null; // we store real price IDs in the cart
   }
 
+  // Use already-loaded Stripe.js if present; otherwise inject or wait briefly
   let stripePromise;
   function getStripe(){
-    if (!stripePromise){
-      stripePromise = new Promise((resolve, reject) => {
-        if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
-        const s = document.createElement('script');
-        s.src = 'https://js.stripe.com/v3';
-        s.onload = () => resolve(window.Stripe(STRIPE_PK));
-        s.onerror = () => reject(new Error('Stripe.js failed to load'));
-        document.head.appendChild(s);
-      });
-    }
+    if (stripePromise) return stripePromise;
+    stripePromise = new Promise((resolve, reject) => {
+      if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
+
+      // If the <script src="https://js.stripe.com/v3"> tag exists, wait for it
+      const existing = document.querySelector('script[src^="https://js.stripe.com/v3"]');
+      if (existing){
+        let tries = 0;
+        const t = setInterval(() => {
+          tries++;
+          if (window.Stripe){ clearInterval(t); resolve(window.Stripe(STRIPE_PK)); }
+          else if (tries > 50){ clearInterval(t); reject(new Error('Stripe.js failed to load')); } // ~5s
+        }, 100);
+        return;
+      }
+
+      // Otherwise inject it
+      const s = document.createElement('script');
+      s.src = 'https://js.stripe.com/v3';
+      s.onload = () => resolve(window.Stripe(STRIPE_PK));
+      s.onerror = () => reject(new Error('Stripe.js failed to load'));
+      document.head.appendChild(s);
+    });
     return stripePromise;
   }
 
