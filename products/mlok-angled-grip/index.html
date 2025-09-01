@@ -4,22 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Page-specific -->
-  <title>PRODUCT NAME | Form Precision</title>
-  <meta name="description" content="Benefit-led one-liner for PRODUCT NAME: material, compatibility, key value." />
-  <link rel="canonical" href="https://formprecision.com/products/PRODUCT-SLUG/" />
+  <title>M-LOK Grip | Form Precision</title>
+  <meta name="description" content="M-LOK Grip — lightweight, rigid grip designed for secure handling and fast install. Made in the USA." />
+  <link rel="canonical" href="https://formprecision.com/products/mlok-grip/" />
 
-  <!-- Universal: local font preloads -->
+  <!-- Fonts -->
   <link rel="preload" href="/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/RecklessNeue-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <!-- Preload above-the-fold hero image for faster LCP -->
-  <link rel="preload" as="image" href="/images/products/rubber_ducky1.webp" fetchpriority="high">
 
-  <!-- CSS -->
+  <!-- Preload first hero image (1:1) -->
+  <link rel="preload" as="image" href="/images/products/mlok_grip1.webp" fetchpriority="high">
+
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/products.css" />
 
-  <!-- Favicons / PWA -->
+  <!-- Keep hero square (move to products.css if preferred) -->
+  <style>
+    .hero .hero-frame{ aspect-ratio:1/1; }
+    .hero #hero-img{ width:100%; height:100%; object-fit:contain; }
+  </style>
+
+  <!-- Favicons -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/images/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96"  href="/images/favicon-96x96.png">
@@ -28,20 +33,19 @@
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/images/site.webmanifest">
 
-  <!-- Social (OG/Twitter) -->
+  <!-- Open Graph -->
   <meta property="og:type" content="product">
-  <meta property="og:title" content="PRODUCT NAME | Form Precision">
-  <meta property="og:description" content="Benefit-led one-liner for PRODUCT NAME.">
-  <meta property="og:url" content="https://formprecision.com/products/PRODUCT-SLUG/">
+  <meta property="og:title" content="M-LOK Grip | Form Precision">
+  <meta property="og:description" content="Lightweight, rigid M-LOK grip designed for secure handling and fast install.">
+  <meta property="og:url" content="https://formprecision.com/products/mlok-grip/">
   <meta property="og:image" content="https://formprecision.com/images/formprecision-3d.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Form Precision brand graphic">
   <meta property="og:site_name" content="Form Precision">
-  <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- JSON-LD: Organization -->
+  <!-- Organization JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -69,7 +73,7 @@
   }
   </script>
 
-  <!-- JSON-LD: WebSite -->
+  <!-- WebSite JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -79,54 +83,44 @@
   }
   </script>
 
-  <!-- JSON-LD: Breadcrumb -->
+  <!-- Breadcrumbs JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://formprecision.com/" },
-      { "@type": "ListItem", "position": 2, "name": "PRODUCT NAME", "item": "https://formprecision.com/products/PRODUCT-SLUG/" }
+      { "@type": "ListItem", "position": 2, "name": "M-LOK Grip", "item": "https://formprecision.com/products/mlok-grip/" }
     ]
   }
   </script>
 
-  <!-- JSON-LD: Product (no aggregateRating since there are 0 reviews) -->
+  <!-- Product JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "PRODUCT NAME",
-    "description": "Benefit-led one-liner for PRODUCT NAME: material, compatibility, key value.",
+    "name": "M-LOK Grip",
+    "description": "Lightweight, rigid M-LOK grip designed for secure handling and fast install. Made in the USA.",
     "image": [
-      "https://formprecision.com/images/products/rubber_ducky1.webp"
+      "https://formprecision.com/images/products/mlok_grip1.webp",
+      "https://formprecision.com/images/products/mlok_grip2.webp",
+      "https://formprecision.com/images/products/mlok_grip3.webp",
+      "https://formprecision.com/images/products/mlok_grip4.webp",
+      "https://formprecision.com/images/products/mlok_grip5.webp",
+      "https://formprecision.com/images/products/mlok_grip6.webp",
+      "https://formprecision.com/images/products/mlok_grip7.webp"
     ],
-    "sku": "fp-xxxxx",
+    "sku": "fp-mlok-grip",
     "brand": { "@type": "Brand", "name": "Form Precision" },
-    "url": "https://formprecision.com/products/PRODUCT-SLUG/",
+    "url": "https://formprecision.com/products/mlok-grip/",
     "itemCondition": "https://schema.org/NewCondition",
     "offers": {
-      "@type": "AggregateOffer",
+      "@type": "Offer",
       "priceCurrency": "USD",
-      "lowPrice": "79.00",
-      "highPrice": "99.00",
-      "offerCount": 2,
-      "offers": [
-        {
-          "@type": "Offer",
-          "sku": "fp-xxxxx-S",
-          "price": "79.00",
-          "availability": "https://schema.org/InStock",
-          "url": "https://formprecision.com/products/PRODUCT-SLUG/#standard"
-        },
-        {
-          "@type": "Offer",
-          "sku": "fp-xxxxx-R",
-          "price": "99.00",
-          "availability": "https://schema.org/InStock",
-          "url": "https://formprecision.com/products/PRODUCT-SLUG/#reinforced"
-        }
-      ]
+      "price": "79.00",
+      "availability": "https://schema.org/InStock",
+      "url": "https://formprecision.com/products/mlok-grip/"
     }
   }
   </script>
@@ -172,45 +166,42 @@
 
   <main id="main" tabindex="-1">
     <div class="grid">
-      <!-- LEFT -->
       <aside class="left-col">
         <section class="card detail-card" aria-labelledby="details-h">
           <h3 id="details-h">Details</h3>
           <ul class="bullets">
-            <li>Point 1</li>
-            <li>Point 2</li>
+            <li>Secure M-LOK interface</li>
+            <li>High stiffness, low weight</li>
             <li>Designed &amp; made in the USA</li>
           </ul>
         </section>
       </aside>
 
-      <!-- CENTER -->
       <section class="center-col">
         <header class="product-header">
-          <h1 class="product-title">PRODUCT NAME</h1>
-          <p class="subtitle">One-sentence positioning statement (material, fitment, benefit).</p>
+          <h1 class="product-title">M-LOK Grip</h1>
+          <p class="subtitle">Lightweight, rigid M-LOK grip for precise handling.</p>
         </header>
 
-        <!-- ===== Product Gallery ===== -->
         <figure class="hero"
                 aria-label="Product gallery"
                 data-images='[
-                  "/images/products/rubber_ducky1.webp",
-                  "/images/products/rubber_ducky2.webp",
-                  "/images/products/rubber_ducky3.webp",
-                  "/images/products/rubber_ducky5.webp",
-                  "/images/products/rubber_ducky4.webp",
-                  "/images/products/rubber_ducky6.webp"
+                  "/images/products/mlok_grip1.webp",
+                  "/images/products/mlok_grip2.webp",
+                  "/images/products/mlok_grip3.webp",
+                  "/images/products/mlok_grip4.webp",
+                  "/images/products/mlok_grip5.webp",
+                  "/images/products/mlok_grip6.webp",
+                  "/images/products/mlok_grip7.webp"
                 ]'>
           <div class="hero-frame">
             <img id="hero-img"
-                 src="/images/products/rubber_ducky1.webp"
-                 alt="PRODUCT NAME installed on VEHICLE/USE-CASE"
+                 src="/images/products/mlok_grip1.webp"
+                 alt="M-LOK Grip installed on compatible platform"
                  decoding="async"
                  loading="eager"
                  width="2048" height="2048">
 
-            <!-- Navigation arrows -->
             <button class="hero-nav prev" type="button" aria-label="Previous image">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 16.59 10.83 12 15.41 7.41 14 6l-6 6 6 6z"/></svg>
             </button>
@@ -227,16 +218,15 @@
         </figure>
       </section>
 
-      <!-- RIGHT: Buybox -->
       <form class="buybox" id="buy-form" data-mode="client" action="/cart/" method="post" novalidate>
-        <input type="hidden" name="product_id" value="fp-xxxxx">
+        <input type="hidden" name="product_id" value="fp-mlok-grip">
 
         <div class="price-wrap">
           <div class="price" id="price" aria-live="polite" aria-atomic="true">$79.00</div>
         </div>
 
         <div class="buy-actions">
-          <button class="cta" type="submit" aria-label="Add PRODUCT NAME to cart">ADD TO CART</button>
+          <button class="cta" type="submit" aria-label="Add M-LOK Grip to cart">ADD TO CART</button>
         </div>
 
         <label class="variant-wrap">
@@ -262,7 +252,6 @@
         </div>
       </form>
 
-      <!-- Reviews (empty state) -->
       <div id="reviews-bottom">
         <section class="reviews-panel card" aria-labelledby="reviews-title">
           <div class="reviews-header">
@@ -284,19 +273,18 @@
       </a>
       <a href="https://www.tiktok.com/@formprecision" target="_blank" rel="noopener" aria-label="TikTok">
         <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon" aria-hidden="true" focusable="false">
-          <path d="M12.753 2h3.136c.183 1.486 1.315 2.72 2.807 2.942v3.136a6.004 6.004 0 0 1-3.519-1.115v7.533a5.753 5.753 0 1 1-5.753-5.753c.221 0 .438.015.653.043v3.184a2.575 2.575 0 1 0 1.676 2.44V2z"/>
+          <path d="M12.753 2h3.136c.183 1.486 1.315 2.72 2.807 2.942v3.136a6.004 6.004 0 0 1-3.519-1.115v7.533a5.753 5.753 0 1 1-5.753-5.753c.221 0 .438.015 .653 .043v3.184a2.575 2.575 0 1 0 1.676 2.44V2z"/>
         </svg>
       </a>
       <a href="https://www.youtube.com/@FormPrecision" target="_blank" rel="noopener" aria-label="YouTube">
         <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon" aria-hidden="true" focusable="false">
-          <path d="M21.8 8s-.2-1.4-.8-2c-.7-.8-1.4-.8-1.7-.9C16.4 5 12 5 12 5h0s-4.4 0-7.3.1c-.4 0-1 .1-1.7.9-.6.6-.8 2-.8 2S2 9.6 2 11.3v1.4c0 1.7.2 3.3.2 3.3s.2 1.4.8 2c.7.8 1.7.8 2.1.9 1.5.1 6.9.1 6.9.1s4.4 0 7.3-.1c.4 0 1-.1 1.7-.9.6-.6.8-2 .8-2s.2-1.7.2-3.3v-1.4c0-1.7-.2-3.3-.2-3.3zM9.8 14.6V9.4l5.2 2.6-5.2 2.6z"/>
+          <path d="M21.8 8s-.2-1.4-.8-2c-.7-.8-1.4-.8-1.7-.9C16.4 5 12 5 12 5h0s-4.4 0-7.3.1c-.4 0-1 .1-1.7 .9-.6 .6-.8 2-.8 2S2 9.6 2 11.3v1.4c0 1.7 .2 3.3 .2 3.3s.2 1.4 .8 2c.7 .8 1.7 .8 2.1 .9 1.5 .1 6.9 .1 6.9 .1s4.4 0 7.3-.1c.4 0 1-.1 1.7-.9.6-.6 .8-2 .8-2s.2-1.7 .2-3.3v-1.4c0-1.7 -.2-3.3 -.2-3.3zM9.8 14.6V9.4l5.2 2.6-5.2 2.6z"/>
         </svg>
       </a>
     </div>
     <p>© 2025 Form Precision — All Rights Reserved</p>
   </footer>
 
-  <!-- Lightbox (product images only) -->
   <div id="lightbox" aria-hidden="true" role="dialog" aria-label="Fullscreen image viewer">
     <img id="lightbox-img" alt="">
   </div>
