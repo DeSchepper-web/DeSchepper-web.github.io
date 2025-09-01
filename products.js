@@ -174,9 +174,6 @@
       }
     })();
 
-    // NOTE: We store Stripe price_id when available; LOOKUP_KEY is only a fallback.
-    var LOOKUP_KEY = '5.56_Safety_Block';
-
     // Cart persistence (fp-cart)
     function getCartFP(){
       try { return JSON.parse(localStorage.getItem('fp-cart') || '{"items":[]}'); }
@@ -227,19 +224,22 @@
           priceVal = m ? parseFloat(m[0].replace(/,/g, '')) : 0;
         }
 
-        // Prefer real Stripe price_id; fallback to LOOKUP_KEY if no data-price-id was provided
-        var priceId    = getVariantPriceId(variantDesktop) || getVariantPriceId(variantMobile) || '';
-        var keyToStore = priceId || LOOKUP_KEY;
+        // Require a real Stripe price_id from the selected option
+        var priceId = getVariantPriceId(variantDesktop) || getVariantPriceId(variantMobile) || '';
+        if (!priceId) {
+          alert('This option is missing a Stripe price. Please refresh or contact support.');
+          return; // don’t add an un-checkout-able item
+        }
 
-        // Merge or insert line item
-        var it = (cart.items || []).find(function(x){ return x.variantKey === keyToStore; });
+        // Merge or insert line item (key is the real price_… ID)
+        var it = (cart.items || []).find(function(x){ return x.variantKey === priceId; });
         if (it) {
           it.qty += qtyVal;
           it.name  = displayName || it.name;
           it.price = Number.isFinite(priceVal) ? priceVal : (it.price || 0);
         } else {
           cart.items.push({
-            variantKey: keyToStore,   // e.g., "price_..." (best) or fallback lookup key
+            variantKey: priceId,      // always the real Stripe price_… ID
             qty:  qtyVal,
             name: displayName,
             price: Number.isFinite(priceVal) ? priceVal : 0

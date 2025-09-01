@@ -210,6 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = btn.getAttribute('data-name') || 'Item';
     const price = Number(btn.getAttribute('data-price') || '0');
     const lookup = btn.getAttribute('data-lookup-key'); // preferred if present
+
+    // Warn if a lookup key is present but not a real Stripe price_… ID
+    if (lookup && !/^price_/.test(lookup)) {
+      console.warn('Item added without a Stripe price_… ID; it will be ignored at checkout.');
+    }
+
     const variantKey = lookup || `btn:${name}|${price}`;
 
     const cart = getCartFP();
@@ -309,7 +315,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const STRIPE_CANCEL_URL  = 'https://formprecision.com/cart/';
 
   function resolvePriceIdFrom(key){
-    return /^price_/.test(key) ? key : null; // we store real price IDs in the cart
+    // we store real Stripe price IDs in the cart
+    return /^price_/.test(key) ? key : null;
   }
 
   // Use already-loaded Stripe.js if present; otherwise inject or wait briefly
@@ -341,42 +348,46 @@ document.addEventListener('DOMContentLoaded', () => {
     return stripePromise;
   }
 
-  document.body.addEventListener('click', async (e) => {
-    const btn = e.target.closest('[data-proceed-checkout]'); if (!btn) return;
-    e.preventDefault();
+  // Skip global handler on the cart page (cart page has its own /api/checkout flow)
+  const isCartPage = location.pathname.replace(/\/+$/, '') === '/cart';
+  if (!isCartPage) {
+    document.body.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-proceed-checkout]'); if (!btn) return;
+      e.preventDefault();
 
-    const cart = getCartFP();
-    const lineItems = (cart.items || []).map(it => {
-      const priceId = resolvePriceIdFrom(it.variantKey);
-      if (!priceId || !it.qty) return null;
-      return { price: priceId, quantity: Math.max(1, parseInt(it.qty, 10) || 1) };
-    }).filter(Boolean);
+      const cart = getCartFP();
+      const lineItems = (cart.items || []).map(it => {
+        const priceId = resolvePriceIdFrom(it.variantKey);
+        if (!priceId || !it.qty) return null;
+        return { price: priceId, quantity: Math.max(1, parseInt(it.qty, 10) || 1) };
+      }).filter(Boolean);
 
-    if (!lineItems.length) {
-      alert('Cart is empty or items are missing Stripe price IDs.');
-      return;
-    }
+      if (!lineItems.length) {
+        alert('Cart is empty or items are missing Stripe price IDs.');
+        return;
+      }
 
-    btn.disabled = true;
-    try {
-      const stripe = await getStripe();
-      const { error } = await stripe.redirectToCheckout({
-        mode: 'payment',
-        lineItems,
-        successUrl: STRIPE_SUCCESS_URL,
-        cancelUrl: STRIPE_CANCEL_URL
-      });
-      if (error) {
-        console.error(error);
-        alert(error.message || 'Unable to start checkout.');
+      btn.disabled = true;
+      try {
+        const stripe = await getStripe();
+        const { error } = await stripe.redirectToCheckout({
+          mode: 'payment',
+          lineItems,
+          successUrl: STRIPE_SUCCESS_URL,
+          cancelUrl: STRIPE_CANCEL_URL
+        });
+        if (error) {
+          console.error(error);
+          alert(error.message || 'Unable to start checkout.');
+          btn.disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Stripe failed to load. Please try again.');
         btn.disabled = false;
       }
-    } catch (err) {
-      console.error(err);
-      alert('Stripe failed to load. Please try again.');
-      btn.disabled = false;
-    }
-  });
+    });
+  }
 });
 
 // Keep pages in sync across tabs/windows
