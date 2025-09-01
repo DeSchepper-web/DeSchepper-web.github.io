@@ -203,43 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCartCount();
   renderCart();
 
-  // Add-to-cart buttons (works anywhere)
-  document.body.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-add-to-cart]');
-    if (!btn) return;
-
-    const name = btn.getAttribute('data-name') || 'Item';
-    const price = Number(btn.getAttribute('data-price') || '0');
-    const lookup = btn.getAttribute('data-lookup-key'); // preferred if present
-
-    // Warn if a lookup key is present but not a real Stripe price_… ID
-    if (lookup && !/^price_/.test(lookup)) {
-      console.warn('Item added without a Stripe price_… ID; it will be ignored at checkout.');
-    }
-
-    const variantKey = lookup || `btn:${name}|${price}`;
-
-    const cart = getCartFP();
-    const existing = cart.items.find(x => x.variantKey === variantKey);
-    if (existing) {
-      existing.qty += 1;
-      existing.name = name || existing.name;
-      if (Number.isFinite(price)) existing.price = price;
-    } else {
-      cart.items.push({
-        variantKey,
-        qty: 1,
-        name,
-        price: Number.isFinite(price) ? price : 0
-      });
-    }
-    ensureOrder(variantKey);
-    setCartFP(cart);
-    updateCartCount();
-    renderCart();
-    showCartToast('Added to cart');
-  });
-
   // Qty +/- and remove
   document.body.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action]');
@@ -370,12 +333,25 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.disabled = true;
     try {
       const stripe = await getStripe();
-      const { error } = await stripe.redirectToCheckout({
-        mode: 'payment',
-        lineItems,
-        successUrl: STRIPE_SUCCESS_URL,
-        cancelUrl: STRIPE_CANCEL_URL
-      });
+const { error } = await stripe.redirectToCheckout({
+  mode: 'payment',
+  lineItems,
+
+  // ✅ require a shipping address
+  shippingAddressCollection: {
+    // add more ISO-2 codes if you ship internationally
+    allowedCountries: ['US']
+  },
+
+  // ✅ collect full billing address (improves AVS / fraud checks)
+  billingAddressCollection: 'required',
+
+  // (optional) collect phone number on Checkout
+  phoneNumberCollection: { enabled: true },
+
+  successUrl: STRIPE_SUCCESS_URL,
+  cancelUrl: STRIPE_CANCEL_URL
+});
       if (error) throw error;
     } catch (err) {
       console.error(err);
@@ -531,4 +507,49 @@ window.addEventListener('storage', (e) => {
       });
     });
   }).observe(document.documentElement, {childList:true, subtree:true});
+})();
+
+/* ---- SINGLE add-to-cart handler with data-qty support (guarded) ---- */
+(function bindCartHandler(){
+  function attach(){
+    if (!document.body || document.body.dataset.fpCartHandler) return;
+    document.body.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-add-to-cart]');
+      if (!btn) return;
+
+      const name   = btn.getAttribute('data-name') || 'Item';
+      const price  = Number(btn.getAttribute('data-price') || '0');
+      const lookup = btn.getAttribute('data-lookup-key'); // prefer Stripe price_… when present
+      const qtyAdd = Math.max(1, parseInt(btn.getAttribute('data-qty') || '1', 10) || 1);
+
+      if (lookup && !/^price_/.test(lookup)) {
+        console.warn('Item added without a Stripe price_… ID; it will be ignored at checkout.');
+      }
+
+      const variantKey = lookup || `btn:${name}|${price}`;
+
+      const cart = getCartFP();
+      const existing = cart.items.find(x => x.variantKey === variantKey);
+      if (existing) {
+        existing.qty += qtyAdd;
+        existing.name  = name || existing.name;
+        if (Number.isFinite(price)) existing.price = price;
+      } else {
+        cart.items.push({
+          variantKey,
+          qty: qtyAdd,
+          name,
+          price: Number.isFinite(price) ? price : 0
+        });
+      }
+      ensureOrder(variantKey);
+      setCartFP(cart);
+      updateCartCount();
+      renderCart();
+      showCartToast('Added to cart');
+    });
+    document.body.dataset.fpCartHandler = '1';
+  }
+  if (document.body) attach();
+  else document.addEventListener('DOMContentLoaded', attach, { once:true });
 })();
