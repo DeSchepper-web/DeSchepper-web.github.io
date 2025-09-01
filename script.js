@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==== Stripe Checkout (client-side redirect, mapping-free) ====
-  const STRIPE_PK = 'pk_test_or_live_xxx'; // <- your publishable key
+  const STRIPE_PK = 'pk_live_51RbV04GRkBmBYPEqyPW6PZ1uZNUVWubIxGwuXxpTMzN1Oph1BEuRjWols3PUjcj3IWucWBUwC6qAPyZyZyj8MShT005IZUwOFE'; // <- your publishable key
   const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/success/';
   const STRIPE_CANCEL_URL  = 'https://formprecision.com/cart/';
 
