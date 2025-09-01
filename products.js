@@ -1,8 +1,10 @@
 (function () {
   function $(sel, root){ return (root || document).querySelector(sel); }
   function $$(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
   document.addEventListener('DOMContentLoaded', function () {
     var root = $('.product-page') || document;
+
     (function ensureAnchoredToast(){
       var buybox = $('.buybox', root);
       var addBtn = $('.buy-actions .cta', root);
@@ -51,8 +53,10 @@
         }, 2000);
       };
     })();
+
     var yearEl = $('#year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
     function dedupe(selector) {
       var els = $$(selector, root);
       if (els.length <= 1) return;
@@ -68,6 +72,7 @@
     if (grid && 'MutationObserver' in window) {
       new MutationObserver(runDedupe).observe(grid, { childList: true, subtree: true });
     }
+
     var buyForm        = $('#buy-form', root);
     var priceDesktop   = $('#price', root);
     var variantDesktop = $('#variant', root);
@@ -77,6 +82,7 @@
     var variantMobile  = $('#variant-mobile', buybar || root);
     var qtyMobile      = $('#qty-mobile', buybar || root);
     var titleEl        = $('#product-title', root) || $('.product-title', root) || $('h1', root);
+
     function formatPrice(num) { return '$' + Number(num).toFixed(2); }
     function getVariantPrice(selectEl) {
       if (!selectEl) return null;
@@ -119,6 +125,7 @@
       mirrorInput(qtyMobile, qtyDesktop);
     });
     updatePrices();
+
     (function attachQtyControls(){
       function toInt(v, d){ var n = parseInt(String(v||'').trim(), 10); return Number.isFinite(n) ? n : d; }
       function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
@@ -157,12 +164,36 @@
         });
       }
     })();
+
+    /* FUTURE PRODUCTS:
+       - For each new product page, set LOOKUP_KEY to that product’s Stripe Price lookup_key exactly.
+         Example: var LOOKUP_KEY = 'rmr_mount_30mm_black';
+       - For a product with variants (size/color), build the key from selections so it matches your Stripe lookup_key scheme.
+         Example: var LOOKUP_KEY = sku + '_' + size + '_' + color;
+    */
+    var LOOKUP_KEY = '5.56_Safety_Block';
+
+    function getCartFP(){
+      try { return JSON.parse(localStorage.getItem('fp-cart') || '{"items":[]}'); }
+      catch(_) { return { items: [] }; }
+    }
+    function saveCartFP(c){
+      localStorage.setItem('fp-cart', JSON.stringify(c));
+    }
+    function updateHeaderCount(c){
+      var count = (c.items || []).reduce(function(s,x){ return s + Number(x.qty||0); }, 0);
+      var cc = document.getElementById('cart-count');
+      if (cc) cc.textContent = String(count);
+    }
+
     var submitting = false;
     function submitBuy(e) {
       if (e) e.preventDefault();
       if (submitting) return;
+
       mirrorSelect(variantMobile, variantDesktop);
       mirrorInput(qtyMobile, qtyDesktop);
+
       var productName = (titleEl && titleEl.textContent.trim()) || 'Product';
       var vSel = variantDesktop || variantMobile;
       var variantText = '';
@@ -171,32 +202,44 @@
         variantText = opt ? (opt.text || opt.label || '') : '';
       }
       var displayName = variantText ? (productName + ' — ' + variantText) : productName;
-      var priceVal = getVariantPrice(variantDesktop) ?? getVariantPrice(variantMobile) ?? 0;
+
       var qtyInput = buyForm && buyForm.querySelector('.qty-control input[type="number"]');
       if (!qtyInput) qtyInput = qtyDesktop || qtyMobile;
       var qtyVal = Math.max(1, parseInt(String(qtyInput ? qtyInput.value : '1').trim(), 10) || 1);
-      var key = displayName + '|' + Number(priceVal || 0);
-      var haveEnsureOrder     = (typeof window.ensureOrder === 'function');
-      var haveGetCart         = (typeof window.getCart === 'function');
-      var haveSetCart         = (typeof window.setCart === 'function');
-      var haveUpdateCartCount = (typeof window.updateCartCount === 'function');
-      var haveShowCartToast   = (typeof window.showCartToast === 'function');
+
       submitting = true;
       try {
-        if (haveEnsureOrder) window.ensureOrder(key);
+        var cart = getCartFP();
 
-        var items = haveGetCart ? window.getCart() : (function(){ try { return JSON.parse(localStorage.getItem('cart')||'[]'); } catch { return []; } })();
-        if (!Array.isArray(items)) items = [];
-
-        for (var k = 0; k < qtyVal; k++) {
-          items.push({ name: displayName, price: Number(priceVal) || 0 });
+        // Determine price for the selected variant (fallbacks included)
+        var priceVal = getVariantPrice(variantDesktop);
+        if (priceVal == null) priceVal = getVariantPrice(variantMobile);
+        if (priceVal == null) {
+          // last resort: parse from visible price text
+          var txt = (priceDesktop && priceDesktop.textContent) || (priceMobile && priceMobile.textContent) || '';
+          var m = String(txt).match(/[\d,.]+/);
+          priceVal = m ? parseFloat(m[0].replace(/,/g, '')) : 0;
         }
 
-        if (haveSetCart) window.setCart(items);
-        else localStorage.setItem('cart', JSON.stringify(items));
+        // Merge/increment by variantKey
+        var it = (cart.items || []).find(function(x){ return x.variantKey === LOOKUP_KEY; });
+        if (it) {
+          it.qty += qtyVal;
+          // keep freshest name/price if needed
+          it.name  = displayName || it.name;
+          it.price = Number.isFinite(priceVal) ? priceVal : (it.price || 0);
+        } else {
+          cart.items.push({
+            variantKey: LOOKUP_KEY,
+            qty:  qtyVal,
+            name: displayName,
+            price: Number.isFinite(priceVal) ? priceVal : 0
+          });
+        }
 
-        if (haveUpdateCartCount) window.updateCartCount();
-        if (haveShowCartToast)   window.showCartToast();
+        saveCartFP(cart);
+        updateHeaderCount(cart);
+        if (typeof window.showCartToast === 'function') window.showCartToast('Added to cart');
       } finally {
         submitting = false;
       }
@@ -207,6 +250,7 @@
         if (clientMode) submitBuy(e);
       });
     }
+
     var overlay = (function ensureOverlay(){
       var ov = document.getElementById('zoom-overlay');
       if (!ov) {
@@ -236,6 +280,7 @@
       }
       return ov;
     })();
+
     function lockScroll(){
       var y = window.scrollY || document.documentElement.scrollTop || 0;
       document.body.dataset.scrollY = y;
@@ -310,6 +355,7 @@
         });
       };
     })();
+
     (function tagReviewImgs(){
       var reviewSel = '.reviews-panel img, #reviews-bottom img';
       $$(reviewSel).forEach(function(img){
@@ -317,6 +363,7 @@
         if (!img.getAttribute('alt')) img.setAttribute('alt', 'Review image');
       });
     })();
+
     document.addEventListener('click', function (e) {
       var t = e.target;
       var isReviewZoomable =
@@ -330,12 +377,14 @@
       var src = t.getAttribute('data-zoom-src') || t.currentSrc || t.src;
       overlay.openWith(src, t.alt || '');
     }, { capture: true });
+
     var hero        = $('.hero', root);
     var heroImg     = hero ? $('#hero-img', hero) : null;
     var heroFrame   = hero ? $('.hero-frame', hero) : null;
     var prevBtn     = hero ? $('.hero-nav.prev', hero) : null;
     var nextBtn     = hero ? $('.hero-nav.next', hero) : null;
     var dotsWrap    = hero ? $('.hero-dots', hero) : null;
+
     if (hero && heroImg && heroFrame && dotsWrap) {
       function parseImagesFromAttr(raw) {
         try { var a = JSON.parse(raw); if (Array.isArray(a) && a.length) return a; } catch(e){}
@@ -388,6 +437,7 @@
       var hasMany = images.length > 1;
       if (prevBtn) prevBtn.disabled = !hasMany;
       if (nextBtn) nextBtn.disabled = !hasMany;
+
       if (hasMany) {
         (function ensureArrowClickability(){
           [prevBtn, nextBtn].forEach(function(btn){
@@ -413,10 +463,10 @@
         $$('.hero-dots > button', hero).forEach(function(b, idx){
           b.addEventListener('click', function(){ show(idx); });
         });
+
         (function enableHoverKeys(){
           var frame = heroFrame || hero;
           var hot = false;
-
           function isTypingTarget(el){
             return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' ||
                           el.tagName === 'SELECT' || el.isContentEditable);
@@ -432,17 +482,18 @@
             if (!hot) return;
             if (isTypingTarget(e.target)) return;
             if (e.altKey || e.ctrlKey || e.metaKey) return;
-
             if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
             else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
           }, { passive:false });
         })();
+
         try {
           heroImg.setAttribute('draggable', 'false');
           heroImg.style.webkitUserDrag = 'none';
           heroFrame.style.touchAction = 'pan-y';
           heroImg.style.touchAction = 'manipulation';
         } catch(_) {}
+
         (function preventDoubleTapZoom(){
           var lastTouchEnd = 0;
           heroFrame.addEventListener('touchend', function(e){
@@ -451,6 +502,7 @@
             lastTouchEnd = now;
           }, { passive:false });
         })();
+
         (function pointerSwipe(){
           var startX = null, startY = null, dragging = false, activePointerId = null;
           function isInteractiveTarget(t){
@@ -496,6 +548,7 @@
           heroFrame.addEventListener('pointercancel', cancelGesture);
           heroFrame.addEventListener('lostpointercapture', cancelGesture);
         })();
+
         (function touchSwipeFallback(){
           if ('onpointerdown' in window) return;
           var startX = null, startY = null, dragging = false;
@@ -527,16 +580,20 @@
           heroFrame.addEventListener('touchcancel', function(){ dragging = false; }, { passive:true });
         })();
       }
+
       if (heroImg) {
         heroImg.addEventListener('click', function (e) {
           e.preventDefault();
           e.stopImmediatePropagation();
         }, true);
       }
+
       window.__gallery = {
-        images: images.slice(),
-        index: function(){ return gi; },
-        next: next, prev: prev, show: show
+        images: (typeof images !== 'undefined' ? images.slice() : []),
+        index: function(){ return (typeof gi !== 'undefined' ? gi : 0); },
+        next: function(){ if (typeof gi !== 'undefined') show(gi+1); },
+        prev: function(){ if (typeof gi !== 'undefined') show(gi-1); },
+        show: function(i){ if (typeof show === 'function') show(i); }
       };
     }
   });

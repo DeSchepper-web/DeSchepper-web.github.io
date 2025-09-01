@@ -73,6 +73,17 @@ const TRASH_SVG = `
   <path d="M14 11v6"></path>
   <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
 </svg>`.trim();
+
+/* ---------- Unified cart: fp-cart ({ items: [{variantKey, qty, name, price}] }) ---------- */
+function getCartFP() {
+  try {
+    const c = JSON.parse(localStorage.getItem('fp-cart') || '{"items":[]}');
+    return c && Array.isArray(c.items) ? c : { items: [] };
+  } catch { return { items: [] }; }
+}
+function setCartFP(cart) { localStorage.setItem('fp-cart', JSON.stringify(cart)); }
+
+/* Keep manual order for rows */
 function getOrder() {
   try { return JSON.parse(localStorage.getItem('cartOrder') || '{}'); } catch { return {}; }
 }
@@ -82,8 +93,7 @@ function ensureOrder(key) {
   if (o[key] == null) {
     const c = Number(localStorage.getItem('cartOrderCounter') || '0') + 1;
     localStorage.setItem('cartOrderCounter', String(c));
-    o[key] = c;
-    setOrder(o);
+    o[key] = c; setOrder(o);
   }
   return o[key];
 }
@@ -91,59 +101,93 @@ function maybeClearOrderFor(key) {
   const o = getOrder();
   if (o[key] != null) { delete o[key]; setOrder(o); }
 }
-function getCart() { try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; } }
-function setCart(cart) { localStorage.setItem('cart', JSON.stringify(cart)); }
+
+/* Migrate any legacy “cart” array -> fp-cart once */
+function migrateLegacyCart() {
+  try {
+    const legacy = JSON.parse(localStorage.getItem('cart') || 'null');
+    if (!Array.isArray(legacy) || !legacy.length) return;
+    const cur = getCartFP();
+    const map = new Map();
+    // seed with current fp-cart items
+    for (const it of cur.items) map.set(it.variantKey, { ...it });
+    // fold legacy rows as pseudo-variant keys
+    for (const it of legacy) {
+      const name = it?.name || 'Item';
+      const price = Number(it?.price) || 0;
+      const variantKey = `legacy:${name}|${price}`;
+      const ex = map.get(variantKey) || { variantKey, qty: 0, name, price };
+      ex.qty += 1; map.set(variantKey, ex);
+    }
+    setCartFP({ items: Array.from(map.values()) });
+    localStorage.removeItem('cart'); // done
+  } catch {}
+}
+
 function updateCartCount() {
   const el = document.getElementById('cart-count');
-  if (el) el.textContent = getCart().length;
+  if (!el) return;
+  const count = getCartFP().items.reduce((s, x) => s + Number(x.qty || 0), 0);
+  el.textContent = String(count);
 }
-function showCartToast() {
+
+/* Simple toast (product page may override with anchored toast) */
+function showCartToast(text) {
   const toast = document.getElementById('cart-toast');
   if (!toast) return;
+  const msg = toast.querySelector('.msg');
+  if (msg) msg.textContent = text || 'Added to cart';
   toast.style.opacity = '1';
+  toast.style.transform = 'none';
   clearTimeout(showCartToast._t);
-  showCartToast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+  showCartToast._t = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(6px)';
+  }, 2000);
 }
+
 function renderCart() {
   const list = document.getElementById('cart-items');
   const totalEl = document.getElementById('cart-total');
   if (!list || !totalEl) return;
-  const items = getCart();
+
+  const cart = getCartFP();
+  const items = cart.items || [];
   if (!items.length) {
     list.innerHTML = '<p>Your cart is empty.</p>';
     totalEl.textContent = '0.00';
     return;
   }
-  const groups = new Map();
-  for (const it of items) {
-    const name = it.name || 'Item';
-    const price = Number(it.price) || 0;
-    const key = `${name}|${price}`;
-    const g = groups.get(key) || { key, name, price, qty: 0 };
-    g.qty += 1; groups.set(key, g);
-  }
+
   const order = getOrder();
-  const grouped = Array.from(groups.values()).sort((a, b) => {
-    const ao = order[a.key] ?? Number.MAX_SAFE_INTEGER;
-    const bo = order[b.key] ?? Number.MAX_SAFE_INTEGER;
+  const rows = items.slice().sort((a, b) => {
+    const ak = a.variantKey, bk = b.variantKey;
+    const ao = order[ak] ?? Number.MAX_SAFE_INTEGER;
+    const bo = order[bk] ?? Number.MAX_SAFE_INTEGER;
     return ao - bo;
   });
+
   list.innerHTML = '';
   let total = 0;
-  for (const g of grouped) {
-    total += g.price * g.qty;
+
+  for (const it of rows) {
+    const name  = it.name || 'Item';
+    const qty   = Math.max(0, Number(it.qty) || 0);
+    const price = Math.max(0, Number(it.price) || 0);
+    total += qty * price;
+
     const row = document.createElement('div');
     row.className = 'cart-item';
     row.innerHTML = `
       <span class="item-name">
-        <span class="item-title">${g.name}</span> — <span class="price item-price">$${g.price.toFixed(2)}</span>
+        <span class="item-title">${name}</span> — <span class="price item-price">$${price.toFixed(2)}</span>
       </span>
-      <div class="qty-controls" role="group" aria-label="Quantity for ${g.name}">
-        <button class="qty-btn" data-action="dec" data-key="${g.key}" aria-label="Decrease quantity">−</button>
-        <input class="qty-input" type="number" inputmode="numeric" pattern="[0-9]*" min="0" step="1" value="${g.qty}" data-key="${g.key}" aria-label="Quantity for ${g.name}">
-        <button class="qty-btn" data-action="inc" data-key="${g.key}" aria-label="Increase quantity">+</button>
+      <div class="qty-controls" role="group" aria-label="Quantity for ${name}">
+        <button class="qty-btn" data-action="dec" data-key="${it.variantKey}" aria-label="Decrease quantity">−</button>
+        <input class="qty-input" type="number" inputmode="numeric" pattern="[0-9]*" min="0" step="1" value="${qty}" data-key="${it.variantKey}" aria-label="Quantity for ${name}">
+        <button class="qty-btn" data-action="inc" data-key="${it.variantKey}" aria-label="Increase quantity">+</button>
       </div>
-      <button class="remove-item" data-action="remove" data-key="${g.key}" aria-label="Remove all ${g.name}">
+      <button class="remove-item" data-action="remove" data-key="${it.variantKey}" aria-label="Remove all ${name}">
         ${TRASH_SVG}
       </button>
     `;
@@ -152,57 +196,194 @@ function renderCart() {
 
   totalEl.textContent = total.toFixed(2);
 }
+
 document.addEventListener('DOMContentLoaded', () => {
+  migrateLegacyCart();
   updateCartCount();
   renderCart();
+
+  // Add-to-cart buttons (works anywhere)
   document.body.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-add-to-cart]'); if (!btn) return;
+    const btn = e.target.closest('[data-add-to-cart]');
+    if (!btn) return;
+
     const name = btn.getAttribute('data-name') || 'Item';
     const price = Number(btn.getAttribute('data-price') || '0');
-    const key = `${name}|${price}`;
-    ensureOrder(key);
-    const items = getCart(); items.push({ name, price: Number(price) || 0 });
-    setCart(items); updateCartCount(); renderCart(); showCartToast();
+    const lookup = btn.getAttribute('data-lookup-key'); // preferred if present
+    const variantKey = lookup || `btn:${name}|${price}`;
+
+    const cart = getCartFP();
+    const existing = cart.items.find(x => x.variantKey === variantKey);
+    if (existing) {
+      existing.qty += 1;
+      existing.name = name || existing.name;
+      if (Number.isFinite(price)) existing.price = price;
+    } else {
+      cart.items.push({
+        variantKey,
+        qty: 1,
+        name,
+        price: Number.isFinite(price) ? price : 0
+      });
+    }
+    ensureOrder(variantKey);
+    setCartFP(cart);
+    updateCartCount();
+    renderCart();
+    showCartToast('Added to cart');
   });
+
+  // Qty +/- and remove
   document.body.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action]'); if (!btn) return;
-    const action = btn.getAttribute('data-action'); const key = btn.getAttribute('data-key'); if (!key) return;
-    const [name, priceStr] = key.split('|'); const price = Number(priceStr) || 0;
-    let items = getCart();
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.getAttribute('data-action');
+    const key = btn.getAttribute('data-key');
+    if (!key) return;
+
+    const cart = getCartFP();
+    const idx = cart.items.findIndex(x => x.variantKey === key);
+    if (idx === -1) return;
+
     if (action === 'inc') {
+      cart.items[idx].qty += 1;
       ensureOrder(key);
-      items.push({ name, price });
     } else if (action === 'dec') {
-      const idx = items.findIndex(it => it.name === name && Number(it.price) === price);
-      if (idx > -1) items.splice(idx, 1);
+      cart.items[idx].qty = Math.max(0, (cart.items[idx].qty || 0) - 1);
+      if (cart.items[idx].qty === 0) {
+        cart.items.splice(idx, 1);
+        maybeClearOrderFor(key);
+      }
     } else if (action === 'remove') {
-      items = items.filter(it => !(it.name === name && Number(it.price) === price));
+      cart.items.splice(idx, 1);
       maybeClearOrderFor(key);
     }
-    setCart(items); updateCartCount(); renderCart();
+
+    setCartFP(cart);
+    updateCartCount();
+    renderCart();
   });
+
+  // Direct qty input change
   document.body.addEventListener('change', (e) => {
-    const input = e.target.closest('.qty-input'); if (!input) return;
-    const key = input.getAttribute('data-key'); if (!key) return;
-    const [name, priceStr] = key.split('|'); const price = Number(priceStr) || 0;
-    let qty = parseInt(input.value, 10); if (!Number.isFinite(qty) || qty < 0) qty = 0;
-    if (qty > 0) ensureOrder(key);
-    let items = getCart().filter(it => !(it.name === name && Number(it.price) === price));
-    for (let i = 0; i < qty; i++) items.push({ name, price });
-    setCart(items); updateCartCount(); renderCart();
+    const input = e.target.closest('.qty-input');
+    if (!input) return;
+    const key = input.getAttribute('data-key');
+    if (!key) return;
+
+    let qty = parseInt(input.value, 10);
+    if (!Number.isFinite(qty) || qty < 0) qty = 0;
+
+    const cart = getCartFP();
+    const it = cart.items.find(x => x.variantKey === key);
+    if (!it) return;
+
+    if (qty === 0) {
+      cart.items = cart.items.filter(x => x.variantKey !== key);
+      maybeClearOrderFor(key);
+    } else {
+      it.qty = qty;
+      ensureOrder(key);
+    }
+
+    setCartFP(cart);
+    updateCartCount();
+    renderCart();
   });
+
+  // Clear cart
   document.body.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-clear-cart]'); if (!btn) return;
-    localStorage.removeItem('cart'); localStorage.removeItem('cartOrder'); localStorage.removeItem('cartOrderCounter');
-    updateCartCount(); renderCart();
+    const btn = e.target.closest('[data-clear-cart]');
+    if (!btn) return;
+    localStorage.removeItem('fp-cart');
+    localStorage.removeItem('cart'); // legacy
+    localStorage.removeItem('cartOrder');
+    localStorage.removeItem('cartOrderCounter');
+    updateCartCount();
+    renderCart();
   });
-  document.body.addEventListener('click', (e) => {
+
+  // Proceed to checkout (unchanged)
+  // ==== Stripe Checkout (client-side redirect) ====
+  // 1) Fill these with your details:
+  const STRIPE_PK = 'pk_test_or_live_xxx';                              // <- your publishable key
+  const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/success/';
+  const STRIPE_CANCEL_URL  = 'https://formprecision.com/cart/';
+
+  // 2) Map your cart variantKey (usually your Stripe Price lookup_key) -> Stripe Price ID.
+  //    Add each product here. If you store real price IDs as variantKey, this map can be empty.
+  const STRIPE_PRICE_BY_LOOKUP = {
+    '5.56_Safety_Block': 'price_xxx', // <-- put the real Stripe price_... ID
+    // 'rmr_mount_30mm_black': 'price_yyy',
+    // 'corner_bracket_black': 'price_zzz',
+  };
+
+  function resolvePriceIdFrom(key){
+    if (!key) return null;
+    if (/^price_/.test(key)) return key;        // supports using the real price ID as the variantKey
+    return STRIPE_PRICE_BY_LOOKUP[key] || null; // otherwise use the lookup map
+  }
+
+  let stripePromise;
+  function getStripe(){
+    if (!stripePromise){
+      stripePromise = new Promise((resolve, reject) => {
+        if (window.Stripe) return resolve(window.Stripe(STRIPE_PK));
+        const s = document.createElement('script');
+        s.src = 'https://js.stripe.com/v3';
+        s.onload = () => resolve(window.Stripe(STRIPE_PK));
+        s.onerror = () => reject(new Error('Stripe.js failed to load'));
+        document.head.appendChild(s);
+      });
+    }
+    return stripePromise;
+  }
+
+  document.body.addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-proceed-checkout]'); if (!btn) return;
-    window.location.href = '/checkout/';
+    e.preventDefault();
+
+    const cart = getCartFP();
+    const lineItems = (cart.items || []).map(it => {
+      const priceId = resolvePriceIdFrom(it.variantKey);
+      if (!priceId || !it.qty) return null;
+      return { price: priceId, quantity: Math.max(1, parseInt(it.qty, 10) || 1) };
+    }).filter(Boolean);
+
+    if (!lineItems.length) {
+      alert('Cart is empty or items are missing Stripe price IDs.');
+      return;
+    }
+
+    btn.disabled = true;
+    try {
+      const stripe = await getStripe();
+      const { error } = await stripe.redirectToCheckout({
+        mode: 'payment',
+        lineItems,
+        successUrl: STRIPE_SUCCESS_URL,
+        cancelUrl: STRIPE_CANCEL_URL
+      });
+      if (error) {
+        console.error(error);
+        alert(error.message || 'Unable to start checkout.');
+        btn.disabled = false;
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Stripe failed to load. Please try again.');
+      btn.disabled = false;
+    }
   });
 });
+
+// Keep pages in sync across tabs/windows
 window.addEventListener('storage', (e) => {
-  if (e.key === 'cart') { updateCartCount(); renderCart(); }
+  if (e.key === 'fp-cart' || e.key === 'cart') { // include legacy to re-migrate quickly
+    migrateLegacyCart();
+    updateCartCount();
+    renderCart();
+  }
 });
 (function () {
   function init(form){
