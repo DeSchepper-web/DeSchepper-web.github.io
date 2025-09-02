@@ -967,6 +967,7 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
 /* ==========================
   PAGE BANNERS
 ========================== */
+.articles-banner,
 .contact-banner,
 .shop-banner,
 .cart-banner {
@@ -976,6 +977,7 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   color: #fff;
   font-size: 1.25rem;
 }
+
 
 /* ==========================
   FOOTER
@@ -1038,84 +1040,118 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
 /* ==========================
   ARTICLES INDEX PAGE
 ========================== */
-/* Page spacing so the block sits under the fixed navbar */
-.articles-page {
-  padding-top: calc(var(--nav-h, 60px) + 20px);
-  padding-bottom: 40px;
-  background: #f5f6f7; /* light page background */
-}
-
-/* Centered GREY panel */
-.articles-panel {
-  max-width: 1000px;
-  margin: 0 auto;
-  background: var(--theme-b); /* dark grey */
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.14);
-  padding: 20px;
-}
-
-/* Title directly on grey background */
-.articles-panel h1 {
-  color: #fff; /* white text */
-  font-size: 2rem;
+/* Articles banner — match other pages (use global PAGE BANNERS font-size) */
+.articles-banner{
   text-align: center;
-  margin: 0 0 18px;
+  background-color: var(--theme-b);
+  color: #fff;
+
+  /* match the global PAGE BANNERS padding */
+  padding: 6rem 1rem 2rem;
 }
 
-/* Articles list container */
-.articles-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+/* Visible tagline text (like other pages) */
+.articles-banner p{
+  max-width: 60ch;
+  margin: 0 auto;
 }
 
-/* Make the whole article card clickable */
-.article-card {
-  display: block;
-  background: #fff;
-  border-radius: 10px;
-  padding: 14px 18px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-  text-decoration: none;
-  color: inherit;
-  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease;
+/* Spacing below banner before grid */
+.articles-wrap{ 
+  margin: clamp(1.5rem, 3vw, 2.5rem) auto; 
 }
 
-/* Hover effect: orange background + white text */
-.article-card:hover {
-  background: var(--theme-a);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 18px rgba(0,0,0,0.10);
-  color: #fff; /* make default text white */
+/* =========================
+   ARTICLES — Grid (3×2)
+========================= */
+.article-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 24px);
+  align-items: stretch;
 }
 
-/* Title inside the clickable card */
-.article-card h2 {
-  margin: 0;
-  color: var(--theme-b); /* default orange title */
-  font-weight: 700;
-  font-size: 1.35rem;
-  line-height: 1.25;
-  transition: color .15s ease;
-}
-.article-card:hover h2 { color: #fff; /* white title when hovered */ }
-
-/* Teaser text */
-.article-card .teaser {
-  margin-top: 6px;
-  color: #444;
-  font-size: 1rem;
-  transition: color .15s ease;
-}
-.article-card:hover .teaser { color: #fff; /* white teaser on hover */ }
-
-@media (max-width: 768px) {
-  .articles-panel { margin: 0 12px; }
-  .articles-panel h1 { font-size: 1.6rem; }
-  .article-card h2 { font-size: 1.15rem; }
+/* Dark tile cards */
+.article-card{
+  background:#2c2828;             /* brand dark */
+  color:#fff;
+  border-radius:14px;
+  box-shadow:0 10px 24px rgba(0,0,0,.12);
+  padding: clamp(16px, 2.2vw, 24px);
+  display:flex;
+  flex-direction:column;
+  min-height:260px;
 }
 
+.article-card .tile-title{
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  line-height:1.2;
+  margin-bottom:.5rem;
+}
+
+.tile-blurb{ opacity:.9; }
+.tile-link{ margin-top:auto; } /* push link to bottom */
+
+.text-link{
+  color:#fff;
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+
+/* Featured middle/top panel with inner white callout */
+.article-card.panel{ position:relative; }
+
+.article-card .inner-card{
+  display:block;
+  margin-top:.75rem;
+  background:#fff;
+  color:#111;
+  border-radius:12px;
+  padding:.9rem 1rem;
+  text-decoration:none;
+  box-shadow:0 6px 18px rgba(0,0,0,.10);
+}
+
+.article-card .inner-title{
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  margin:0 0 .25rem 0;
+}
+
+.article-card .inner-blurb{
+  color:#374151;
+  margin:0;
+}
+
+.tile-cta{ margin-top:1rem; }
+.tile-cta .cta{
+  display:inline-block;
+  padding:.7rem 1.1rem;
+  border-radius:999px;
+  background:#F7931A;             /* brand orange */
+  color:#111;
+  text-decoration:none;
+  font-weight:600;
+  line-height:1;
+  box-shadow:0 4px 14px rgba(0,0,0,.15);
+}
+
+/* Hover/focus */
+.article-card a:focus-visible{ outline:2px solid #F7931A; outline-offset:3px; }
+.article-card .inner-card:hover{ transform: translateY(-1px); }
+.article-card .cta:hover{ filter: brightness(1.06); }
+
+/* Responsive grid */
+@media (max-width: 1024px){
+  .article-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px){
+  .article-grid{ grid-template-columns: 1fr; }
+}
+
+/* Motion-respectful hover lift */
+@media (prefers-reduced-motion:no-preference){
+  .article-card .inner-card{ transition: transform .15s ease; }
+}
 /* ==========================
   ARTICLE PAGE
 ========================== */

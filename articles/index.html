@@ -137,37 +137,48 @@
 <!-- Overlay background -->
 <div class="overlay" id="overlay" onclick="toggleMenu()" aria-hidden="true"></div>
 
-<!-- Articles Banner -->
+<!-- Articles Banner (H1 moved here) -->
 <header class="articles-banner">
-  <p>Your source for expert materials and design guides.</p>
+  <h1 class="visually-hidden">Articles &amp; Guides</h1>
+  <p>Practical how-tos, materials, design tips, troubleshooting, and case studies.</p>
 </header>
 
 <!-- Articles Section -->
-<section class="articles-page">
-  <div class="articles-panel">
-    <!-- ===== PAGE TITLE ===== -->
-    <h1>How To: 3D Printing</h1>
+<section class="articles-wrap center-col" aria-labelledby="articles-h1">
+  <div class="article-grid" role="list">
+    <!-- Card 1 -->
+      <article class="article-card panel" role="listitem">
+      <h2 class="tile-title">How To: 3D Printing</h2>
 
-    <!-- ===== ARTICLES LIST ===== -->
-    <div class="articles-list">
-
-      <!-- ==== ARTICLE START ==== -->
-      <a href="/articles/carbon-fiber-nylon/" class="article-card">
-        <h2>Carbon Fiber PA6 Guide</h2>
-        <p class="teaser">What to know about PA6-CF.</p>
+      <a class="inner-card" href="/articles/carbon-fiber-nylon/">
+        <h3 class="inner-title">Carbon Fiber PA6 Guide.</h3>
+        <p class="inner-blurb">What to know about PA6-CF.</p>
       </a>
-      <!-- ==== ARTICLE END ==== -->
+    </article>
+    <!-- Card 2 — featured “panel” look with inner white callout -->
+    <article class="article-card" role="listitem">
+      <h2 class="tile-title">Defense</h2>
+    </article>
 
-      <!-- ==== COPY THIS BLOCK FOR A NEW ARTICLE ==== -->
-      <!--
-      <a href="/articles/YOUR-ARTICLE-SLUG/" class="article-card">
-        <h2>Your Article Title Here</h2>
-        <p class="teaser">Short description of the article goes here.</p>
-      </a>
-      -->
-      <!-- =========================================== -->
+    <!-- Card 3 -->
+    <article class="article-card" role="listitem">
+      <h2 class="tile-title">Industrial</h2>
+    </article>
 
-    </div>
+    <!-- Card 4 -->
+    <article class="article-card" role="listitem">
+      <h2 class="tile-title">Automotive</h2>
+    </article>
+
+    <!-- Card 5 -->
+    <article class="article-card" role="listitem">
+      <h2 class="tile-title">Coming soon!</h2>
+    </article>
+
+    <!-- Card 6 -->
+    <article class="article-card" role="listitem">
+      <h2 class="tile-title">Coming soon!</h2>
+    </article>
   </div>
 </section>
 
