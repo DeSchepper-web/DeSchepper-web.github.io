@@ -137,17 +137,18 @@
       <a href="/" class="brand">FORM PRECISION</a>
     </div>
 
-    <ul id="primary-nav" class="nav-links" data-behavior="offcanvas" aria-hidden="true">
-      <li class="drawer-header" aria-hidden="true">
-        <span>MENU</span>
-        <button class="drawer-close" type="button" aria-label="Close menu">×</button>
-      </li>
-      <li><a href="/defense/">Defense</a></li>
-      <li><a href="/automotive/">Automotive</a></li>
-      <li><a href="/industrial/">Industrial</a></li>
-      <li><a href="/articles/">Articles</a></li>
-      <li><a href="/contact/">Contact</a></li>
-    </ul>
+  <ul id="primary-nav" class="nav-links" data-behavior="offcanvas">
+    <li class="drawer-header" aria-hidden="true">
+      <span>MENU</span>
+      <button class="drawer-close" type="button" aria-label="Close menu" onclick="toggleMenu(false)">×</button>
+    </li>
+    <li><a href="/defense/">Defense</a></li>
+    <li><a href="/automotive/">Automotive</a></li>
+    <li><a href="/industrial/">Industrial</a></li>
+    <li><a href="/library/">Library</a></li>
+    <li><a href="/articles/">Articles</a></li>
+    <li><a href="/custom/">Custom</a></li>
+  </ul>
 
     <div class="navbar-right">
       <a href="/cart/" class="cart-link">
@@ -167,17 +168,18 @@
         <section class="card detail-card" aria-labelledby="details-h">
           <h3 id="details-h">Details</h3>
           <ul class="bullets">
-            <li>M-LOK</li>
-            <li>Impact and temperature resistant</li>
-            <li>Designed &amp; made in the USA</li>
+            <li>Internal “Honeycomb” geometry drastically reduces weight while maintaining overall durability</li>
+            <li>3D printed out of high strength nylon, reinforced with chopped carbon fibers for added strength and rigidity</li>
+            <li>Mounts to industry standard MLOK rails</li>
+            <li>Designed &amp; Manufactured in the USA</li>
           </ul>
         </section>
       </aside>
 
       <section class="center-col">
         <header class="product-header">
-          <h1 class="product-title">Arca Rail</h1>
-          <p class="subtitle">M-LOK capable Arca Rail to allow for optimal mounting.</p>
+          <h1 class="product-title">Arca Rail (M-LOK)</h1>
+          <p class="subtitle">Originally used to secure photography equipment, now a commonplace item in the precision shooting world.</p>
         </header>
 
         <figure class="hero"
@@ -223,12 +225,13 @@
           <button class="cta" type="submit" aria-label="Add Arca Rail to cart">ADD TO CART</button>
         </div>
 
-        <label class="variant-wrap">
-          <span class="sr-only">Options</span>
-          <select class="select" id="variant" name="variant">
-            <option value="standard" data-price="79.00" selected>PA6-GF</option>
-          </select>
-        </label>
+<label class="variant-wrap">
+  <span class="sr-only">Options</span>
+  <select class="select" id="variant" name="variant">
+    <option value="4in" data-price="24.99" selected>4&Prime;</option>
+    <option value="11_25in" data-price="44.99">11.25&Prime;</option>
+  </select>
+</label>
 
         <div class="qty-control" aria-label="Quantity">
           <button type="button" class="qty-btn down" aria-label="Decrease quantity">−</button>
@@ -239,7 +242,7 @@
         <div class="buy-info" aria-label="Shipping and policy information">
           <ul>
             <li><strong>Shipping:</strong> Ships in 2–3 business days</li>
-            <li><strong>Free shipping:</strong> Orders over $100</li>
+            <li><strong>Free shipping</strong></li>
             <li><strong>Returns &amp; exchanges:</strong> Accepted within 30 days via our <a href="/contact/">contact page</a>. Please include order number and email associated with order.</li>
             <li><strong>Warranty:</strong> 3-year coverage</li>
           </ul>

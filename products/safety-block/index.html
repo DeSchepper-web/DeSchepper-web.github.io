@@ -128,17 +128,18 @@
       <a href="/" class="brand">FORM PRECISION</a>
     </div>
 
-    <ul id="primary-nav" class="nav-links" data-behavior="offcanvas" aria-hidden="true">
-      <li class="drawer-header" aria-hidden="true">
-        <span>MENU</span>
-        <button class="drawer-close" type="button" aria-label="Close menu">×</button>
-      </li>
-      <li><a href="/defense/">Defense</a></li>
-      <li><a href="/automotive/">Automotive</a></li>
-      <li><a href="/industrial/">Industrial</a></li>
-      <li><a href="/articles/">Articles</a></li>
-      <li><a href="/contact/">Contact</a></li>
-    </ul>
+  <ul id="primary-nav" class="nav-links" data-behavior="offcanvas">
+    <li class="drawer-header" aria-hidden="true">
+      <span>MENU</span>
+      <button class="drawer-close" type="button" aria-label="Close menu" onclick="toggleMenu(false)">×</button>
+    </li>
+    <li><a href="/defense/">Defense</a></li>
+    <li><a href="/automotive/">Automotive</a></li>
+    <li><a href="/industrial/">Industrial</a></li>
+    <li><a href="/library/">Library</a></li>
+    <li><a href="/articles/">Articles</a></li>
+    <li><a href="/custom/">Custom</a></li>
+  </ul>
 
     <div class="navbar-right">
       <a href="/cart/" class="cart-link">
@@ -158,9 +159,9 @@
         <section class="card detail-card" aria-labelledby="details-h">
           <h3 id="details-h">Details</h3>
           <ul class="bullets">
-            <li>Safety orange to ensure you and others always know your gun is clear</li>
-            <li>Stylish and durable, this safety block will keep your gun looking good and will last a lifetime</li>
-            <li>Designed &amp; made in the USA</li>
+            <li>Designed with competitive shooters in mind who require a chamber flag to meet USPSA and PRS regulations</li>
+            <li>3D printed out of high strength nylon, reinforced with glass fibers for added rigidity and impact resistance</li>
+            <li>Designed &amp; Manufactured in the USA</li>
           </ul>
         </section>
       </aside>
@@ -168,7 +169,7 @@
       <section class="center-col">
         <header class="product-header">
           <h1 class="product-title">5.56 Safety Block</h1>
-          <p class="subtitle">Waffle safety magazine made out of the same polymer that standard magazines use.</p>
+          <p class="subtitle">Chamber flag and bolt lock mechanism, styled after the iconic 20 round waffle magazine.</p>
         </header>
 
         <figure class="hero"
@@ -219,7 +220,7 @@
         <label class="variant-wrap">
           <span class="sr-only">Options</span>
           <select class="select" id="variant" name="variant">
-            <option value="PA6-GF" data-price="30.00" data-price-id="price_1S2ajuGRkBmBYPEqJ15vykm5" selected>PA6-GF</option>
+            <option value="ORANGE" data-price="24.99" data-price-id="price_1S2ajuGRkBmBYPEqJ15vykm5" selected>ORANGE 5.56</option>
           </select>
         </label>
 

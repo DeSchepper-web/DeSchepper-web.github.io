@@ -140,17 +140,18 @@
       <a href="/" class="brand">FORM PRECISION</a>
     </div>
 
-    <ul id="primary-nav" class="nav-links" data-behavior="offcanvas" aria-hidden="true">
-      <li class="drawer-header" aria-hidden="true">
-        <span>MENU</span>
-        <button class="drawer-close" type="button" aria-label="Close menu">×</button>
-      </li>
-      <li><a href="/defense/">Defense</a></li>
-      <li><a href="/automotive/">Automotive</a></li>
-      <li><a href="/industrial/">Industrial</a></li>
-      <li><a href="/articles/">Articles</a></li>
-      <li><a href="/contact/">Contact</a></li>
-    </ul>
+  <ul id="primary-nav" class="nav-links" data-behavior="offcanvas">
+    <li class="drawer-header" aria-hidden="true">
+      <span>MENU</span>
+      <button class="drawer-close" type="button" aria-label="Close menu" onclick="toggleMenu(false)">×</button>
+    </li>
+    <li><a href="/defense/">Defense</a></li>
+    <li><a href="/automotive/">Automotive</a></li>
+    <li><a href="/industrial/">Industrial</a></li>
+    <li><a href="/library/">Library</a></li>
+    <li><a href="/articles/">Articles</a></li>
+    <li><a href="/custom/">Custom</a></li>
+  </ul>
 
     <div class="navbar-right">
       <a href="/cart/" class="cart-link">
@@ -170,17 +171,17 @@
         <section class="card detail-card" aria-labelledby="details-h">
           <h3 id="details-h">Details</h3>
           <ul class="bullets">
-            <li>Secure M-LOK interface</li>
-            <li>High stiffness, low weight</li>
-            <li>Designed &amp; made in the USA</li>
+            <li>A custom design for users who prefer a relaxed C-clamp style shooting posture. Ergonomic, simple and straight to the point</li>
+            <li>3D printed out of high strength nylon, reinforced with glass fibers for added rigidity and impact resistance</li>
+            <li>Designed &amp; Manufactured in the USA</li>
           </ul>
         </section>
       </aside>
 
       <section class="center-col">
         <header class="product-header">
-          <h1 class="product-title">M-LOK Grip</h1>
-          <p class="subtitle">Made out of impact and temperature resistance polymer.</p>
+          <h1 class="product-title">Angled Grip (M-LOK)</h1>
+          <p class="subtitle">An ergonomic and simple grip, designed for shooters in mind who prefer a low profile yet comfortable shooting position.</p>
         </header>
 
         <figure class="hero"
@@ -222,7 +223,7 @@
         <input type="hidden" name="product_id" value="fp-mlok-grip">
 
         <div class="price-wrap">
-          <div class="price" id="price" aria-live="polite" aria-atomic="true">$79.00</div>
+          <div class="price" id="price" aria-live="polite" aria-atomic="true">$19.99</div>
         </div>
 
         <div class="buy-actions">
@@ -232,7 +233,7 @@
         <label class="variant-wrap">
           <span class="sr-only">Options</span>
           <select class="select" id="variant" name="variant">
-            <option value="standard" data-price="79.00" selected>PA6-GF</option>
+            <option value="standard" data-price="19.99" selected>GRAY</option>
           </select>
         </label>
 
