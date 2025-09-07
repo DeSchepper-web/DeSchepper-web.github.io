@@ -1,43 +1,55 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>30mm RMR Mount | Form Precision</title>
-  <meta name="description" content="This is an experimental optic mount for offset red dot setups without a machined aluminum mount. Intended for MILSIM or ultralight AR15 builds. NOT DUTY RATED." />
-  <link rel="canonical" href="https://formprecision.com/products/30mm-rmr-mount/" />
+  <title>Square Tubing Clamp | Form Precision</title>
+  <!-- SYNCED to visible subtitle text -->
+  <meta name="description" content="Attach 1 inch OD steel pipe to 2 inch square tubing with no welding. Available in CF Nylon or high-temp PPS-CF (continuous use to 200 °C / 392 °F). Designed & Manufactured in the USA." />
+  <link rel="canonical" href="https://formprecision.com/products/square-tubing-clamp/" />
 
-  <!-- Fonts -->
+  <!-- Critical fonts -->
   <link rel="preload" href="/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/RecklessNeue-Regular.woff2" as="font" type="font/woff2" crossorigin>
 
-  <!-- Preload first hero image (1:1) -->
-  <link rel="preload" as="image" href="/images/products/30mm_rmr_mount1.webp" fetchpriority="high">
+  <!-- Preload the LCP hero image (priority is set on the <img>, not here) -->
+  <link rel="preload" as="image" href="/images/products/square_tubing_clamp1.webp">
 
+  <!-- CSS -->
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/products.css" />
 
-  <!-- Favicons -->
+  <!-- Favicons / PWA -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/images/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96"  href="/images/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-512x512.png">
-  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" sizes="180x180">
   <link rel="manifest" href="/images/site.webmanifest">
+  <meta name="theme-color" content="#2c2828">
+  <meta name="color-scheme" content="light">
 
-  <!-- Open Graph -->
+  <!-- Open Graph / Twitter (synced to on-page content) -->
   <meta property="og:type" content="product">
-  <meta property="og:title" content="30mm RMR Mount | Form Precision">
-  <meta property="og:description" content="Experimental 30mm RMR-footprint optic mount for offset red dot setups. For MILSIM or ultralight AR15 builds. NOT DUTY RATED.">
-  <meta property="og:url" content="https://formprecision.com/products/30mm-rmr-mount/">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="Form Precision">
+  <meta property="og:title" content="Square Tubing Clamp | Form Precision">
+  <meta property="og:description" content="Attach 1 inch OD steel pipe to 2 inch square tubing with no welding. CF Nylon or high-temp PPS-CF (to 200 °C / 392 °F).">
+  <meta property="og:url" content="https://formprecision.com/products/square-tubing-clamp/">
   <meta property="og:image" content="https://formprecision.com/images/formprecision-3d.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="30mm RMR Mount — product graphic">
-  <meta property="og:site_name" content="Form Precision">
+  <meta property="og:image:alt" content="Form Precision brand graphic">
+  <meta property="product:price:amount" content="34.99">
+  <meta property="product:price:currency" content="USD">
+  <!-- Valid OG Product token -->
+  <meta property="product:availability" content="instock">
   <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Helpful prefetch (non-blocking) -->
+  <link rel="prefetch" href="/cart/">
 
   <!-- Organization JSON-LD -->
   <script type="application/ld+json">
@@ -57,7 +69,8 @@
     "contactPoint": [{
       "@type": "ContactPoint",
       "telephone": "+1-470-449-1983",
-      "contactType": "Customer Support"
+      "contactType": "Customer Support",
+      "url": "https://formprecision.com/contact/"
     }],
     "sameAs": [
       "https://www.instagram.com/formprecision/",
@@ -67,7 +80,7 @@
   }
   </script>
 
-  <!-- WebSite JSON-LD -->
+  <!-- Website JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,37 +97,80 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://formprecision.com/" },
-      { "@type": "ListItem", "position": 2, "name": "30mm RMR Mount", "item": "https://formprecision.com/products/30mm-rmr-mount/" }
+      { "@type": "ListItem", "position": 2, "name": "Square Tubing Clamp", "item": "https://formprecision.com/products/square-tubing-clamp/" }
     ]
   }
   </script>
 
-  <!-- Product JSON-LD (single offer @ $29.99 to match visible price) -->
+  <!-- Product JSON-LD (mirrors visible content) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "30mm RMR Mount",
-    "description": "This is an experimental optic mount for users interested in offset red dot setups without a machined aluminum mount. Intended for MILSIM or ultralight AR15 builds. NOT A DUTY RATED OPTIC MOUNT.",
+    "@id": "https://formprecision.com/products/square-tubing-clamp/#product",
+    "name": "Square Tubing Clamp",
+    "description": "A simple, weld-free way to attach 1 inch OD steel pipe to 2 inch square tubing. Available in CF Nylon or High Temp. PPS-CF (continuous use up to 200 °C / 392 °F). Designed & Manufactured in the USA.",
     "image": [
-      "https://formprecision.com/images/products/30mm_rmr_mount1.webp",
-      "https://formprecision.com/images/products/30mm_rmr_mount2.webp",
-      "https://formprecision.com/images/products/30mm_rmr_mount3.webp",
-      "https://formprecision.com/images/products/30mm_rmr_mount4.webp",
-      "https://formprecision.com/images/products/30mm_rmr_mount5.webp",
-      "https://formprecision.com/images/products/30mm_rmr_mount6.webp",
-      "https://formprecision.com/images/products/30mm_rmr_mount7.webp"
+      "https://formprecision.com/images/products/square_tubing_clamp1.webp",
+      "https://formprecision.com/images/products/square_tubing_clamp2.webp",
+      "https://formprecision.com/images/products/square_tubing_clamp3.webp"
     ],
-    "sku": "fp-30mm-rmr-mount",
+    "sku": "fp-stc-1x2",
     "brand": { "@type": "Brand", "name": "Form Precision" },
-    "url": "https://formprecision.com/products/30mm-rmr-mount/",
+    "url": "https://formprecision.com/products/square-tubing-clamp/",
     "itemCondition": "https://schema.org/NewCondition",
+    "material": "CF Nylon or PPS-CF",
+    "category": "Industrial",
+    "hasWarrantyPromise": {
+      "@type": "WarrantyPromise",
+      "durationOfWarranty": "P3Y"
+    },
     "offers": {
-      "@type": "Offer",
+      "@type": "AggregateOffer",
       "priceCurrency": "USD",
-      "price": "29.99",
-      "availability": "https://schema.org/InStock",
-      "url": "https://formprecision.com/products/30mm-rmr-mount/"
+      "lowPrice": 34.99,
+      "highPrice": 69.99,
+      "offerCount": 2,
+      "offers": [
+        {
+          "@type": "Offer",
+          "sku": "fp-stc-1x2-CFNY",
+          "priceCurrency": "USD",
+          "price": 34.99,
+          "availability": "https://schema.org/InStock",
+          "url": "https://formprecision.com/products/square-tubing-clamp/#CF-NYLON",
+          "itemCondition": "https://schema.org/NewCondition",
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+            "merchantReturnDays": 30,
+            "returnMethod": "https://schema.org/Mail"
+          }
+        },
+        {
+          "@type": "Offer",
+          "sku": "fp-stc-1x2-PPSCF",
+          "priceCurrency": "USD",
+          "price": 69.99,
+          "availability": "https://schema.org/InStock",
+          "url": "https://formprecision.com/products/square-tubing-clamp/#PPS-CF",
+          "itemCondition": "https://schema.org/NewCondition",
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+            "merchantReturnDays": 30,
+            "returnMethod": "https://schema.org/Mail"
+          }
+        }
+      ],
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": { "@type": "MonetaryAmount", "value": 0, "currency": "USD" },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": { "@type": "QuantitativeValue", "minValue": 2, "maxValue": 3, "unitCode": "DAY" }
+        }
+      }
     }
   }
   </script>
@@ -131,7 +187,7 @@
               aria-expanded="false">
         <span class="bar"></span><span class="bar"></span><span class="bar"></span>
       </button>
-      <a href="/" class="brand">FORM PRECISION</a>
+      <a href="/" class="brand" aria-label="Form Precision home">FORM PRECISION</a>
     </div>
 
   <ul id="primary-nav" class="nav-links" data-behavior="offcanvas">
@@ -165,36 +221,33 @@
         <section class="card detail-card" aria-labelledby="details-h">
           <h3 id="details-h">Details</h3>
           <ul class="bullets">
-            <li>Mounts to any LPVO with a 30mm maintube and will accommodate any micro red dot with an RMR footprint.</li>
-            <li>Made of our highest quality polymer, PPA-CF, which is an industrial grade nylon reinforced with carbon fiber for material properties comparable to aluminum.</li>
-            <li>Designed &amp; Manufactured in the USA.</li>
+            <li>For applications which require continuous use of up to 200 C or 392 F, please choose our High Temp. option made of PPS-CF.</li>
+            <li>If this product does not EXACTLY meet your needs, please see our custom orders page and we will get back to you within 24 hours.</li>
+            <li>Designed & Manufactured in the USA.</li>
           </ul>
         </section>
       </aside>
 
       <section class="center-col">
         <header class="product-header">
-          <h1 class="product-title">30mm RMR Mount</h1>
-          <p class="subtitle">This is an experimental optic mount for users who are interested in offset red dot setups without the need for a machined aluminum mount. Intended use cases include MILSIM or ultralight AR15 builds. THIS IS NOT A DUTY RATED OPTIC MOUNT.</p>
+          <h1 class="product-title">Square Tubing Clamp</h1>
+          <p class="subtitle">A simple and effective way to attach standard 1 inch OD steel pipe to a section of 2 inch square tubing without the need for welding.</p>
         </header>
 
         <figure class="hero"
                 aria-label="Product gallery"
                 data-images='[
-                  "/images/products/30mm_rmr_mount1.webp",
-                  "/images/products/30mm_rmr_mount2.webp",
-                  "/images/products/30mm_rmr_mount3.webp",
-                  "/images/products/30mm_rmr_mount4.webp",
-                  "/images/products/30mm_rmr_mount5.webp",
-                  "/images/products/30mm_rmr_mount6.webp",
-                  "/images/products/30mm_rmr_mount7.webp"
+                  "/images/products/square_tubing_clamp1.webp",
+                  "/images/products/square_tubing_clamp2.webp",
+                  "/images/products/square_tubing_clamp3.webp"
                 ]'>
           <div class="hero-frame">
             <img id="hero-img"
-                 src="/images/products/30mm_rmr_mount1.webp"
-                 alt="30mm RMR Mount installed on compatible optic"
+                 src="/images/products/square_tubing_clamp1.webp"
+                 alt="Square Tubing Clamp securing 1 inch OD pipe to 2 inch square tubing"
                  decoding="async"
                  loading="eager"
+                 fetchpriority="high"
                  width="2048" height="2048">
 
             <button class="hero-nav prev" type="button" aria-label="Previous image">
@@ -214,31 +267,27 @@
       </section>
 
       <form class="buybox" id="buy-form" data-mode="client" action="/cart/" method="post" novalidate>
-        <input type="hidden" name="product_id" value="fp-30mm-rmr-mount">
+        <input type="hidden" name="product_id" value="fp-stc-1x2">
 
         <div class="price-wrap">
-          <div class="price" id="price" aria-live="polite" aria-atomic="true">$29.99</div>
+          <div class="price" id="price" aria-live="polite" aria-atomic="true">$34.99</div>
         </div>
 
         <div class="buy-actions">
-          <button class="cta" type="submit" aria-label="Add 30mm RMR Mount to cart">ADD TO CART</button>
+          <button class="cta" type="submit" aria-label="Add Square Tubing Clamp to cart">ADD TO CART</button>
         </div>
 
-<label class="variant-wrap">
-  <span class="sr-only">Options</span>
-  <select class="select" id="variant" name="variant">
-    <option
-      value="standard"
-      data-price="29.99"
-      data-price-id="price_1S4oy1GRkBmBYPEq8JVW8JRl"
-      selected
-    >(30mm, rmr)</option>
-  </select>
-</label>
+        <label class="variant-wrap">
+          <span class="sr-only">Options</span>
+          <select class="select" id="variant" name="variant">
+            <option value="CF-NYLON" data-price="34.99" selected>CF NYLON</option>
+            <option value="PPS-CF" data-price="69.99">HIGH TEMP. PPS-CF</option>
+          </select>
+        </label>
 
         <div class="qty-control" aria-label="Quantity">
           <button type="button" class="qty-btn down" aria-label="Decrease quantity">−</button>
-          <input class="input qty" id="qty" name="quantity" type="number" value="1" min="1" inputmode="numeric" aria-label="Quantity">
+          <input class="input qty" id="qty" name="quantity" type="number" value="1" min="1" step="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="Quantity">
           <button type="button" class="qty-btn up" aria-label="Increase quantity">+</button>
         </div>
 
@@ -267,18 +316,18 @@
   <footer class="site-footer">
     <div class="social-icons">
       <a href="https://www.instagram.com/formprecision/" target="_blank" rel="noopener" aria-label="Instagram">
-        <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon" aria-hidden="true" focusable="false">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" class="social-icon" aria-hidden="true" focusable="false">
           <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.88-.88a.88.88 0 1 1-1.76 0 .88.88 0 0 1 1.76 0z"/>
         </svg>
       </a>
       <a href="https://www.tiktok.com/@formprecision" target="_blank" rel="noopener" aria-label="TikTok">
-        <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon" aria-hidden="true" focusable="false">
-          <path d="M12.753 2h3.136c.183 1.486 1.315 2.72 2.807 2.942v3.136a6.004 6.004 0 0 1-3.519-1.115v7.533a5.753 5.753 0 1 1-5.753-5.753c.221 0 .438.015.653.043v3.184a2.575 2.575 0 1 0 1.676 2.44V2z"/>
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" class="social-icon" aria-hidden="true" focusable="false">
+          <path d="M12.753 2h3.136c.183 1.486 1.315 2.72 2.807 2.942v3.136a6.004 6.004 0  0 1-3.519-1.115v7.533a5.753 5.753 0 1 1-5.753-5.753c.221 0 .438.015.653.043v3.184a2.575 2.575 0 1 0 1.676 2.44V2z"/>
         </svg>
       </a>
       <a href="https://www.youtube.com/@FormPrecision" target="_blank" rel="noopener" aria-label="YouTube">
-        <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon" aria-hidden="true" focusable="false">
-          <path d="M21.8 8s-.2-1.4-.8-2c-.7-.8-1.4-.8-1.7-.9C16.4 5 12 5 12 5h0s-4.4 0-7.3.1c-.4 0-1 .1-1.7 .9-.6 .6-.8 2-.8 2S2 9.6 2 11.3v1.4c0 1.7 .2 3.3 .2 3.3s.2 1.4 .8 2c.7 .8 1.7 .8 2.1 .9 1.5 .1 6.9 .1 6.9 .1s4.4 0 7.3-.1c.4 0 1-.1 1.7-.9.6-.6 .8-2 .8-2s.2-1.7 .2-3.3v-1.4c0-1.7 -.2-3.3 -.2-3.3zM9.8 14.6V9.4l5.2 2.6-5.2 2.6z"/>
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" class="social-icon" aria-hidden="true" focusable="false">
+          <path d="M21.8 8s-.2-1.4-.8-2c-.7-.8-1.4-.8-1.7-.9C16.4 5 12 5 12 5h0s-4.4 0-7.3.1c-.4 0-1 .1-1.7 .9-.6 .6-.8 2-.8 2S2 9.6 2 11.3v1.4c0 1.7 .2 3.3 .2 3.3s.2 1.4 .8 2c.7 .8 1.7 .8 2.1 .9 1.5 .1 6.9 .1 6.9 .1s4.4 0 7.3-.1c-.4 0-1-.1-1.7-.9 .6-.6 .8-2 .8-2s.2-1.7 .2-3.3v-1.4c0-1.7-.2-3.3-.2-3.3zM9.8 14.6V9.4l5.2 2.6-5.2 2.6z"/>
         </svg>
       </a>
     </div>
