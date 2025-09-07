@@ -550,3 +550,85 @@ window.addEventListener('storage', (e) => {
   if (document.body) attach();
   else document.addEventListener('DOMContentLoaded', attach, { once:true });
 })();
+
+/* =========================
+   Per-card pager for article cards
+   (.article-card[data-pager] with .pager-pages > [data-page])
+========================= */
+(function(){
+  function initCardPagers(root){
+    var scope = root || document;
+    var cards = scope.querySelectorAll('.article-card[data-pager]');
+    cards.forEach(function(card){
+      if (card.dataset.pagerInit === '1') return;
+
+      var pages = card.querySelectorAll('.pager-pages > [data-page]');
+      if (!pages.length) return;
+
+      card.dataset.pagerInit = '1';
+
+      // Build controls (once)
+      var ctrl = card.querySelector('.card-pager');
+      if (!ctrl){
+        ctrl = document.createElement('div');
+        ctrl.className = 'card-pager';
+        ctrl.setAttribute('role', 'group');
+        ctrl.setAttribute('aria-label', 'Card pager');
+        ctrl.innerHTML =
+          '<button class="pager-btn prev" type="button" aria-label="Previous">‹</button>' +
+          '<span class="pager-indicator" aria-live="polite"><span class="curr">1</span>/<span class="total">'+ pages.length +'</span></span>' +
+          '<button class="pager-btn next" type="button" aria-label="Next">›</button>';
+        card.appendChild(ctrl);
+      } else {
+        var totalEl = ctrl.querySelector('.pager-indicator .total');
+        if (totalEl) totalEl.textContent = pages.length;
+      }
+
+      var prev = ctrl.querySelector('.prev');
+      var next = ctrl.querySelector('.next');
+      var curr = ctrl.querySelector('.curr');
+      var i = 0;
+
+      function show(idx){
+        pages.forEach(function(p, k){ p.classList.toggle('is-active', k === idx); });
+        i = idx;
+        if (curr) curr.textContent = String(i + 1);
+        if (prev) prev.disabled = (i === 0);
+        if (next) next.disabled = (i === pages.length - 1);
+      }
+
+      // init state
+      show(0);
+      card.classList.add('pager-ready');
+
+      // events
+      if (prev) prev.addEventListener('click', function(){ if (i > 0) show(i - 1); });
+      if (next) next.addEventListener('click', function(){ if (i < pages.length - 1) show(i + 1); });
+
+      // keyboard left/right when card is focused
+      if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
+      card.addEventListener('keydown', function(e){
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); if (i > 0) show(i - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); if (i < pages.length - 1) show(i + 1); }
+      });
+
+      // single-page: disable arrows
+      if (pages.length === 1) { if (prev) prev.disabled = true; if (next) next.disabled = true; }
+    });
+  }
+
+  function start(){ initCardPagers(document); }
+  if (document.readyState !== 'loading') start();
+  else document.addEventListener('DOMContentLoaded', start, { once:true });
+
+  // Initialize on dynamically-added cards too
+  new MutationObserver(function(muts){
+    muts.forEach(function(m){
+      m.addedNodes && m.addedNodes.forEach(function(n){
+        if (n.nodeType !== 1) return;
+        if (n.matches && n.matches('.article-card[data-pager]')) initCardPagers(n);
+        n.querySelectorAll && n.querySelectorAll('.article-card[data-pager]').forEach(function(el){ initCardPagers(el); });
+      });
+    });
+  }).observe(document.documentElement, { childList:true, subtree:true });
+})();
