@@ -569,7 +569,18 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
 
 /* Remove the lone-tile top margin when stacked */
 .article-card[data-pager] .inner-card{ margin-top:0; }
+/* ---- Responsive layout for article cards ---- */
+@media (max-width: 1024px){
+  .article-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
+@media (max-width: 640px){
+  .article-grid{ grid-template-columns: 1fr; }  /* stack 1-by-1 */
+  .article-card{
+    height: auto;          /* override fixed height */
+    min-height: 0;         /* in case a min-height is set elsewhere */
+  }
+}
 /* ==========================
   ARTICLE PAGE
 ========================== */
