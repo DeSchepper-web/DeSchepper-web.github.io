@@ -31,6 +31,9 @@
     setMenuState(next);
   }
 
+  // ✨ Expose for inline onclick="toggleMenu(false)"
+  window.toggleMenu = toggleMenu;
+
   if (!nav.dataset.bound) {
     if (toggleBtn) toggleBtn.addEventListener('click', () => toggleMenu());
     if (closeBtn) closeBtn.addEventListener('click', () => toggleMenu(false));
@@ -275,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Stripe client-side checkout (works on all pages, including /cart) ---
   const STRIPE_PK = 'pk_live_51RbV04GRkBmBYPEqyPW6PZ1uZNUVWubIxGwuXxpTMzN1Oph1BEuRjWols3PUjcj3IWucWBUwC6qAPyZyZyj8MShT005IZUwOFE';
-  const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/success/';
+  const STRIPE_SUCCESS_URL = 'https://formprecision.com/checkout/success/?session_id={CHECKOUT_SESSION_ID}';
   const STRIPE_CANCEL_URL  = 'https://formprecision.com/cart/';
 
   function resolvePriceIdFrom(key){

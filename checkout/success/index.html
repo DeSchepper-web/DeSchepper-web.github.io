@@ -1,16 +1,17 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow">
-  <title>Checkout – Form Precision</title>
-  <meta name="description" content="Checkout for Form Precision. Secure payment and order review. If checkout isn’t available yet, contact us for orders." />
+  <title>Order Confirmed – Form Precision</title>
+  <meta name="description" content="Thank you for your purchase. Your order is confirmed and a receipt has been emailed to you." />
+
   <!-- Preload fonts for faster rendering -->
   <link rel="preload" href="/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/RecklessNeue-Regular.woff2" as="font" type="font/woff2" crossorigin> 
   <link rel="stylesheet" href="/style.css" />
-  <link rel="canonical" href="https://formprecision.com/checkout/" />
+  <link rel="canonical" href="https://formprecision.com/checkout/success/" />
 
   <!-- Favicons -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
@@ -23,9 +24,9 @@
 
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Checkout – Form Precision">
-  <meta property="og:description" content="Complete your purchase with Form Precision. If checkout isn’t available yet, contact us for orders.">
-  <meta property="og:url" content="https://formprecision.com/checkout/">
+  <meta property="og:title" content="Order Confirmed – Form Precision">
+  <meta property="og:description" content="Thanks for your purchase. Your order is confirmed and a receipt has been emailed to you.">
+  <meta property="og:url" content="https://formprecision.com/checkout/success/">
   <meta property="og:image" content="https://formprecision.com/images/formprecision-3d.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -72,7 +73,7 @@
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://formprecision.com/" },
       { "@type": "ListItem", "position": 2, "name": "Cart", "item": "https://formprecision.com/cart/" },
-      { "@type": "ListItem", "position": 3, "name": "Checkout", "item": "https://formprecision.com/checkout/" }
+      { "@type": "ListItem", "position": 3, "name": "Success", "item": "https://formprecision.com/checkout/success/" }
     ]
   }
   </script>
@@ -127,7 +128,7 @@
     Thank you for your order! We will email you with more details when the product is made and shipped.
   </p>
   <div style="margin-top: 2rem;">
-    <a href="/cart/" class="cta-button">Back to Cart</a>
+    <a href="/" class="cta-button">Back to Home</a>
   </div>
 </section>
 
@@ -155,5 +156,31 @@
 
 <!-- Unified external script -->
 <script src="/script.js" defer></script>
+
+<!-- Clear cart only on real success hits -->
+<script>
+(function(){
+
+  var isSuccessPath = location.pathname.replace(/\/+$/,'') === '/checkout/success';
+  var hasSessionId  = new URLSearchParams(location.search).has('session_id');
+  if (!isSuccessPath || !hasSessionId) return;
+
+  try {
+    // Clear the exact keys your cart uses
+    localStorage.removeItem('fp-cart');        // current cart
+    localStorage.removeItem('cart');           // legacy (optional)
+    localStorage.removeItem('cartOrder');      // sort helper (optional)
+    localStorage.removeItem('cartOrderCounter');
+
+    // Update header count right away
+    var c = document.getElementById('cart-count');
+    if (c) c.textContent = '0';
+
+    // Nudge other tabs/windows to refresh their cart UIs
+    localStorage.setItem('fp-cart', JSON.stringify({items:[]}));
+    localStorage.removeItem('fp-cart');
+  } catch(e){}
+})();
+</script>
 </body>
 </html>
