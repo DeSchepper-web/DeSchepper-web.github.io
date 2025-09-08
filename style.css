@@ -581,6 +581,13 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
     min-height: 0;         /* in case a min-height is set elsewhere */
   }
 }
+@media (max-width: 640px){
+  .article-grid{ grid-template-columns: 1fr; }  /* stack 1-by-1 */
+  .article-card{
+    height: clamp(400px, 28vw, 400px); /* keep desktop height on mobile */
+    min-height: unset;                 /* ensure nothing fights the fixed height */
+  }
+}
 /* ==========================
   ARTICLE PAGE
 ========================== */
