@@ -304,25 +304,25 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
 
 .contact-form label{ display:block; margin-top:.75rem; }
 
-/* Rating (stars) */
-.contact-form .rating{ margin:.5rem 0 0; padding:0; border:0; }
-.contact-form .rating-input{
-  position:relative; display:flex; justify-content:center; flex-direction:row-reverse; align-items:center; gap:.25rem;
-  width:100%; min-height:44px; padding:.65rem .75rem; border:1px solid var(--input-border,#D0D5DD); border-radius:.5rem; background:var(--input-bg,#fff)
+/* Rating (stars) — button-based widget */
+.contact-form .rating-stars{
+  display:flex; justify-content:center; align-items:center; gap:.25rem;
+  width:100%; min-height:44px; padding:.65rem .75rem;
+  border:1px solid var(--input-border,#D0D5DD); border-radius:.5rem; background:var(--input-bg,#fff);
 }
-.contact-form .rating-input:has(input[required]:invalid){ margin-bottom:.75rem; }
-.contact-form .rating-input input[type=radio]{ position:absolute; left:-9999px; }
-.contact-form .rating-input input[type=radio][required]{
-  left:50%; top:70%; transform:translate(-50%,-50%); width:1px; height:1px; opacity:0; pointer-events:none;
+.contact-form .rating-stars .star{
+  appearance:none; border:0; background:transparent; padding:0; margin:0;
+  width:32px; height:32px; display:grid; place-items:center; cursor:pointer;
+  color:#C7CCD1; /* default star color */
 }
-.contact-form .rating-input label{
-  cursor:pointer; display:inline-block; margin:0; font-size:1.25rem; line-height:1; color:#C7CCD1; user-select:none;
-}
-.contact-form .rating-input label:hover,
-.contact-form .rating-input label:hover~label{ color:#C46D13; }
-.contact-form .rating-input input:checked~label{ color:#F7931A; }
-.contact-form .rating-input input:focus+label{ outline:none; }
-.contact-form .rating-input input:focus-visible+label{ outline:2px solid #4B5563; outline-offset:2px; border-radius:.25rem; }
+.contact-form .rating-stars .star svg{ width:28px; height:28px; fill:currentColor; display:block; }
+.contact-form .rating-stars .star.is-active{ color:#F7931A; } /* selected/fill color */
+.contact-form .rating-stars .star:hover{ color:#C46D13; }     /* hover preview on the hovered star */
+.contact-form .rating-stars .star:focus-visible{ outline:2px solid #4B5563; outline-offset:2px; border-radius:.25rem; }
+
+/* Make the tooltip visible and create space when shown */
+.contact-form .fp-field.has-hint { margin-bottom:.75rem; }
+.contact-form .fp-field .fp-hint{ z-index:50; }
 
 /* Consent (stacked, centered) */
 .contact-form label.checkbox{
@@ -353,7 +353,6 @@ body.menu-open .nav-links[data-behavior="offcanvas"]{
   border-left:var(--aw) solid transparent; border-right:var(--aw) solid transparent; border-bottom:var(--ah) solid var(--bg);
 }
 .fp-hint.show{ display:block; }
-
 /* ==========================
   BACK LINK (single unified)
 ========================== */
@@ -694,3 +693,6 @@ a:focus-visible, button:focus-visible, .menu-toggle:focus-visible{
   .library-band-card{ flex-direction:column; align-items:flex-start; gap:6px; }
   .library-band-card .band-cta{ margin-left:0; }
 }
+/* star box hint sits on top; wrapper gets space when hint is shown */
+.contact-form .rating-stars .fp-hint { z-index: 50; }
+.fp-field.has-hint { margin-bottom: .75rem; }

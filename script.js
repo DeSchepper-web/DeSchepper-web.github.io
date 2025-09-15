@@ -336,22 +336,22 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.disabled = true;
     try {
       const stripe = await getStripe();
-const { error } = await stripe.redirectToCheckout({
-  mode: 'payment',
-  lineItems,
+      const { error } = await stripe.redirectToCheckout({
+        mode: 'payment',
+        lineItems,
 
-  // ✅ require a shipping address
-  shippingAddressCollection: {
-    // add more ISO-2 codes if you ship internationally
-    allowedCountries: ['US']
-  },
+        // ✅ require a shipping address
+        shippingAddressCollection: {
+          // add more ISO-2 codes if you ship internationally
+          allowedCountries: ['US']
+        },
 
-  // ✅ collect full billing address (improves AVS / fraud checks)
-  billingAddressCollection: 'required',
+        // ✅ collect full billing address (improves AVS / fraud checks)
+        billingAddressCollection: 'required',
 
-  successUrl: STRIPE_SUCCESS_URL,
-  cancelUrl: STRIPE_CANCEL_URL
-});
+        successUrl: STRIPE_SUCCESS_URL,
+        cancelUrl: STRIPE_CANCEL_URL
+      });
       if (error) throw error;
     } catch (err) {
       console.error(err);
@@ -380,13 +380,9 @@ window.addEventListener('storage', (e) => {
     if (!form || form.dataset.fpInit) return;
     form.dataset.fpInit = 1;
 
-    function labelTextFor(el){
-      if (el.id){
-        var lbl = form.querySelector('label[for="'+el.id+'"]');
-        if (lbl) return lbl.textContent.trim();
-      }
-      return '';
-    }
+    // 🔑 ensure our submit handler always runs (native validation won’t block it)
+    form.setAttribute('novalidate','');
+
     function messageFor(el){
       if(el.type==="email"&&el.validity.typeMismatch)return"Please enter a valid email address.";
       var lbl=el.id&&el.form&&el.form.querySelector('label[for="'+el.id+'"]');
@@ -417,11 +413,17 @@ window.addEventListener('storage', (e) => {
       var h=getHint(container);
       h.textContent=text;
       h.classList.add("show");
+      var wrap = container.closest(".fp-field");
+      if (wrap) wrap.classList.add("has-hint");
     }
     function hideHint(container){
-      var h=container.querySelector(".fp-hint");
+      var h=container && container.querySelector ? container.querySelector(".fp-hint") : null;
       if(h)h.classList.remove("show");
+      var wrap = container && container.closest ? container.closest(".fp-field") : null;
+      if (wrap) wrap.classList.remove("has-hint");
     }
+
+    // regular required fields (not radios/checkboxes)
     var requiredFields=form.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"]), textarea[required]');
     requiredFields.forEach(function(el){
       var container=wrapWithField(el);
@@ -429,22 +431,57 @@ window.addEventListener('storage', (e) => {
         e.preventDefault();
         showHint(container,messageFor(el));
       });
-      el.addEventListener("input",function(){hideHint(container);});
+      el.addEventListener("input",function(){ hideHint(container); });
     });
-    var ratingBox=form.querySelector(".rating-input");
-    var ratingRadios=ratingBox?ratingBox.querySelectorAll('input[name="rating"]'):[];
-    ratingRadios.forEach(function(r){
-      r.addEventListener("invalid",function(e){e.preventDefault();});
-      r.addEventListener("change",function(){hideHint(ratingBox);});
-    });
+
+    /* ===== NEW: button-based star rating ===== */
+    var ratingGroup = form.querySelector(".rating-stars");
+    var ratingWrap  = ratingGroup ? (ratingGroup.closest(".fp-field") || wrapWithField(ratingGroup)) : null;
+    var ratingHidden= form.querySelector("#rating-hidden");
+    if (ratingHidden) ratingHidden.required = false; // we validate manually
+
+    function setRating(v){
+      var n = Number(v)||0;
+      if (ratingHidden) ratingHidden.value = n ? String(n) : "";
+      if (ratingGroup){
+        ratingGroup.querySelectorAll(".star").forEach(function(btn){
+          var on = Number(btn.getAttribute("data-value")) <= n;
+          btn.classList.toggle("is-active", on);
+          btn.setAttribute("aria-pressed", String(on));
+        });
+      }
+      if (n) hideHint(ratingGroup);
+    }
+
+    if (ratingGroup){
+      ratingGroup.setAttribute("role","radiogroup");
+      ratingGroup.setAttribute("aria-required","true");
+
+      ratingGroup.addEventListener("click", function(e){
+        var btn = e.target.closest(".star"); if (!btn) return;
+        setRating(btn.getAttribute("data-value"));
+      });
+
+      ratingGroup.addEventListener("keydown", function(e){
+        var curr = Number((ratingHidden && ratingHidden.value) || 0);
+        if (e.key === "ArrowRight" || e.key === "ArrowUp"){ e.preventDefault(); setRating(Math.min(5, curr+1)); }
+        if (e.key === "ArrowLeft"  || e.key === "ArrowDown"){ e.preventDefault(); setRating(Math.max(1, curr-1)); }
+      });
+    }
+    /* ===== end star rating ===== */
+
+    // consent checkbox
     var consent=form.querySelector('input[name="consent_publish"][type="checkbox"]');
     var consentWrap=consent?wrapWithField(consent.closest("label.checkbox")||consent):null;
     if(consent){
       consent.addEventListener("invalid",function(e){e.preventDefault();showHint(consentWrap,"Please check the consent box.");});
       consent.addEventListener("change",function(){hideHint(consentWrap);});
     }
+
+    // one submit handler
     form.addEventListener("submit",function(e){
       var firstTarget=null,hasInvalid=false;
+
       requiredFields.forEach(function(f){
         if(!f.checkValidity()){
           hasInvalid=true;
@@ -452,43 +489,24 @@ window.addEventListener('storage', (e) => {
           if(!firstTarget)firstTarget=f;
         }
       });
-      if(ratingBox&&!form.querySelector('input[name="rating"]:checked')){
+
+      // custom validation for stars
+      if(ratingGroup && !(ratingHidden && ratingHidden.value)){
         hasInvalid=true;
-        showHint(ratingBox,"Please select a star rating.");
-        if(!firstTarget)firstTarget=(ratingRadios[0]||ratingBox);
+        showHint(ratingWrap || ratingGroup, "Please select a star rating.");
+        if(!firstTarget)firstTarget=(ratingGroup.querySelector(".star")||ratingGroup);
       }
+
       if(consent&&!consent.checked){
         hasInvalid=true;
         showHint(consentWrap,"Please check the consent box.");
         if(!firstTarget)firstTarget=consent;
       }
+
       if(hasInvalid){
         e.preventDefault();
         try{firstTarget.focus({preventScroll:true});}catch(_){}
         (firstTarget.closest(".fp-field")||firstTarget).scrollIntoView({block:"center",behavior:"smooth"});
-      }
-    });
-    form.addEventListener('submit', function(e){
-      for (var i=0; i<requiredFields.length; i++){
-        var f = requiredFields[i];
-        if (!f.checkValidity()){
-          e.preventDefault();
-          f.dispatchEvent(new Event('invalid', {cancelable:true}));
-          try{ f.focus({preventScroll:true}); }catch(_){}
-          f.scrollIntoView({block:'center', behavior:'smooth'});
-          return;
-        }
-      }
-      if (ratingBox && !form.querySelector('input[name="rating"]:checked')){
-        e.preventDefault();
-        showHint(ratingBox, 'Please select a star rating.');
-        ratingBox.scrollIntoView({block:'center', behavior:'smooth'});
-        return;
-      }
-      if (consent && !consent.checked){
-        e.preventDefault();
-        showHint(consentWrap, 'Please check the consent box.');
-        consentWrap.scrollIntoView({block:'center', behavior:'smooth'});
       }
     });
   }
@@ -497,7 +515,6 @@ window.addEventListener('storage', (e) => {
   if (document.readyState !== 'loading') run();
   else document.addEventListener('DOMContentLoaded', run, {once:true});
 
-  /* Also initialize forms added later (e.g., SPA/partial renders) */
   new MutationObserver(function(muts){
     muts.forEach(function(m){
       m.addedNodes && m.addedNodes.forEach(function(n){
@@ -508,6 +525,7 @@ window.addEventListener('storage', (e) => {
     });
   }).observe(document.documentElement, {childList:true, subtree:true});
 })();
+
 
 /* ---- SINGLE add-to-cart handler with data-qty support (guarded) ---- */
 (function bindCartHandler(){

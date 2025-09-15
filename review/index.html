@@ -157,32 +157,38 @@
     <label for="email">Email (not published)</label>
     <input type="email" id="email" name="_replyto" placeholder="you@example.com" required />
 
-    <label for="order">Order #</label>
+    <label for="order">Stripe Receipt #</label>
     <input type="text" id="order" name="order_number" required />
 
-    <!-- Rating -->
-    <label id="rating-label">Your Rating</label>
-    <fieldset class="rating" aria-labelledby="rating-label">
-      <legend class="visually-hidden">Your Rating</legend>
+<!-- Rating -->
+<label id="rating-label">Your Rating</label>
 
-      <div class="rating-input" role="radiogroup" aria-labelledby="rating-label">
-        <!-- Order is 5→1 so CSS can “fill left” -->
-        <input type="radio" id="rating-5" name="rating" value="5">
-        <label for="rating-5" title="5 stars">★</label>
+<div class="fp-field">
+  <div class="rating-stars" role="radiogroup" aria-labelledby="rating-label" aria-required="true">
+    <button type="button" class="star" data-value="1" aria-label="1 star" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l3.09 6.26 6.91.99-5 4.87L18.18 21 12 17.77 5.82 21 7 14.12l-5-4.87 6.91-.99L12 2z"/></svg>
+    </button>
+    <button type="button" class="star" data-value="2" aria-label="2 stars" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l3.09 6.26 6.91.99-5 4.87L18.18 21 12 17.77 5.82 21 7 14.12l-5-4.87 6.91-.99L12 2z"/></svg>
+    </button>
+    <button type="button" class="star" data-value="3" aria-label="3 stars" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l3.09 6.26 6.91.99-5 4.87L18.18 21 12 17.77 5.82 21 7 14.12l-5-4.87 6.91-.99L12 2z"/></svg>
+    </button>
+    <button type="button" class="star" data-value="4" aria-label="4 stars" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l3.09 6.26 6.91.99-5 4.87L18.18 21 12 17.77 5.82 21 7 14.12l-5-4.87 6.91-.99L12 2z"/></svg>
+    </button>
+    <button type="button" class="star" data-value="5" aria-label="5 stars" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l3.09 6.26 6.91.99-5 4.87L18.18 21 12 17.77 5.82 21 7 14.12l-5-4.87 6.91-.99L12 2z"/></svg>
+    </button>
+  </div>
 
-        <input type="radio" id="rating-4" name="rating" value="4">
-        <label for="rating-4" title="4 stars">★</label>
+  <!-- value that gets submitted -->
+  <input type="hidden" name="rating" id="rating-hidden">
 
-        <input type="radio" id="rating-3" name="rating" value="3">
-        <label for="rating-3" title="3 stars">★</label>
+  <!-- hint area (for your JS to show the tooltip text) -->
+  <div class="fp-hint" role="alert" aria-live="polite"></div>
+</div>
 
-        <input type="radio" id="rating-2" name="rating" value="2">
-        <label for="rating-2" title="2 stars">★</label>
-
-        <input type="radio" id="rating-1" name="rating" value="1">
-        <label for="rating-1" title="1 star">★</label>
-      </div>
-    </fieldset>
 
     <!-- Review text -->
     <label for="review">Your Review</label>
