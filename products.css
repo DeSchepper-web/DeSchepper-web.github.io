@@ -562,3 +562,24 @@ body.zoom-locked :is([class*="close"], [aria-label*="close" i], [title*="close" 
   border:6px solid transparent; border-top-color:var(--theme-a,#F7931A);
   filter:drop-shadow(0 2px 0 var(--btn-border,#2c2828));
 }
+.dl-points{ margin:.5rem 0 0; padding-left:1.25rem; }
+.dl-points li{ margin:.25rem 0; }
+.download-card{
+  margin-bottom: 50px;  /* adds space above the buybox only */
+}
+.dl-points{ margin:.5rem 0 0; padding-left:1.25rem; }
+.dl-points li{ margin:.25rem 0; }
+
+/* Make the STEP button look/size like the cart CTA */
+.download-card .cta-full{
+  display:block;          /* full-width button */
+  width:100%;
+  text-align:center;
+}
+/* ensure orange CTA inside the download card */
+.download-card .cta {
+  background: var(--theme-a, #F7931A);
+  color: #fff;
+  border: 1px solid transparent;
+}
+.download-card .cta:hover { filter: brightness(0.95); }

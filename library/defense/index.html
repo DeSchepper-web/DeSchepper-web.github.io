@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>30mm RMR Mount | Form Precision</title>
-  <meta name="description" content="This is an experimental optic mount for offset red dot setups without a machined aluminum mount. Intended for MILSIM or ultralight AR15 builds." />
-  <link rel="canonical" href="https://formprecision.com/products/30mm-rmr-mount/" />
+  <title>30mm RMR Mount – Design Library | Form Precision</title>
+  <meta name="description" content="Free STEP file for the experimental 30mm RMR-footprint optic mount. Ideal for reference, fit checks, and customization. NOT DUTY RATED. Also available for purchase as a printed part." />
+  <link rel="canonical" href="https://formprecision.com/library/30mm-rmr-mount/" />
 
   <!-- Fonts -->
   <link rel="preload" href="/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -28,10 +28,10 @@
   <link rel="manifest" href="/images/site.webmanifest">
 
   <!-- Open Graph -->
-  <meta property="og:type" content="product">
-  <meta property="og:title" content="30mm RMR Mount | Form Precision">
-  <meta property="og:description" content="Experimental 30mm RMR-footprint optic mount for offset red dot setups. For MILSIM or ultralight AR15 builds.">
-  <meta property="og:url" content="https://formprecision.com/products/30mm-rmr-mount/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="30mm RMR Mount – Design Library | Form Precision">
+  <meta property="og:description" content="Download the free STEP file for the 30mm RMR-footprint optic mount. For MILSIM or ultralight AR builds. NOT DUTY RATED.">
+  <meta property="og:url" content="https://formprecision.com/library/30mm-rmr-mount/">
   <meta property="og:image" content="https://formprecision.com/images/formprecision-3d.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -77,24 +77,60 @@
   }
   </script>
 
-  <!-- Breadcrumbs JSON-LD -->
+  <!-- Breadcrumbs JSON-LD (Library path) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://formprecision.com/" },
-      { "@type": "ListItem", "position": 2, "name": "30mm RMR Mount", "item": "https://formprecision.com/products/30mm-rmr-mount/" }
+      { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://formprecision.com/library/" },
+      { "@type": "ListItem", "position": 3, "name": "30mm RMR Mount", "item": "https://formprecision.com/library/30mm-rmr-mount/" }
     ]
   }
   </script>
 
-  <!-- Product JSON-LD (single offer @ $30.00 to match visible price) -->
+  <!-- CreativeWork JSON-LD for the downloadable CAD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": "30mm RMR Mount – STEP File",
+    "description": "Free STEP file for the experimental 30mm RMR-footprint optic mount. For reference and customization. NOT DUTY RATED.",
+    "url": "https://formprecision.com/library/30mm-rmr-mount/",
+    "inLanguage": "en",
+    "license": "https://formprecision.com/library/license/",
+    "encoding": [
+      {
+        "@type": "MediaObject",
+        "contentUrl": "https://formprecision.com/library/files/30mm-rmr-mount.step",
+        "encodingFormat": "model/step",
+        "name": "30mm-rmr-mount.step"
+      },
+      {
+        "@type": "MediaObject",
+        "contentUrl": "https://formprecision.com/library/files/30mm-rmr-mount.step.zip",
+        "encodingFormat": "application/zip",
+        "name": "30mm-rmr-mount.step.zip"
+      },
+      {
+        "@type": "MediaObject",
+        "contentUrl": "https://formprecision.com/library/files/30mm-rmr-mount-drawing.pdf",
+        "encodingFormat": "application/pdf",
+        "name": "30mm-rmr-mount-drawing.pdf"
+      }
+    ],
+    "creator": { "@type": "Organization", "name": "Form Precision" },
+    "isAccessibleForFree": true
+  }
+  </script>
+
+  <!-- Optional: keep Product JSON-LD since you still sell the printed part -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "30mm RMR Mount",
+    "name": "30mm RMR Mount (Printed Part)",
     "description": "This is an experimental optic mount for users interested in offset red dot setups without a machined aluminum mount. Intended for MILSIM or ultralight AR15 builds. NOT A DUTY RATED OPTIC MOUNT.",
     "image": [
       "https://formprecision.com/images/products/30mm_rmr_mount1.webp",
@@ -107,7 +143,7 @@
     ],
     "sku": "fp-30mm-rmr-mount",
     "brand": { "@type": "Brand", "name": "Form Precision" },
-    "url": "https://formprecision.com/products/30mm-rmr-mount/",
+    "url": "https://formprecision.com/library/30mm-rmr-mount/",
     "itemCondition": "https://schema.org/NewCondition",
     "offers": {
       "@type": "Offer",
@@ -118,6 +154,7 @@
     }
   }
   </script>
+
   <script>
   (function(){
     if(!location.hostname.endsWith('formprecision.com')) return;
@@ -126,10 +163,10 @@
     gtag('js', new Date());
     gtag('config', 'G-1CC7WR0SY0');
   })();
-</script>
+  </script>
 </head>
 
-<body class="product-page">
+<body class="product-page library-page">
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <nav class="navbar" aria-label="Primary Navigation">
@@ -143,18 +180,18 @@
       <a href="/" class="brand">FORM PRECISION</a>
     </div>
 
-  <ul id="primary-nav" class="nav-links" data-behavior="offcanvas">
-    <li class="drawer-header" aria-hidden="true">
-      <span>MENU</span>
-      <button class="drawer-close" type="button" aria-label="Close menu" onclick="toggleMenu(false)">×</button>
-    </li>
-    <li><a href="/defense/">Defense</a></li>
-    <li><a href="/automotive/">Automotive</a></li>
-    <li><a href="/industrial/">Industrial</a></li>
-    <li><a href="/library/">Library</a></li>
-    <li><a href="/articles/">Articles</a></li>
-    <li><a href="/custom/">Custom</a></li>
-  </ul>
+    <ul id="primary-nav" class="nav-links" data-behavior="offcanvas">
+      <li class="drawer-header" aria-hidden="true">
+        <span>MENU</span>
+        <button class="drawer-close" type="button" aria-label="Close menu" onclick="toggleMenu(false)">×</button>
+      </li>
+      <li><a href="/defense/">Defense</a></li>
+      <li><a href="/automotive/">Automotive</a></li>
+      <li><a href="/industrial/">Industrial</a></li>
+      <li><a href="/library/">Library</a></li>
+      <li><a href="/articles/">Articles</a></li>
+      <li><a href="/custom/">Custom</a></li>
+    </ul>
 
     <div class="navbar-right">
       <a href="/cart/" class="cart-link">
@@ -184,12 +221,12 @@
 
       <section class="center-col">
         <header class="product-header">
-          <h1 class="product-title">30mm RMR Mount</h1>
-          <p class="subtitle">This is an experimental optic mount for users who are interested in offset red dot setups without the need for a machined aluminum mount. Intended use cases include MILSIM or ultralight AR15 builds.</p>
+          <h1 class="product-title">30mm RMR Mount — Design Library</h1>
+          <p class="subtitle">Free STEP file for reference, fit checks, and customization in FreeCAD or your preferred CAD. NOT DUTY RATED.</p>
         </header>
 
         <figure class="hero"
-                aria-label="Product gallery"
+                aria-label="Gallery"
                 data-images='[
                   "/images/products/30mm_rmr_mount1.webp",
                   "/images/products/30mm_rmr_mount2.webp",
@@ -218,58 +255,77 @@
           <div class="hero-dots" role="tablist" aria-label="Image navigation"></div>
 
           <figcaption class="sr-only">
-            Use arrows or dots to change product images. Swipe supported on mobile.
+            Use arrows or dots to change images. Swipe supported on mobile.
           </figcaption>
         </figure>
       </section>
 
-      <form class="buybox" id="buy-form" data-mode="client" action="/cart/" method="post" novalidate>
-        <input type="hidden" name="product_id" value="fp-30mm-rmr-mount">
+      <!-- RIGHT COLUMN: STEP box ABOVE Add to Cart -->
+      <div class="right-col">
+        <!-- NEW: STEP download card -->
+<section class="card download-card" aria-labelledby="download-h">
+  <h3 id="download-h">Download — STEP File</h3>
 
-        <div class="price-wrap">
-          <div class="price" id="price" aria-live="polite" aria-atomic="true">$30.00</div>
-        </div>
+  <ul class="dl-points">
+    <li>Grab the STEP to edit in FreeCAD or your preferred CAD.</li>
+    <li>This file and everything associated with it is totally free to use in any way.</li>
+    <li>We will print this file for those that lack a printer or the ability to print it in a filament they desire.</li>
+  </ul>
 
-        <div class="buy-actions">
-          <button class="cta" type="submit" aria-label="Add 30mm RMR Mount to cart">ADD TO CART</button>
-        </div>
+  <div class="download-actions">
+    <a class="cta cta-full"
+       href="/library/files/30mm-rmr-mount.step"
+       download
+       aria-label="Download 30mm RMR Mount STEP file (.step)">
+      DOWNLOAD .STEP
+    </a>
+  </div>
+</section>
 
-<label class="variant-wrap">
-  <span class="sr-only">Options</span>
-  <select class="select" id="variant" name="variant">
-    <option
-      value="standard"
-      data-price="30.00"
-      data-price-id="price_1S5blNGRkBmBYPEqknBdk71T"
-      selected
-    >(30mm, rmr)</option>
-  </select>
-</label>
 
-        <div class="qty-control" aria-label="Quantity">
-          <button type="button" class="qty-btn down" aria-label="Decrease quantity">−</button>
-          <input class="input qty" id="qty" name="quantity" type="number" value="1" min="1" inputmode="numeric" aria-label="Quantity">
-          <button type="button" class="qty-btn up" aria-label="Increase quantity">+</button>
-        </div>
 
-        <div class="buy-info" aria-label="Shipping and policy information">
-          <ul>
-            <li><strong>Shipping:</strong> Ships in 2–3 business days</li>
-            <li><strong>Free shipping</strong></li>
-            <li><strong>Returns &amp; exchanges:</strong> No hassle returns. Accepted within 30 days of delivery via our <a href="/returns/">returns page</a>. Please include receipt number and email associated with order.</li>
-            <li><strong>Warranty:</strong> 3-year coverage</li>
-            <li><strong>No taxes, no fees, no additional costs:</strong> Pay exactly what is shown above!</li>
-          </ul>
-        </div>
-      </form>
+        <!-- Existing Add to Cart box (unchanged) -->
+        <form class="buybox" id="buy-form" data-mode="client" action="/cart/" method="post" novalidate>
+          <input type="hidden" name="product_id" value="fp-30mm-rmr-mount">
 
-      <div id="reviews-bottom">
-        <section class="reviews-panel card" aria-labelledby="reviews-title">
-          <div class="reviews-header">
-            <h2 id="reviews-title" class="reviews-title">Reviews</h2>
-            <a href="/review/" class="review-cta" aria-label="Leave a review">BE THE FIRST TO REVIEW</a>
+          <div class="price-wrap">
+            <div class="price" id="price" aria-live="polite" aria-atomic="true">$30.00</div>
           </div>
-          <p class="reviews-meta">No reviews yet.</p>
+
+          <div class="buy-actions">
+            <button class="cta" type="submit" aria-label="Add 30mm RMR Mount to cart">ADD TO CART</button>
+          </div>
+
+          <label class="variant-wrap">
+            <span class="sr-only">Options</span>
+            <select class="select" id="variant" name="variant">
+              <option
+                value="standard"
+                data-price="30.00"
+                data-price-id="price_1S5blNGRkBmBYPEqknBdk71T"
+                selected
+              >(30mm, rmr)</option>
+            </select>
+          </label>
+
+          <div class="qty-control" aria-label="Quantity">
+            <button type="button" class="qty-btn down" aria-label="Decrease quantity">−</button>
+            <input class="input qty" id="qty" name="quantity" type="number" value="1" min="1" inputmode="numeric" aria-label="Quantity">
+            <button type="button" class="qty-btn up" aria-label="Increase quantity">+</button>
+          </div>
+
+          <div class="buy-info" aria-label="Shipping and policy information">
+            <ul>
+              <li><strong>Shipping:</strong> Ships in 2–3 business days</li>
+              <li><strong>Free shipping</strong></li>
+              <li><strong>Returns &amp; exchanges:</strong> No hassle returns. Accepted within 30 days of delivery via our <a href="/returns/">returns page</a>. Please include receipt number and email associated with order.</li>
+              <li><strong>Warranty:</strong> 3-year coverage</li>
+              <li><strong>No taxes, no fees, no additional costs:</strong> Pay exactly what is shown above!</li>
+            </ul>
+          </div>
+        </form>
+      </div>
+
         </section>
       </div>
     </div>
