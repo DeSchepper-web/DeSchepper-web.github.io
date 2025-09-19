@@ -139,18 +139,17 @@
     }
   }
   </script>
+->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1CC7WR0SY0"></script>
+<script>
+  if (location.hostname.endsWith('formprecision.com')) {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-1CC7WR0SY0');
+  }
+</script>
 
-  <!-- GA4 (production domain only) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1CC7WR0SY0"></script>
-  <script>
-    (function(){
-      if(!location.hostname.endsWith('formprecision.com')) return;
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-1CC7WR0SY0', { anonymize_ip: true });
-    })();
-  </script>
 </head>
 
 <body>
