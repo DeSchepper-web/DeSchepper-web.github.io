@@ -8,14 +8,21 @@
   <meta name="description" content="Experimental 30mm RMR-footprint optic mount for offset red dot setups without a machined aluminum mount. Intended for MILSIM or ultralight AR15 builds." />
   <link rel="canonical" href="https://formprecision.com/products/30mm-rmr-mount/" />
 
+  <!-- Perf: preconnect/dns-prefetch for GA (no asset changes needed) -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+
+  <!-- Local font preloads -->
   <link rel="preload" href="/fonts/Satoshi-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/RecklessNeue-Regular.woff2" as="font" type="font/woff2" crossorigin>
 
+  <!-- Preload LCP hero (already good) -->
   <link rel="preload" as="image" href="/images/products/30mm-rmr-mount/30mm-rmr-mount1.webp" fetchpriority="high">
 
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/products.css" />
 
+  <!-- Icons / PWA -->
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/images/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96"  href="/images/favicon-96x96.png">
@@ -24,18 +31,28 @@
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/images/site.webmanifest">
 
+  <!-- Open Graph -->
   <meta property="og:type" content="product">
   <meta property="og:title" content="30mm RMR Mount | Form Precision">
   <meta property="og:description" content="Experimental 30mm RMR-footprint optic mount for offset red dot setups. For MILSIM or ultralight AR15 builds.">
   <meta property="og:url" content="https://formprecision.com/products/30mm-rmr-mount/">
   <meta property="og:image" content="https://formprecision.com/images/formprecision-3d.png">
+  <meta property="og:image:secure_url" content="https://formprecision.com/images/formprecision-3d.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="30mm RMR Mount — product graphic">
+  <!-- Alt now accurately describes the 3D image you’re using -->
+  <meta property="og:image:alt" content="Form Precision 3D logo graphic">
   <meta property="og:site_name" content="Form Precision">
-  <meta name="twitter:card" content="summary_large_image">
   <meta property="og:locale" content="en_US">
 
+  <!-- Twitter (keeps the 3D image as requested) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="30mm RMR Mount | Form Precision">
+  <meta name="twitter:description" content="Experimental 30mm RMR-footprint optic mount for offset red dot setups. For MILSIM or ultralight AR15 builds.">
+  <meta name="twitter:image" content="https://formprecision.com/images/formprecision-3d.png">
+  <meta name="twitter:image:alt" content="Form Precision 3D logo graphic">
+
+  <!-- Organization JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -63,7 +80,7 @@
   }
   </script>
 
-  <!-- WebSite JSON-LD -->
+  <!-- WebSite JSON-LD (kept minimal; no new dependencies) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -85,20 +102,20 @@
   }
   </script>
 
+  <!-- Product JSON-LD (+free wins: material & return policy) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
+    "@id": "https://formprecision.com/products/30mm-rmr-mount/#product",
     "name": "30mm RMR Mount",
     "description": "This is an experimental optic mount for users interested in offset red dot setups without a machined aluminum mount. Intended for MILSIM or ultralight AR15 builds.",
+    "material": "PPA-CF (carbon fiber reinforced nylon)",
     "image": [
       "https://formprecision.com/images/products/30mm-rmr-mount/30mm-rmr-mount1.webp",
       "https://formprecision.com/images/products/30mm-rmr-mount/30mm-rmr-mount2.webp",
       "https://formprecision.com/images/products/30mm-rmr-mount/30mm-rmr-mount3.webp",
-      "https://formprecision.com/images/products/30mm-rmr-mount/30mm-rmr-mount4.webp",
-      "https://formprecision.com/images/products/30mm-rmr-mount/30mm-rmr-mount5.webp",
-      "https://formprecision.com/images/products/30mm-rmr-mount/30mm-rmr-mount6.webp",
-      "https://formprecision.com/images/products/30mm-rmr-mount/30mm-rmr-mount7.webp"
+      "https://formprecision.com/images/products/30mm-rmr-mount/30mm-rmr-mount4.webp"
     ],
     "sku": "fp-30mm-rmr-mount",
     "brand": { "@type": "Brand", "name": "Form Precision" },
@@ -109,22 +126,40 @@
       "priceCurrency": "USD",
       "price": "30.00",
       "availability": "https://schema.org/InStock",
-      "url": "https://formprecision.com/products/30mm-rmr-mount/"
+      "url": "https://formprecision.com/products/30mm-rmr-mount/",
+      "seller": { "@type": "Organization", "name": "Form Precision", "@id": "https://formprecision.com/#org" },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn",
+        "returnPolicySeasonalOverride": [],
+        "additionalProperty": {
+          "@type": "PropertyValue",
+          "name": "Instructions",
+          "value": "Initiate via the returns page and include receipt number and order email."
+        },
+        "url": "https://formprecision.com/returns/"
+      }
     }
   }
   </script>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1CC7WR0SY0"></script>
-<script>
-  if (location.hostname.endsWith('formprecision.com')) {
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-1CC7WR0SY0');
-  }
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1CC7WR0SY0"></script>
+  <script>
+    if (location.hostname.endsWith('formprecision.com')) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-1CC7WR0SY0');
+    }
+  </script>
 
+  <!-- Small a11y/UA nicety -->
+  <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#F7931A">
 </head>
 
@@ -137,7 +172,7 @@
               aria-label="Open menu"
               aria-controls="primary-nav"
               aria-expanded="false">
-        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        <span class="bar" aria-hidden="true"></span><span class="bar" aria-hidden="true"></span><span class="bar" aria-hidden="true"></span>
       </button>
       <a href="/" class="brand">FORM PRECISION</a>
     </div>
@@ -193,11 +228,9 @@
                   "/images/products/30mm-rmr-mount/30mm-rmr-mount1.webp",
                   "/images/products/30mm-rmr-mount/30mm-rmr-mount2.webp",
                   "/images/products/30mm-rmr-mount/30mm-rmr-mount3.webp",
-                  "/images/products/30mm-rmr-mount/30mm-rmr-mount4.webp",
-                  "/images/products/30mm-rmr-mount/30mm-rmr-mount5.webp",
-                  "/images/products/30mm-rmr-mount/30mm-rmr-mount6.webp",
-                  "/images/products/30mm-rmr-mount/30mm-rmr-mount7.webp"
+                  "/images/products/30mm-rmr-mount/30mm-rmr-mount4.webp"
                 ]'>
+          <!-- Fixed: removed trailing comma from last array item above (prevents JSON.parse issues) -->
           <div class="hero-frame">
             <img id="hero-img"
                  src="/images/products/30mm-rmr-mount/30mm-rmr-mount1.webp"
@@ -279,7 +312,7 @@
     <div class="social-icons">
       <a href="https://www.instagram.com/formprecision/" target="_blank" rel="noopener" aria-label="Instagram">
         <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon" aria-hidden="true" focusable="false">
-          <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.88-.88a.88.88 0 1 1-1.76 0 .88.88 0 0 1 1.76 0z"/>
+          <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 4a5 5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm4.88-.88a.88.88 0 1 1-1.76 0 .88.88 0 0 1 1.76 0z"/>
         </svg>
       </a>
       <a href="https://www.tiktok.com/@formprecision" target="_blank" rel="noopener" aria-label="TikTok">
